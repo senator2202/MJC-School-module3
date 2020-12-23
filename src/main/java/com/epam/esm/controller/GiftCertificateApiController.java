@@ -80,4 +80,38 @@ public class GiftCertificateApiController {
         }
         return service.findByDescription(description, sortType, direction);
     }
+
+    @PutMapping("/update/{id}")
+    public GiftCertificate updateField(@PathVariable long id,
+                                       @RequestBody UpdatableField field) {
+        String fieldName = field.getFieldName();
+        String fieldValue = field.getFieldValue();
+        if (!GiftEntityValidator.correctUpdateFieldParameters(fieldName, fieldValue)) {
+            throw new WrongParameterFormatException("Wrong update field parameters",
+                    ErrorCode.UPDATE_PARAMETERS_WRONG_FORMAT);
+        }
+        switch (fieldName) {
+            case "name":
+                return service.updateName(id, fieldValue).orElseThrow(
+                        () -> new GiftEntityNotFoundException("Certificate not found",
+                                ErrorCode.GIFT_CERTIFICATE_NOT_FOUND)
+                );
+            case "description":
+                return service.updateDescription(id, fieldValue).orElseThrow(
+                        () -> new GiftEntityNotFoundException("Certificate not found",
+                                ErrorCode.GIFT_CERTIFICATE_NOT_FOUND)
+                );
+            case "price":
+                return service.updatePrice(id, fieldValue).orElseThrow(
+                        () -> new GiftEntityNotFoundException("Certificate not found",
+                                ErrorCode.GIFT_CERTIFICATE_NOT_FOUND)
+                );
+            case "duration":
+                return service.updateDuration(id, fieldValue).orElseThrow(
+                        () -> new GiftEntityNotFoundException("Certificate not found",
+                                ErrorCode.GIFT_CERTIFICATE_NOT_FOUND)
+                );
+        }
+        return null;
+    }
 }

@@ -153,6 +153,30 @@ public class JdbcGiftCertificateDao implements GiftCertificateDao {
         return certificates;
     }
 
+    @Override
+    public GiftCertificate updateName(long id, String newName) {
+        jdbcTemplate.update(SQL_UPDATE_NAME, newName, id);
+        return findById(id).get();
+    }
+
+    @Override
+    public GiftCertificate updateDescription(long id, String newDescription) {
+        jdbcTemplate.update(SQL_UPDATE_DESCRIPTION, newDescription, id);
+        return findById(id).get();
+    }
+
+    @Override
+    public GiftCertificate updatePrice(long id, int newPrice) {
+        jdbcTemplate.update(SQL_UPDATE_PRICE, newPrice, id);
+        return findById(id).get();
+    }
+
+    @Override
+    public GiftCertificate updateDuration(long id, int newDuration) {
+        jdbcTemplate.update(SQL_UPDATE_DURATION, newDuration, id);
+        return findById(id).get();
+    }
+
     private class GiftCertificateRowMapper implements RowMapper<GiftCertificate> {
 
         @Override

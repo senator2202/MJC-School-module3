@@ -11,4 +11,12 @@ public interface GiftCertificateService extends BaseService<GiftCertificate> {
     List<GiftCertificate> findByName(String name, String sortType, String direction);
 
     List<GiftCertificate> findByDescription(String description, String sortType, String direction);
+
+    Optional<GiftCertificate> updateName(long id, String newName);
+
+    Optional<GiftCertificate> updateDescription(long id, String newDescription);
+
+    Optional<GiftCertificate> updatePrice(long id, String newPrice);
+
+    Optional<GiftCertificate> updateDuration(long id, String newDuration);
 }
