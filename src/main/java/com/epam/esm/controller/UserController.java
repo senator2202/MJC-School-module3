@@ -64,4 +64,9 @@ public class UserController {
         }
         return orderService.add(order);
     }
+
+    @GetMapping("/{userId:^[1-9]\\d{0,18}$}/orders")
+    public List<Order> findUserOrders(@PathVariable long userId) {
+        return orderService.findOrdersByUserId(userId);
+    }
 }
