@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -56,7 +57,18 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public Optional<Order> findById(long id) {
+        return orderDao.findById(id);
+    }
+
+    @Override
     public List<Order> findOrdersByUserId(long userId) {
         return orderDao.findOrdersByUserId(userId);
+    }
+
+    @Override
+    public boolean orderBelongsToUser(long userId, long orderId) {
+        Optional<Order> optional = orderDao.findById(orderId);
+        return optional.filter(order -> order.getUser().getId() == userId).isPresent();
     }
 }

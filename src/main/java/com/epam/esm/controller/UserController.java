@@ -69,4 +69,17 @@ public class UserController {
     public List<Order> findUserOrders(@PathVariable long userId) {
         return orderService.findOrdersByUserId(userId);
     }
+
+    @GetMapping("/{userId:^[1-9]\\d{0,18}$}/{orderId:^[1-9]\\d{0,18}$}")
+    public Order findUserOrder(@PathVariable long userId,
+                               @PathVariable long orderId) {
+        if (orderService.orderBelongsToUser(userId, orderId)) {
+            return orderService.findById(orderId).orElseThrow(
+                    () -> new GiftEntityNotFoundException("Order not found", ErrorCode.ORDER_NOT_FOUND)
+            );
+        } else {
+            throw new GiftEntityNotFoundException("Order does not belong to user",
+                    ErrorCode.ORDER_DOES_NOT_BELONG_TO_USER);
+        }
+    }
 }
