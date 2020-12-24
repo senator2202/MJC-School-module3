@@ -1,6 +1,6 @@
 package com.epam.esm.model.entity;
 
-public class User implements GiftEntity{
+public class User implements GiftEntity {
     private Long id;
     private String name;
 

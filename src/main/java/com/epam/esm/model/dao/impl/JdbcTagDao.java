@@ -45,7 +45,7 @@ public class JdbcTagDao implements TagDao {
     public Optional<Tag> findById(long id) {
         Optional<Tag> optional;
         try {
-            Tag tag = jdbcTemplate.queryForObject(SQL_SELECT_TAG, new Object[]{id}, new TagRowMapper());
+            Tag tag = jdbcTemplate.queryForObject(SQL_SELECT_TAG, new TagRowMapper(), id);
             optional = Optional.of(tag);
         } catch (EmptyResultDataAccessException e) {
             optional = Optional.empty();

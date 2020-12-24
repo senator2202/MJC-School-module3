@@ -31,16 +31,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User add(User entity) {
-        throw  new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Optional<User> update(User entity) {
-        throw  new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void delete(long id) {
-        throw  new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 }

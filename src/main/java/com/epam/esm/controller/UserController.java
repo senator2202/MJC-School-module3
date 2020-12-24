@@ -1,13 +1,15 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.controller.exception.GiftEntityNotFoundException;
+import com.epam.esm.controller.exception.WrongParameterFormatException;
+import com.epam.esm.model.entity.Order;
 import com.epam.esm.model.entity.User;
+import com.epam.esm.service.GiftCertificateService;
+import com.epam.esm.service.OrderService;
 import com.epam.esm.service.UserService;
+import com.epam.esm.validator.GiftEntityValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -15,22 +17,51 @@ import java.util.List;
 @RequestMapping("api/users")
 public class UserController {
 
-    private UserService service;
+    private UserService userService;
+    private GiftCertificateService giftCertificateService;
+    private OrderService orderService;
 
     @Autowired
-    public void setService(UserService service) {
-        this.service = service;
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    @Autowired
+    public void setGiftCertificateService(GiftCertificateService giftCertificateService) {
+        this.giftCertificateService = giftCertificateService;
+    }
+
+    @Autowired
+    public void setOrderService(OrderService orderService) {
+        this.orderService = orderService;
     }
 
     @GetMapping
     public List<User> findAll() {
-        return service.findAll();
+        return userService.findAll();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id:^[1-9]\\d{0,18}$}")
     public User findById(@PathVariable long id) {
-        return service.findById(id).orElseThrow(
+        return userService.findById(id).orElseThrow(
                 () -> new GiftEntityNotFoundException("User not found", ErrorCode.USER_NOT_FOUND)
         );
+    }
+
+    @PostMapping("/buy")
+    public Order buyCertificate(@RequestBody Order order) {
+        long userId = order.getUser().getId();
+        long certificateId = order.getGiftCertificate().getId();
+        if (!GiftEntityValidator.correctId(userId, certificateId)) {
+            throw new WrongParameterFormatException("Wrong buy certificate parameters",
+                    ErrorCode.BUY_PARAMETERS_WRONG_FORMAT);
+        }
+        if (userService.findById(userId).isEmpty()) {
+            throw new GiftEntityNotFoundException("User was not found!", ErrorCode.USER_NOT_FOUND);
+        }
+        if (giftCertificateService.findById(certificateId).isEmpty()) {
+            throw new GiftEntityNotFoundException("Certificate not found", ErrorCode.GIFT_CERTIFICATE_NOT_FOUND);
+        }
+        return orderService.add(order);
     }
 }

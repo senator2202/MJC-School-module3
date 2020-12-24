@@ -6,6 +6,7 @@ import com.epam.esm.model.dao.TagDao;
 import com.epam.esm.model.entity.GiftCertificate;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.service.GiftCertificateService;
+import com.epam.esm.util.DateTimeUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -13,9 +14,9 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class GiftCertificateServiceImpl implements GiftCertificateService {
@@ -57,7 +58,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public GiftCertificate add(GiftCertificate certificate) {
-        String currentDate = getCurrentDateIso();
+        String currentDate = DateTimeUtility.getCurrentDateIso();
         certificate.setCreateDate(currentDate);
         certificate.setLastUpdateDate(currentDate);
         return transactionTemplate.execute(transactionStatus -> {
@@ -89,7 +90,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if (optional.isPresent()) {
             GiftCertificate found = optional.get();
             updateNotEmptyFields(certificate, found);
-            certificate.setLastUpdateDate(getCurrentDateIso());
+            certificate.setLastUpdateDate(DateTimeUtility.getCurrentDateIso());
             GiftCertificate updated = transactionTemplate.execute(transactionStatus -> {
                 GiftCertificate updating = giftCertificateDao.update(found);
                 if (certificate.getTags() != null) {
@@ -132,13 +133,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             }
         });
 
-    }
-
-    private String getCurrentDateIso() {
-        TimeZone tz = TimeZone.getTimeZone("UTC");
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
-        df.setTimeZone(tz);
-        return df.format(new Date());
     }
 
     @Override

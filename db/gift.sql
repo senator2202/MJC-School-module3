@@ -84,15 +84,27 @@ CREATE TABLE IF NOT EXISTS `order` (
   `user_id` bigint DEFAULT NULL,
   `certificate_id` bigint DEFAULT NULL,
   `order_date` varchar(50) DEFAULT NULL,
+  `cost` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_order_user` (`user_id`),
   KEY `FK_order_gift_certificate` (`certificate_id`),
   CONSTRAINT `FK_order_gift_certificate` FOREIGN KEY (`certificate_id`) REFERENCES `gift_certificate` (`id`),
   CONSTRAINT `FK_order_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Дамп данных таблицы gift.order: ~0 rows (приблизительно)
 /*!40000 ALTER TABLE `order` DISABLE KEYS */;
+REPLACE INTO `order` (`id`, `user_id`, `certificate_id`, `order_date`, `cost`) VALUES
+	(1, 1, 6, '2020-12-24T12:21Z', 250),
+	(2, 6, 15, '2020-12-24T13:21Z', 400),
+	(3, 3, 19, '2020-12-24T14:21Z', 999),
+	(4, 4, 7, '2020-12-24T10:19Z', 60),
+	(5, 3, 1, '2020-12-24T10:20Z', 100),
+	(6, 3, 15, '2020-12-24T10:26Z', 150),
+	(7, 3, 15, '2020-12-24T10:26Z', 150),
+	(8, 5, 5, '2020-12-24T10:27Z', 125),
+	(9, 5, 5, '2020-12-24T10:27Z', 125),
+	(10, 2, 16, '2020-12-24T10:28Z', 250);
 /*!40000 ALTER TABLE `order` ENABLE KEYS */;
 
 -- Дамп структуры для таблица gift.tag
@@ -125,7 +137,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Дамп данных таблицы gift.user: ~0 rows (приблизительно)
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;

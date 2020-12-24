@@ -1,7 +1,6 @@
 package com.epam.esm.model.dao.impl;
 
 import com.epam.esm.model.dao.UserDao;
-import com.epam.esm.model.entity.Tag;
 import com.epam.esm.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -56,17 +55,17 @@ public class JdbcUserDao implements UserDao {
 
     @Override
     public User add(User entity) {
-        throw  new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public User update(User entity) {
-        throw  new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void delete(long id) {
-        throw  new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 
     private class UserRowMapper implements RowMapper<User> {

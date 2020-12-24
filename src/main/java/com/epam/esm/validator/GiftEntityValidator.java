@@ -10,8 +10,16 @@ public class GiftEntityValidator {
     private static final String FIELD_PRICE = "price";
     private static final String FIELD_DURATION = "duration";
 
-    public static boolean correctId(String id) {
-        return id.matches(ID_REGEX);
+    private GiftEntityValidator() {
+    }
+
+    public static boolean correctId(long... ids) {
+        for (long id : ids) {
+            if (!String.valueOf(id).matches(ID_REGEX)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public static boolean correctTagName(String tagName) {

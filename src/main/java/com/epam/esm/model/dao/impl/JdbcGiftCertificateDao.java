@@ -71,8 +71,8 @@ public class JdbcGiftCertificateDao implements GiftCertificateDao {
     public Optional<GiftCertificate> findById(long id) {
         Optional<GiftCertificate> optional;
         try {
-            GiftCertificate giftCertificate = jdbcTemplate.queryForObject(SQL_SELECT_CERTIFICATE,
-                    new Object[]{id}, new GiftCertificateRowMapper());
+            GiftCertificate giftCertificate =
+                    jdbcTemplate.queryForObject(SQL_SELECT_CERTIFICATE, new GiftCertificateRowMapper(), id);
             List<Tag> tags = giftCertificateTagDao.findAllTags(id);
             giftCertificate.setTags(tags);
             optional = Optional.of(giftCertificate);
