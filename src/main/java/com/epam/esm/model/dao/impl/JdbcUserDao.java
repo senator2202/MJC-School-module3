@@ -1,6 +1,7 @@
 package com.epam.esm.model.dao.impl;
 
 import com.epam.esm.model.dao.UserDao;
+import com.epam.esm.model.entity.Tag;
 import com.epam.esm.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -20,6 +21,13 @@ public class JdbcUserDao implements UserDao {
 
     private static final String SQL_SELECT_ALL = "SELECT id, name FROM user";
     private static final String SQL_SELECT_BY_ID = SQL_SELECT_ALL + " WHERE id = ?";
+    private static final String SQL_SELECT_MOST_POPULAR_TAG_OF_USER_WITH_MAX_ORDERS_SUM =
+            "SELECT tag.id, tag.name, COUNT(tag.id) AS frequency\n" +
+                    "FROM gift.`order` JOIN certificate_tag ON gift.`order`.certificate_id=certificate_tag.gift_certificate_id JOIN tag ON certificate_tag.tag_id=tag.id\n" +
+                    "WHERE user_id=(SELECT user_id FROM (SELECT user_id, SUM(cost) AS total_cost FROM gift.`order` GROUP BY user_id order BY total_cost DESC LIMIT 1) AS max_sum_row)\n" +
+                    "GROUP BY id\n" +
+                    "ORDER BY frequency DESC\n" +
+                    "LIMIT 1";
 
     private JdbcTemplate jdbcTemplate;
 
@@ -66,6 +74,19 @@ public class JdbcUserDao implements UserDao {
     @Override
     public void delete(long id) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Optional<Tag> mostWidelyUsedTagOfUserWithHighestOrdersSum() {
+        Optional<Tag> optional;
+        try {
+            Tag tag = jdbcTemplate.queryForObject(SQL_SELECT_MOST_POPULAR_TAG_OF_USER_WITH_MAX_ORDERS_SUM,
+                    new JdbcTagDao.TagRowMapper());
+            optional = Optional.of(tag);
+        } catch (EmptyResultDataAccessException e) {
+            optional = Optional.empty();
+        }
+        return optional;
     }
 
     private class UserRowMapper implements RowMapper<User> {

@@ -92,7 +92,7 @@ CREATE TABLE IF NOT EXISTS `order` (
   CONSTRAINT `FK_order_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Дамп данных таблицы gift.order: ~0 rows (приблизительно)
+-- Дамп данных таблицы gift.order: ~10 rows (приблизительно)
 /*!40000 ALTER TABLE `order` DISABLE KEYS */;
 REPLACE INTO `order` (`id`, `user_id`, `certificate_id`, `order_date`, `cost`) VALUES
 	(1, 1, 6, '2020-12-24T12:21Z', 250),
@@ -101,7 +101,7 @@ REPLACE INTO `order` (`id`, `user_id`, `certificate_id`, `order_date`, `cost`) V
 	(4, 4, 7, '2020-12-24T10:19Z', 60),
 	(5, 3, 1, '2020-12-24T10:20Z', 100),
 	(6, 3, 15, '2020-12-24T10:26Z', 150),
-	(7, 3, 15, '2020-12-24T10:26Z', 150),
+	(7, 3, 15, '2020-12-24T10:26Z', 200),
 	(8, 5, 5, '2020-12-24T10:27Z', 125),
 	(9, 5, 5, '2020-12-24T10:27Z', 125),
 	(10, 2, 16, '2020-12-24T10:28Z', 250);
@@ -139,7 +139,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Дамп данных таблицы gift.user: ~0 rows (приблизительно)
+-- Дамп данных таблицы gift.user: ~6 rows (приблизительно)
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 REPLACE INTO `user` (`id`, `name`) VALUES
 	(1, 'Alex'),

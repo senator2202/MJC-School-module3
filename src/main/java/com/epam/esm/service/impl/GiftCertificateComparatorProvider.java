@@ -41,7 +41,7 @@ class GiftCertificateComparatorProvider {
         PRICE((c1, c2) -> c1.getPrice() - c2.getPrice()),
         DURATION((c1, c2) -> c1.getDuration() - c2.getDuration());
 
-        private Comparator<GiftCertificate> comparator;
+        private final Comparator<GiftCertificate> comparator;
 
         SortType(Comparator<GiftCertificate> comparator) {
             this.comparator = comparator;
