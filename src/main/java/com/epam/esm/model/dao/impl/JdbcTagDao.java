@@ -100,7 +100,7 @@ public class JdbcTagDao implements TagDao {
         return optional;
     }
 
-    private class TagRowMapper implements RowMapper<Tag> {
+    static class TagRowMapper implements RowMapper<Tag> {
 
         @Override
         public Tag mapRow(ResultSet resultSet, int i) throws SQLException {

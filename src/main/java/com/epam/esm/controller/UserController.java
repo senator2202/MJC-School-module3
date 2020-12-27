@@ -3,6 +3,7 @@ package com.epam.esm.controller;
 import com.epam.esm.controller.exception.GiftEntityNotFoundException;
 import com.epam.esm.controller.exception.WrongParameterFormatException;
 import com.epam.esm.model.entity.Order;
+import com.epam.esm.model.entity.Tag;
 import com.epam.esm.model.entity.User;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.OrderService;
@@ -70,7 +71,7 @@ public class UserController {
         return orderService.findOrdersByUserId(userId);
     }
 
-    @GetMapping("/{userId:^[1-9]\\d{0,18}$}/{orderId:^[1-9]\\d{0,18}$}")
+    @GetMapping("/{userId:^[1-9]\\d{0,18}$}/orders/{orderId:^[1-9]\\d{0,18}$}")
     public Order findUserOrder(@PathVariable long userId,
                                @PathVariable long orderId) {
         if (orderService.orderBelongsToUser(userId, orderId)) {
@@ -81,5 +82,11 @@ public class UserController {
             throw new GiftEntityNotFoundException("Order does not belong to user",
                     ErrorCode.ORDER_DOES_NOT_BELONG_TO_USER);
         }
+    }
+
+    @GetMapping("/widely_used_tag")
+    public Tag widelyUsedTag() {
+        return userService.mostWidelyUsedTagOfUserWithHighestOrdersSum().orElseThrow(() ->
+                new GiftEntityNotFoundException("Tag not found", ErrorCode.TAG_NOT_FOUND));
     }
 }

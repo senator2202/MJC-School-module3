@@ -111,7 +111,8 @@ public class GiftCertificateApiController {
                         () -> new GiftEntityNotFoundException("Certificate not found",
                                 ErrorCode.GIFT_CERTIFICATE_NOT_FOUND)
                 );
+            default:
+                throw new GiftEntityNotFoundException("Certificate not found", ErrorCode.GIFT_CERTIFICATE_NOT_FOUND);
         }
-        return null;
     }
 }
