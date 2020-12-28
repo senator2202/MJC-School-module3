@@ -19,4 +19,6 @@ public interface GiftCertificateService extends BaseService<GiftCertificate> {
     Optional<GiftCertificate> updatePrice(long id, String newPrice);
 
     Optional<GiftCertificate> updateDuration(long id, String newDuration);
+
+    List<GiftCertificate> findByTagNames(String tagNames, String sortType, String direction);
 }

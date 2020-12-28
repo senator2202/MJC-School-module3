@@ -51,8 +51,8 @@ public class GiftCertificateApiController {
         service.delete(id);
     }
 
-    @GetMapping("/find/tag/{tagName}")
-    public List<GiftCertificate> findByTagName(@PathVariable String tagName,
+    @GetMapping("/find/tag")
+    public List<GiftCertificate> findByTagName(@RequestParam String tagName,
                                                @RequestParam(value = "sort", required = false) String sortType,
                                                @RequestParam(value = "direction", required = false) String direction) {
         if (!GiftEntityValidator.correctTagName(tagName)) {
@@ -61,8 +61,8 @@ public class GiftCertificateApiController {
         return service.findByTagName(tagName, sortType, direction);
     }
 
-    @GetMapping("/find/name/{name}")
-    public List<GiftCertificate> findByName(@PathVariable String name,
+    @GetMapping("/find/name")
+    public List<GiftCertificate> findByName(@RequestParam String name,
                                             @RequestParam(value = "sort", required = false) String sortType,
                                             @RequestParam(value = "direction", required = false) String direction) {
         if (!GiftEntityValidator.correctTagName(name)) {
@@ -71,8 +71,8 @@ public class GiftCertificateApiController {
         return service.findByName(name, sortType, direction);
     }
 
-    @GetMapping("/find/description/{description}")
-    public List<GiftCertificate> findByDescription(@PathVariable String description,
+    @GetMapping("/find/description")
+    public List<GiftCertificate> findByDescription(@RequestParam String description,
                                                    @RequestParam(value = "sort", required = false) String sortType,
                                                    @RequestParam(value = "direction", required = false) String direction) {
         if (!GiftEntityValidator.correctCertificateDescription(description)) {
@@ -114,5 +114,15 @@ public class GiftCertificateApiController {
             default:
                 throw new GiftEntityNotFoundException("Certificate not found", ErrorCode.GIFT_CERTIFICATE_NOT_FOUND);
         }
+    }
+
+    @GetMapping("/find/tags")
+    public List<GiftCertificate> findByTags(@RequestParam String tagNames,
+                                            @RequestParam(value = "sort", required = false) String sortType,
+                                            @RequestParam(value = "direction", required = false) String direction) {
+        if (!GiftEntityValidator.correctTagNames(tagNames)) {
+            throw new WrongParameterFormatException("Wrong tag names format", ErrorCode.NAME_WRONG_FORMAT);
+        }
+        return service.findByTagNames(tagNames, sortType, direction);
     }
 }

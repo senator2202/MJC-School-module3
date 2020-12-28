@@ -9,6 +9,7 @@ public class GiftEntityValidator {
     private static final String FIELD_DESCRIPTION = "description";
     private static final String FIELD_PRICE = "price";
     private static final String FIELD_DURATION = "duration";
+    private static final String TAG_SPLITERATOR = ",";
 
     private GiftEntityValidator() {
     }
@@ -41,5 +42,14 @@ public class GiftEntityValidator {
             return fieldValue != null && fieldValue.matches(INT_REGEX);
         }
         return false;
+    }
+
+    public static boolean correctTagNames(String tagNames) {
+        for (String s : tagNames.split(TAG_SPLITERATOR)) {
+            if (!correctTagName(s)) {
+                return false;
+            }
+        }
+        return true;
     }
 }
