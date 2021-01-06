@@ -15,5 +15,5 @@ public interface BaseDao<T extends GiftEntity> {
 
     T update(T entity);
 
-    void delete(long id);
+    boolean delete(long id);
 }

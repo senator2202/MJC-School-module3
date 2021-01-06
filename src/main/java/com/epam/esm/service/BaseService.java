@@ -15,5 +15,5 @@ public interface BaseService<T extends GiftEntity> {
 
     Optional<T> update(T entity);
 
-    void delete(long id);
+    boolean delete(long id);
 }

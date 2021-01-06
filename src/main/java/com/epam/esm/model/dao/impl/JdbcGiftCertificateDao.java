@@ -40,7 +40,7 @@ public class JdbcGiftCertificateDao implements GiftCertificateDao {
     private static final String SQL_SELECT_CERTIFICATES_BY_TAG_NAME =
             "SELECT gift_certificate.id, gift_certificate.name, description, " +
                     "price, duration, create_date, last_update_date\n" +
-                    "FROM gift_certificate JOIN certificate_tag ON id=gift_certificate_id JOIN tag ON tag.id=tag_id\n" +
+                    "FROM gift_certificate JOIN certificate_tag ON gift_certificate.id=gift_certificate_id JOIN tag ON tag.id=tag_id\n" +
                     "WHERE tag.name=?";
     private static final String SQL_SELECT_BY_NAME =
             "SELECT id, name, description, price, duration, create_date, last_update_date\n" +
@@ -112,8 +112,8 @@ public class JdbcGiftCertificateDao implements GiftCertificateDao {
     }
 
     @Override
-    public void delete(long id) {
-        jdbcTemplate.update(SQL_DELETE, id);
+    public boolean delete(long id) {
+        return jdbcTemplate.update(SQL_DELETE, id) > 0;
     }
 
     @Override

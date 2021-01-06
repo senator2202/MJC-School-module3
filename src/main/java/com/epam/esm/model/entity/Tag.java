@@ -1,5 +1,7 @@
 package com.epam.esm.model.entity;
 
+import java.util.Objects;
+
 public class Tag implements GiftEntity {
     private long id;
     private String name;
@@ -30,13 +32,17 @@ public class Tag implements GiftEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Tag tag = (Tag) o;
-
-        if (id != tag.id) return false;
-        return name != null ? name.equals(tag.name) : tag.name == null;
+        if (id != tag.id) {
+            return false;
+        }
+        return Objects.equals(name, tag.name);
     }
 
     @Override

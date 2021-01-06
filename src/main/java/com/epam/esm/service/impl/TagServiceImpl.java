@@ -7,8 +7,6 @@ import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
@@ -20,6 +18,17 @@ public class TagServiceImpl implements TagService {
     private TagDao dao;
     private GiftCertificateTagDao giftCertificateTagDao;
     private TransactionTemplate transactionTemplate;
+
+    public TagServiceImpl() {
+    }
+
+    public TagServiceImpl(TagDao dao,
+                          GiftCertificateTagDao giftCertificateTagDao,
+                          TransactionTemplate transactionTemplate) {
+        this.dao = dao;
+        this.giftCertificateTagDao = giftCertificateTagDao;
+        this.transactionTemplate = transactionTemplate;
+    }
 
     @Autowired
     public void setDao(TagDao dao) {
@@ -61,14 +70,10 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public void delete(long id) {
-        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
-            @Override
-            protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
-                giftCertificateTagDao.deleteByTagId(id);
-                dao.delete(id);
-            }
+    public boolean delete(long id) {
+        return transactionTemplate.execute(transactionStatus -> {
+            giftCertificateTagDao.deleteByTagId(id);
+            return dao.delete(id);
         });
-
     }
 }

@@ -2,6 +2,7 @@ package com.epam.esm.model.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class GiftCertificate implements GiftEntity {
     private Long id;
@@ -12,6 +13,23 @@ public class GiftCertificate implements GiftEntity {
     private String createDate;
     private String lastUpdateDate;
     private List<Tag> tags;
+
+    public GiftCertificate() {
+    }
+
+    public GiftCertificate(GiftCertificate certificate) {
+        id = certificate.id;
+        name = certificate.name;
+        description = certificate.description;
+        price = certificate.price;
+        duration = certificate.duration;
+        createDate = certificate.createDate;
+        lastUpdateDate = certificate.lastUpdateDate;
+        if (certificate.getTags() != null) {
+            tags = new ArrayList<>();
+            certificate.getTags().forEach(t -> tags.add(new Tag(t.getId(), t.getName())));
+        }
+    }
 
     public Long getId() {
         return id;
@@ -89,18 +107,23 @@ public class GiftCertificate implements GiftEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         GiftCertificate that = (GiftCertificate) o;
-
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (description != null ? !description.equals(that.description) : that.description != null) return false;
-        if (price != null ? !price.equals(that.price) : that.price != null) return false;
-        if (duration != null ? !duration.equals(that.duration) : that.duration != null) return false;
-        if (createDate != null ? !createDate.equals(that.createDate) : that.createDate != null) return false;
-        if (lastUpdateDate != null ? !lastUpdateDate.equals(that.lastUpdateDate) : that.lastUpdateDate != null)
+        if (!Objects.equals(id, that.id)) {
             return false;
-        return tags != null ? tags.equals(that.tags) : that.tags == null;
+        }
+        if (!Objects.equals(name, that.name)) {
+            return false;
+        }
+        if (!Objects.equals(description, that.description)) {
+            return false;
+        }
+        if (!Objects.equals(price, that.price)) {
+            return false;
+        }
+        if (!Objects.equals(duration, that.duration)) {
+            return false;
+        }
+        return Objects.equals(tags, that.tags);
     }
 
     @Override
@@ -110,8 +133,6 @@ public class GiftCertificate implements GiftEntity {
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (price != null ? price.hashCode() : 0);
         result = 31 * result + (duration != null ? duration.hashCode() : 0);
-        result = 31 * result + (createDate != null ? createDate.hashCode() : 0);
-        result = 31 * result + (lastUpdateDate != null ? lastUpdateDate.hashCode() : 0);
         result = 31 * result + (tags != null ? tags.hashCode() : 0);
         return result;
     }
