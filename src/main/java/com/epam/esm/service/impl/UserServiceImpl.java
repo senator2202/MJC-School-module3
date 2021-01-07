@@ -13,24 +13,31 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private UserDao dao;
+    private UserDao userDao;
+
+    public UserServiceImpl() {
+    }
+
+    public UserServiceImpl(UserDao userDao) {
+        this.userDao = userDao;
+    }
 
     @Autowired
-    public void setDao(UserDao dao) {
-        this.dao = dao;
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
     }
 
     @Override
     public Optional<User> findById(long id) {
-        return dao.findById(id);
+        return userDao.findById(id);
     }
 
     @Override
     public List<User> findAll(Integer limit, Integer offset) {
         if (limit != null) {
-            return dao.findAll(limit, offset != null ? offset : 0);
+            return userDao.findAll(limit, offset != null ? offset : 0);
         } else {
-            return dao.findAll();
+            return userDao.findAll();
         }
     }
 
@@ -51,6 +58,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<Tag> mostWidelyUsedTagOfUserWithHighestOrdersSum() {
-        return dao.mostWidelyUsedTagOfUserWithHighestOrdersSum();
+        return userDao.mostWidelyUsedTagOfUserWithHighestOrdersSum();
     }
 }

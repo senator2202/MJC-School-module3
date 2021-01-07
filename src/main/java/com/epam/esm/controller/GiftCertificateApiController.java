@@ -116,35 +116,10 @@ public class GiftCertificateApiController {
             throw new WrongParameterFormatException("Wrong update field parameters",
                     ErrorCode.UPDATE_PARAMETERS_WRONG_FORMAT);
         }
-        GiftCertificate updated;
-        switch (fieldName) {
-            case NAME:
-                updated = service.updateName(id, fieldValue).orElseThrow(
-                        () -> new GiftEntityNotFoundException("Certificate not found",
-                                ErrorCode.GIFT_CERTIFICATE_NOT_FOUND)
-                );
-                break;
-            case DESCRIPTION:
-                updated = service.updateDescription(id, fieldValue).orElseThrow(
-                        () -> new GiftEntityNotFoundException("Certificate not found",
-                                ErrorCode.GIFT_CERTIFICATE_NOT_FOUND)
-                );
-                break;
-            case PRICE:
-                updated = service.updatePrice(id, fieldValue).orElseThrow(
-                        () -> new GiftEntityNotFoundException("Certificate not found",
-                                ErrorCode.GIFT_CERTIFICATE_NOT_FOUND)
-                );
-                break;
-            case DURATION:
-                updated = service.updateDuration(id, fieldValue).orElseThrow(
-                        () -> new GiftEntityNotFoundException("Certificate not found",
-                                ErrorCode.GIFT_CERTIFICATE_NOT_FOUND)
-                );
-                break;
-            default:
-                throw new GiftEntityNotFoundException("Certificate not found", ErrorCode.GIFT_CERTIFICATE_NOT_FOUND);
-        }
+        GiftCertificate updated = service.updateField(id, field).orElseThrow(
+                () -> new GiftEntityNotFoundException("Certificate not found",
+                        ErrorCode.GIFT_CERTIFICATE_NOT_FOUND)
+        );
         addLink(updated);
         return new ResponseEntity<>(updated, HttpStatus.OK);
     }

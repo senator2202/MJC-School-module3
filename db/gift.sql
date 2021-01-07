@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS `certificate_tag` (
 
 -- Дамп данных таблицы gift.certificate_tag: ~16 rows (приблизительно)
 /*!40000 ALTER TABLE `certificate_tag` DISABLE KEYS */;
-REPLACE INTO `certificate_tag` (`gift_certificate_id`, `tag_id`) VALUES
+INSERT INTO `certificate_tag` (`gift_certificate_id`, `tag_id`) VALUES
 	(1, 8),
 	(1, 1),
 	(3, 2),
@@ -46,7 +46,8 @@ REPLACE INTO `certificate_tag` (`gift_certificate_id`, `tag_id`) VALUES
 	(19, 13),
 	(19, 14),
 	(20, 14),
-	(20, 15);
+	(20, 15),
+	(26, 17);
 /*!40000 ALTER TABLE `certificate_tag` ENABLE KEYS */;
 
 -- Дамп структуры для таблица gift.gift_certificate
@@ -64,7 +65,7 @@ CREATE TABLE IF NOT EXISTS `gift_certificate` (
 
 -- Дамп данных таблицы gift.gift_certificate: ~10 rows (приблизительно)
 /*!40000 ALTER TABLE `gift_certificate` DISABLE KEYS */;
-REPLACE INTO `gift_certificate` (`id`, `name`, `description`, `price`, `duration`, `create_date`, `last_update_date`) VALUES
+INSERT INTO `gift_certificate` (`id`, `name`, `description`, `price`, `duration`, `create_date`, `last_update_date`) VALUES
 	(1, 'Сауна Тритон', 'Сертификат на бесплатное посещение сауны Тритон на Маяковского, 16', 100, 60, '2020-12-16T14:48Z', '2020-12-16T14:49Z'),
 	(3, 'Тату салон "Лисица"', 'Бесплатная татуировка 10x10 см', 125, 180, '2020-12-16T14:51Z', '2020-12-16T14:52:Z'),
 	(5, 'SPA центр на Старовиленской, 15', 'Весь спектр SPA процедур', 125, 180, '2020-12-17T11:49Z', '2020-12-17T11:51Z'),
@@ -74,7 +75,8 @@ REPLACE INTO `gift_certificate` (`id`, `name`, `description`, `price`, `duration
 	(15, 'Курсы английского языка', 'Курсы английского в online школе SkyEng', 150, 100, '2020-12-18T10:22Z', '2020-12-18T10:37Z'),
 	(16, 'Тату салон "Imagine Dragon"', 'Бесплатная татуировка 12х12, + дизайн', 250, 90, '2020-12-21T12:21Z', '2020-12-21T12:21Z'),
 	(19, 'Онлайн курсы C#', 'Бесплатный курс C# в школе программирования Litrex', 1222, 120, '2020-12-22T12:33Z', '2020-12-22T12:57Z'),
-	(20, 'Курс Python Web development', 'Бесплатное прохождение курса веб разработки на Python', 900, 90, '2020-12-23T08:22Z', '2020-12-23T08:22Z');
+	(20, 'Курс Python Web development', 'Бесплатное прохождение курса веб разработки на Python', 900, 90, '2020-12-23T08:22Z', '2020-12-23T08:22Z'),
+	(26, 'new', 'something new', 222, 122, '2021-01-07T09:45Z', '2021-01-07T09:45Z');
 /*!40000 ALTER TABLE `gift_certificate` ENABLE KEYS */;
 
 -- Дамп структуры для таблица gift.order
@@ -94,7 +96,7 @@ CREATE TABLE IF NOT EXISTS `order` (
 
 -- Дамп данных таблицы gift.order: ~10 rows (приблизительно)
 /*!40000 ALTER TABLE `order` DISABLE KEYS */;
-REPLACE INTO `order` (`id`, `user_id`, `certificate_id`, `order_date`, `cost`) VALUES
+INSERT INTO `order` (`id`, `user_id`, `certificate_id`, `order_date`, `cost`) VALUES
 	(1, 1, 6, '2020-12-24T12:21Z', 250),
 	(2, 6, 15, '2020-12-24T13:21Z', 400),
 	(3, 3, 19, '2020-12-24T14:21Z', 999),
@@ -118,9 +120,11 @@ CREATE TABLE IF NOT EXISTS `tag` (
 
 -- Дамп данных таблицы gift.tag: ~10 rows (приблизительно)
 /*!40000 ALTER TABLE `tag` DISABLE KEYS */;
-REPLACE INTO `tag` (`id`, `name`) VALUES
+INSERT INTO `tag` (`id`, `name`) VALUES
 	(14, 'IT'),
+	(18, 'new'),
 	(13, 'Programming'),
+	(17, 'something'),
 	(1, 'Активность'),
 	(10, 'Искусство'),
 	(7, 'Кино'),
@@ -141,7 +145,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 
 -- Дамп данных таблицы gift.user: ~6 rows (приблизительно)
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-REPLACE INTO `user` (`id`, `name`) VALUES
+INSERT INTO `user` (`id`, `name`) VALUES
 	(1, 'Alex'),
 	(2, 'Petr'),
 	(3, 'Valerii'),

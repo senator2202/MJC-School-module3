@@ -4,6 +4,14 @@ public class UpdatingField {
     private FieldName fieldName;
     private String fieldValue;
 
+    public UpdatingField() {
+    }
+
+    public UpdatingField(FieldName fieldName, String fieldValue) {
+        this.fieldName = fieldName;
+        this.fieldValue = fieldValue;
+    }
+
     public FieldName getFieldName() {
         return fieldName;
     }

@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("api/users")
@@ -81,8 +80,10 @@ public class UserApiController {
     }
 
     @GetMapping("/{userId:^[1-9]\\d{0,18}$}/orders")
-    public HttpEntity<List<Order>> findUserOrders(@PathVariable long userId) {
-        List<Order> orders = orderService.findOrdersByUserId(userId);
+    public HttpEntity<List<Order>> findUserOrders(@PathVariable long userId,
+                                                  @RequestParam(required = false) Integer limit,
+                                                  @RequestParam(required = false) Integer offset) {
+        List<Order> orders = orderService.findOrdersByUserId(userId, limit, offset);
         orders.forEach(this::addLink);
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
@@ -111,7 +112,7 @@ public class UserApiController {
     }
 
     private void addLink(Order o) {
-        o.add(linkTo(methodOn(UserApiController.class).findUserOrders(o.getUser().getId())).withSelfRel());
+        o.add(linkTo(UserApiController.class).slash(o.getUser().getId()).withSelfRel());
         o.getUser().add(linkTo(UserApiController.class).slash(o.getUser().getId()).withSelfRel());
         o.getGiftCertificate().add(linkTo(GiftCertificateApiController.class)
                 .slash(o.getGiftCertificate().getId())

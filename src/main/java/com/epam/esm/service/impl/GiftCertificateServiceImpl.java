@@ -1,5 +1,6 @@
 package com.epam.esm.service.impl;
 
+import com.epam.esm.controller.UpdatingField;
 import com.epam.esm.model.dao.GiftCertificateDao;
 import com.epam.esm.model.dao.GiftCertificateTagDao;
 import com.epam.esm.model.dao.TagDao;
@@ -167,13 +168,30 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         return certificates;
     }
 
+    @Override
+    public Optional<GiftCertificate> updateField(long id, UpdatingField updatingField) {
+        UpdatingField.FieldName fieldName = updatingField.getFieldName();
+        String fieldValue = updatingField.getFieldValue();
+        switch (fieldName) {
+            case NAME:
+                return updateName(id, fieldValue);
+            case DESCRIPTION:
+                return updateDescription(id, fieldValue);
+            case PRICE:
+                return updatePrice(id, fieldValue);
+            case DURATION:
+                return updateDuration(id, fieldValue);
+            default:
+                return Optional.empty();
+        }
+    }
+
     private void sortIfNecessary(List<GiftCertificate> certificates, String sortType, String direction) {
         Optional<Comparator<GiftCertificate>> optional = GiftCertificateComparatorProvider.provide(sortType, direction);
         optional.ifPresent(certificates::sort);
     }
 
-    @Override
-    public Optional<GiftCertificate> updateName(long id, String newName) {
+    private Optional<GiftCertificate> updateName(long id, String newName) {
         Optional<GiftCertificate> optional;
         if (giftCertificateDao.findById(id).isPresent()) {
             optional = Optional.of(giftCertificateDao.updateName(id, newName));
@@ -183,8 +201,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         return optional;
     }
 
-    @Override
-    public Optional<GiftCertificate> updateDescription(long id, String newDescription) {
+    private Optional<GiftCertificate> updateDescription(long id, String newDescription) {
         Optional<GiftCertificate> optional;
         if (giftCertificateDao.findById(id).isPresent()) {
             optional = Optional.of(giftCertificateDao.updateDescription(id, newDescription));
@@ -194,8 +211,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         return optional;
     }
 
-    @Override
-    public Optional<GiftCertificate> updatePrice(long id, String newPrice) {
+    private Optional<GiftCertificate> updatePrice(long id, String newPrice) {
         Optional<GiftCertificate> optional;
         if (giftCertificateDao.findById(id).isPresent()) {
             optional = Optional.of(giftCertificateDao.updatePrice(id, Integer.parseInt(newPrice)));
@@ -205,8 +221,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         return optional;
     }
 
-    @Override
-    public Optional<GiftCertificate> updateDuration(long id, String newDuration) {
+    private Optional<GiftCertificate> updateDuration(long id, String newDuration) {
         Optional<GiftCertificate> optional;
         if (giftCertificateDao.findById(id).isPresent()) {
             optional = Optional.of(giftCertificateDao.updateDuration(id, Integer.parseInt(newDuration)));

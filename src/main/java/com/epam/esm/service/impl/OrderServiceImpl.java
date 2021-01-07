@@ -62,8 +62,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> findOrdersByUserId(long userId) {
-        return orderDao.findOrdersByUserId(userId);
+    public List<Order> findOrdersByUserId(long userId, Integer limit, Integer offset) {
+        if (limit != null) {
+            return orderDao.findOrdersByUserId(userId, limit, offset != null ? offset : 0);
+        } else {
+            return orderDao.findOrdersByUserId(userId);
+        }
     }
 
     @Override

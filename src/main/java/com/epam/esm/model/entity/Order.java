@@ -11,6 +11,17 @@ public class Order extends RepresentationModel<GiftCertificate> implements GiftE
     private String orderDate;
     private int cost;
 
+    public Order() {
+    }
+
+    public Order(Long id, User user, GiftCertificate giftCertificate, String orderDate, int cost) {
+        this.id = id;
+        this.user = user;
+        this.giftCertificate = giftCertificate;
+        this.orderDate = orderDate;
+        this.cost = cost;
+    }
+
     public Long getId() {
         return id;
     }

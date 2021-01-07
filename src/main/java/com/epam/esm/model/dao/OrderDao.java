@@ -12,4 +12,6 @@ public interface OrderDao {
     Optional<Order> findById(long id);
 
     List<Order> findOrdersByUserId(long userId);
+
+    List<Order> findOrdersByUserId(long userId, int limit, int offset);
 }

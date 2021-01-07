@@ -38,6 +38,8 @@ public class JdbcOrderDao implements OrderDao {
                     "JOIN gift_certificate ON order.certificate_id=gift_certificate.id";
     private static final String SQL_FIND_BY_ID = SQL_FIND_ALL + "\nWHERE order.id = ?";
     private static final String SQL_FIND_ORDERS_BY_USER_ID = SQL_FIND_ALL + "\nWHERE order.user_id = ?";
+    private static final String LIMIT = "\nLIMIT ?";
+    private static final String OFFSET = "\nOFFSET ?";
 
     private JdbcTemplate jdbcTemplate;
     private GiftCertificateTagDao giftCertificateTagDao;
@@ -90,32 +92,44 @@ public class JdbcOrderDao implements OrderDao {
     public List<Order> findOrdersByUserId(long userId) {
         return transactionTemplate.execute(transactionStatus -> {
             List<Map<String, Object>> rows = jdbcTemplate.queryForList(SQL_FIND_ORDERS_BY_USER_ID, userId);
-            List<Order> orders = new ArrayList<>();
-            for (Map<String, Object> row : rows) {
-                Order order = new Order();
-                User user = new User();
-                GiftCertificate giftCertificate = new GiftCertificate();
-                user.setId((Long) row.get(ColumnName.ORDER_USER_ID));
-                user.setName((String) row.get(ColumnName.ORDER_USER_NAME));
-                giftCertificate.setId((Long) row.get(ColumnName.ORDER_CERTIFICATE_ID));
-                giftCertificate.setName((String) row.get(ColumnName.ORDER_CERTIFICATE_NAME));
-                giftCertificate.setDescription((String) row.get(ColumnName.ORDER_CERTIFICATE_DESCRIPTION));
-                giftCertificate.setPrice((Integer) row.get(ColumnName.ORDER_CERTIFICATE_PRICE));
-                giftCertificate.setDuration((Integer) row.get(ColumnName.ORDER_CERTIFICATE_DURATION));
-                giftCertificate.setCreateDate((String) row.get(ColumnName.ORDER_CERTIFICATE_CREATE_DATE));
-                giftCertificate.setLastUpdateDate((String) row.get(ColumnName.ORDER_CERTIFICATE_LAST_UPDATE_DATE));
-                List<Tag> tags = giftCertificateTagDao.findAllTags(giftCertificate.getId());
-                giftCertificate.setTags(tags);
-                order.setId((Long) row.get(ColumnName.ORDER_ID));
-                order.setOrderDate((String) row.get(ColumnName.ORDER_DATE));
-                order.setCost((Integer) row.get(ColumnName.ORDER_COST));
-                order.setUser(user);
-                order.setGiftCertificate(giftCertificate);
-                orders.add(order);
-            }
-            return orders;
+            return getOrders(rows);
         });
+    }
 
+    @Override
+    public List<Order> findOrdersByUserId(long userId, int limit, int offset) {
+        return transactionTemplate.execute(transactionStatus -> {
+            List<Map<String, Object>> rows =
+                    jdbcTemplate.queryForList(SQL_FIND_ORDERS_BY_USER_ID + LIMIT + OFFSET, userId, limit, offset);
+            return getOrders(rows);
+        });
+    }
+
+    private List<Order> getOrders(List<Map<String, Object>> rows) {
+        List<Order> orders = new ArrayList<>();
+        for (Map<String, Object> row : rows) {
+            Order order = new Order();
+            User user = new User();
+            GiftCertificate giftCertificate = new GiftCertificate();
+            user.setId((Long) row.get(ColumnName.ORDER_USER_ID));
+            user.setName((String) row.get(ColumnName.ORDER_USER_NAME));
+            giftCertificate.setId((Long) row.get(ColumnName.ORDER_CERTIFICATE_ID));
+            giftCertificate.setName((String) row.get(ColumnName.ORDER_CERTIFICATE_NAME));
+            giftCertificate.setDescription((String) row.get(ColumnName.ORDER_CERTIFICATE_DESCRIPTION));
+            giftCertificate.setPrice((Integer) row.get(ColumnName.ORDER_CERTIFICATE_PRICE));
+            giftCertificate.setDuration((Integer) row.get(ColumnName.ORDER_CERTIFICATE_DURATION));
+            giftCertificate.setCreateDate((String) row.get(ColumnName.ORDER_CERTIFICATE_CREATE_DATE));
+            giftCertificate.setLastUpdateDate((String) row.get(ColumnName.ORDER_CERTIFICATE_LAST_UPDATE_DATE));
+            List<Tag> tags = giftCertificateTagDao.findAllTags(giftCertificate.getId());
+            giftCertificate.setTags(tags);
+            order.setId((Long) row.get(ColumnName.ORDER_ID));
+            order.setOrderDate((String) row.get(ColumnName.ORDER_DATE));
+            order.setCost((Integer) row.get(ColumnName.ORDER_COST));
+            order.setUser(user);
+            order.setGiftCertificate(giftCertificate);
+            orders.add(order);
+        }
+        return orders;
     }
 
     private class OrderRowMapper implements RowMapper<Order> {

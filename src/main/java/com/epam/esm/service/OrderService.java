@@ -11,7 +11,7 @@ public interface OrderService {
 
     Optional<Order> findById(long id);
 
-    List<Order> findOrdersByUserId(long userId);
+    List<Order> findOrdersByUserId(long userId, Integer limit, Integer offset);
 
     boolean orderBelongsToUser(long userId, long orderId);
 }

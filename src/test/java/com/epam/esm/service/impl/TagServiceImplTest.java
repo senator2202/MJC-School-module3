@@ -10,13 +10,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 class TagServiceImplTest {
@@ -43,10 +43,18 @@ class TagServiceImplTest {
     }
 
     @Test
-    void findAll() {
+    void findAllNoLimit() {
         when(tagDao.findAll()).thenReturn(StaticDataProvider.TAG_LIST);
         List<Tag> actual = service.findAll(null, null);
         List<Tag> expected = StaticDataProvider.TAG_LIST;
+        assertEquals(actual, expected);
+    }
+
+    @Test
+    void findAllLimit() {
+        when(tagDao.findAll(anyInt(), anyInt())).thenReturn(Collections.singletonList(StaticDataProvider.TAG));
+        List<Tag> actual = service.findAll(1, 0);
+        List<Tag> expected = Collections.singletonList(StaticDataProvider.TAG);
         assertEquals(actual, expected);
     }
 
