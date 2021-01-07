@@ -26,8 +26,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findAll() {
-        return dao.findAll();
+    public List<User> findAll(Integer limit, Integer offset) {
+        if (limit != null) {
+            return dao.findAll(limit, offset != null ? offset : 0);
+        } else {
+            return dao.findAll();
+        }
     }
 
     @Override

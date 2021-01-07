@@ -22,8 +22,9 @@ public class GiftCertificateApiController {
     }
 
     @GetMapping
-    public List<GiftCertificate> findAll() {
-        return service.findAll();
+    public List<GiftCertificate> findAll(@RequestParam(required = false) Integer limit,
+                                         @RequestParam(required = false) Integer offset) {
+        return service.findAll(limit, offset);
     }
 
     @GetMapping("/{id:^[1-9]\\d{0,18}$}")

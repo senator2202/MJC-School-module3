@@ -20,8 +20,9 @@ public class TagApiController {
     }
 
     @GetMapping
-    public List<Tag> findAll() {
-        return service.findAll();
+    public List<Tag> findAll(@RequestParam(required = false) Integer limit,
+                             @RequestParam(required = false) Integer offset) {
+        return service.findAll(limit, offset);
     }
 
     @GetMapping("/{id}")

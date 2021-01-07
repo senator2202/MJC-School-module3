@@ -45,7 +45,7 @@ class TagServiceImplTest {
     @Test
     void findAll() {
         when(tagDao.findAll()).thenReturn(StaticDataProvider.TAG_LIST);
-        List<Tag> actual = service.findAll();
+        List<Tag> actual = service.findAll(null, null);
         List<Tag> expected = StaticDataProvider.TAG_LIST;
         assertEquals(actual, expected);
     }

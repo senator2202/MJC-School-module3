@@ -38,8 +38,9 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> findAll() {
-        return userService.findAll();
+    public List<User> findAll(@RequestParam(required = false) Integer limit,
+                              @RequestParam(required = false) Integer offset) {
+        return userService.findAll(limit, offset);
     }
 
     @GetMapping("/{id:^[1-9]\\d{0,18}$}")

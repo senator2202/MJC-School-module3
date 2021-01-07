@@ -28,6 +28,8 @@ public class JdbcUserDao implements UserDao {
                     "GROUP BY id\n" +
                     "ORDER BY frequency DESC\n" +
                     "LIMIT 1";
+    private static final String LIMIT = "\nLIMIT ?";
+    private static final String OFFSET = "\nOFFSET ?";
 
     private JdbcTemplate jdbcTemplate;
 
@@ -51,6 +53,16 @@ public class JdbcUserDao implements UserDao {
     @Override
     public List<User> findAll() {
         List<Map<String, Object>> rows = jdbcTemplate.queryForList(SQL_SELECT_ALL);
+        return getUsers(rows);
+    }
+
+    @Override
+    public List<User> findAll(int limit, int offset) {
+        List<Map<String, Object>> rows = jdbcTemplate.queryForList(SQL_SELECT_ALL + LIMIT + OFFSET, limit, offset);
+        return getUsers(rows);
+    }
+
+    private List<User> getUsers(List<Map<String, Object>> rows) {
         List<User> users = new ArrayList<>();
         for (Map<String, Object> row : rows) {
             User user = new User();

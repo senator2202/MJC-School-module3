@@ -11,6 +11,8 @@ public interface BaseDao<T extends GiftEntity> {
 
     List<T> findAll();
 
+    List<T> findAll(int limit, int offset);
+
     T add(T entity);
 
     T update(T entity);

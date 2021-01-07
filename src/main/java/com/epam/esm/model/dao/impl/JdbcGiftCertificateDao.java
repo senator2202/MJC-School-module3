@@ -53,6 +53,8 @@ public class JdbcGiftCertificateDao implements GiftCertificateDao {
     private static final String SQL_UPDATE_PRICE = "UPDATE gift_certificate SET price = ? WHERE id = ?";
     private static final String SQL_UPDATE_DURATION = "UPDATE gift_certificate SET duration = ? WHERE id = ?";
     private static final String PERCENT = "%";
+    private static final String LIMIT = "\nLIMIT ?";
+    private static final String OFFSET = "\nOFFSET ?";
 
     private JdbcTemplate jdbcTemplate;
     private GiftCertificateTagDao giftCertificateTagDao;
@@ -85,6 +87,13 @@ public class JdbcGiftCertificateDao implements GiftCertificateDao {
     @Override
     public List<GiftCertificate> findAll() {
         List<Map<String, Object>> rows = jdbcTemplate.queryForList(SQL_SELECT_ALL_CERTIFICATES);
+        return getGiftCertificates(rows);
+    }
+
+    @Override
+    public List<GiftCertificate> findAll(int limit, int offset) {
+        List<Map<String, Object>> rows =
+                jdbcTemplate.queryForList(SQL_SELECT_ALL_CERTIFICATES + LIMIT + OFFSET, limit, offset);
         return getGiftCertificates(rows);
     }
 

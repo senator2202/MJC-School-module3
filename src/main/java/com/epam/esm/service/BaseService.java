@@ -9,7 +9,7 @@ public interface BaseService<T extends GiftEntity> {
 
     Optional<T> findById(long id);
 
-    List<T> findAll();
+    List<T> findAll(Integer limit, Integer offset);
 
     T add(T entity);
 

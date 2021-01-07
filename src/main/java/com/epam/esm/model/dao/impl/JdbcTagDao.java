@@ -33,6 +33,8 @@ public class JdbcTagDao implements TagDao {
     private static final String SQL_INSERT = "INSERT INTO tag (name) VALUES (?)";
     private static final String SQL_UPDATE = "UPDATE tag SET name = ? WHERE id = ?";
     private static final String SQL_DELETE = "DELETE FROM tag WHERE id = ?";
+    private static final String LIMIT = "\nLIMIT ?";
+    private static final String OFFSET = "\nOFFSET ?";
 
     private JdbcTemplate jdbcTemplate;
 
@@ -55,8 +57,18 @@ public class JdbcTagDao implements TagDao {
 
     @Override
     public List<Tag> findAll() {
-        List<Tag> tags = new ArrayList<>();
         List<Map<String, Object>> rows = jdbcTemplate.queryForList(SQL_SELECT_ALL_TAGS);
+        return getTags(rows);
+    }
+
+    @Override
+    public List<Tag> findAll(int limit, int offset) {
+        List<Map<String, Object>> rows = jdbcTemplate.queryForList(SQL_SELECT_ALL_TAGS + LIMIT + OFFSET, limit, offset);
+        return getTags(rows);
+    }
+
+    private List<Tag> getTags(List<Map<String, Object>> rows) {
+        List<Tag> tags = new ArrayList<>();
         for (Map<String, Object> row : rows) {
             Tag tag = new Tag();
             tag.setId((Long) row.get(TAG_ID));

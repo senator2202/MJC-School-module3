@@ -51,8 +51,12 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<Tag> findAll() {
-        return dao.findAll();
+    public List<Tag> findAll(Integer limit, Integer offset) {
+        if (limit != null) {
+            return dao.findAll(limit, offset != null ? offset : 0);
+        } else {
+            return dao.findAll();
+        }
     }
 
     @Override

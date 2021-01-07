@@ -63,8 +63,12 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public List<GiftCertificate> findAll() {
-        return giftCertificateDao.findAll();
+    public List<GiftCertificate> findAll(Integer limit, Integer offset) {
+        if (limit != null) {
+            return giftCertificateDao.findAll(limit, offset != null ? offset : 0);
+        } else {
+            return giftCertificateDao.findAll();
+        }
     }
 
     @Override

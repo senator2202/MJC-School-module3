@@ -45,7 +45,7 @@ class GiftCertificateServiceImplTest {
     @Test
     void findAll() {
         when(giftCertificateDao.findAll()).thenReturn(StaticDataProvider.GIFT_CERTIFICATE_LIST);
-        List<GiftCertificate> actual = service.findAll();
+        List<GiftCertificate> actual = service.findAll(null, null);
         List<GiftCertificate> expected = StaticDataProvider.GIFT_CERTIFICATE_LIST;
         assertEquals(actual, expected);
     }
