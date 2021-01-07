@@ -1,10 +1,12 @@
 package com.epam.esm.model.entity;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class GiftCertificate implements GiftEntity {
+public class GiftCertificate extends RepresentationModel<GiftCertificate> implements GiftEntity {
     private Long id;
     private String name;
     private String description;

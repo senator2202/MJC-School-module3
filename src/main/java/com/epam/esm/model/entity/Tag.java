@@ -1,8 +1,10 @@
 package com.epam.esm.model.entity;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import java.util.Objects;
 
-public class Tag implements GiftEntity {
+public class Tag extends RepresentationModel<Tag> implements GiftEntity {
     private long id;
     private String name;
 

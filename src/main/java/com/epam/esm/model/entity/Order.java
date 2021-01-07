@@ -1,6 +1,10 @@
 package com.epam.esm.model.entity;
 
-public class Order implements GiftEntity {
+import org.springframework.hateoas.RepresentationModel;
+
+import java.util.Objects;
+
+public class Order extends RepresentationModel<GiftCertificate> implements GiftEntity {
     private Long id;
     private User user;
     private GiftCertificate giftCertificate;
@@ -45,5 +49,41 @@ public class Order implements GiftEntity {
 
     public void setCost(int cost) {
         this.cost = cost;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Order order = (Order) o;
+
+        if (cost != order.cost) {
+            return false;
+        }
+        if (!Objects.equals(id, order.id)) {
+            return false;
+        }
+        if (!Objects.equals(user, order.user)) {
+            return false;
+        }
+        if (!Objects.equals(giftCertificate, order.giftCertificate)) {
+            return false;
+        }
+        return Objects.equals(orderDate, order.orderDate);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (user != null ? user.hashCode() : 0);
+        result = 31 * result + (giftCertificate != null ? giftCertificate.hashCode() : 0);
+        result = 31 * result + (orderDate != null ? orderDate.hashCode() : 0);
+        result = 31 * result + cost;
+        return result;
     }
 }

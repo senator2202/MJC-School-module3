@@ -1,4 +1,4 @@
-package com.epam.esm.controller;
+package com.epam.esm.controller.error_handler;
 
 public class ErrorCode {
     public static final int GIFT_CERTIFICATE_NOT_FOUND = 40401;

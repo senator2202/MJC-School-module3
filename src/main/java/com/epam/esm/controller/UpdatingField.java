@@ -1,14 +1,14 @@
 package com.epam.esm.controller;
 
-public class UpdatableField {
-    private String fieldName;
+public class UpdatingField {
+    private FieldName fieldName;
     private String fieldValue;
 
-    public String getFieldName() {
+    public FieldName getFieldName() {
         return fieldName;
     }
 
-    public void setFieldName(String fieldName) {
+    public void setFieldName(FieldName fieldName) {
         this.fieldName = fieldName;
     }
 
@@ -18,5 +18,9 @@ public class UpdatableField {
 
     public void setFieldValue(String fieldValue) {
         this.fieldValue = fieldValue;
+    }
+
+    public enum FieldName {
+        NAME, DESCRIPTION, PRICE, DURATION
     }
 }

@@ -77,6 +77,8 @@ public class JdbcOrderDao implements OrderDao {
         Optional<Order> optional;
         try {
             Order order = jdbcTemplate.queryForObject(SQL_FIND_BY_ID, new OrderRowMapper(), id);
+            List<Tag> tags = giftCertificateTagDao.findAllTags(order.getGiftCertificate().getId());
+            order.getGiftCertificate().setTags(tags);
             optional = Optional.of(order);
         } catch (EmptyResultDataAccessException e) {
             optional = Optional.empty();
