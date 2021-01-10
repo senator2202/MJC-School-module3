@@ -71,7 +71,7 @@ public class JdbcGiftCertificateDao implements GiftCertificateDao {
 
     @Override
     public Optional<GiftCertificate> findById(long id) {
-        Optional<GiftCertificate> optional;
+        /*Optional<GiftCertificate> optional;
         try {
             GiftCertificate giftCertificate =
                     jdbcTemplate.queryForObject(SQL_SELECT_CERTIFICATE, new GiftCertificateRowMapper(), id);
@@ -81,7 +81,8 @@ public class JdbcGiftCertificateDao implements GiftCertificateDao {
         } catch (EmptyResultDataAccessException e) {
             optional = Optional.empty();
         }
-        return optional;
+        return optional;*/
+        return null;
     }
 
     @Override

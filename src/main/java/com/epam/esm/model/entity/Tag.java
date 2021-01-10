@@ -2,10 +2,22 @@ package com.epam.esm.model.entity;
 
 import org.springframework.hateoas.RepresentationModel;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
+@Table(
+        name = "tag",
+        uniqueConstraints = {@UniqueConstraint(columnNames = "id"), @UniqueConstraint(columnNames = "name")}
+)
 public class Tag extends RepresentationModel<Tag> implements GiftEntity {
-    private long id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+
+    @Column(name = "name")
     private String name;
 
     public Tag() {
@@ -16,11 +28,11 @@ public class Tag extends RepresentationModel<Tag> implements GiftEntity {
         this.name = name;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -40,8 +52,13 @@ public class Tag extends RepresentationModel<Tag> implements GiftEntity {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        if (!super.equals(o)) {
+            return false;
+        }
+
         Tag tag = (Tag) o;
-        if (id != tag.id) {
+
+        if (!Objects.equals(id, tag.id)) {
             return false;
         }
         return Objects.equals(name, tag.name);
@@ -49,7 +66,8 @@ public class Tag extends RepresentationModel<Tag> implements GiftEntity {
 
     @Override
     public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
+        int result = super.hashCode();
+        result = 31 * result + (id != null ? id.hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);
         return result;
     }

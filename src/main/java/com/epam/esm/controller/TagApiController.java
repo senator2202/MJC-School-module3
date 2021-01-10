@@ -31,7 +31,7 @@ public class TagApiController {
     @GetMapping
     public HttpEntity<List<Tag>> findAll(@RequestParam(required = false) Integer limit,
                                          @RequestParam(required = false) Integer offset) {
-        List<Tag> tags = service.findAll(limit, offset);
+        List<Tag> tags = (List<Tag>) service.findAll(limit, offset);
         tags.forEach(t -> t.add(linkTo(TagApiController.class).slash(t.getId()).withSelfRel()));
         return new ResponseEntity<>(tags, HttpStatus.OK);
     }

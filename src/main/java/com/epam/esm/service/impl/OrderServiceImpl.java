@@ -8,6 +8,7 @@ import com.epam.esm.model.entity.Order;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.util.DateTimeUtility;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -28,6 +29,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Autowired
+    @Qualifier("jpaGiftCertificateDao")
     public void setGiftCertificateDao(GiftCertificateDao giftCertificateDao) {
         this.giftCertificateDao = giftCertificateDao;
     }
@@ -53,7 +55,6 @@ public class OrderServiceImpl implements OrderService {
             added.getGiftCertificate().setTags(giftCertificateTagDao.findAllTags(added.getGiftCertificate().getId()));
             return added;
         });
-
     }
 
     @Override

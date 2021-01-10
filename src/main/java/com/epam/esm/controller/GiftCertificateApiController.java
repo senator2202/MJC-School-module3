@@ -7,12 +7,15 @@ import com.epam.esm.model.entity.GiftCertificate;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.validator.GiftEntityValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityManager;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +30,10 @@ public class GiftCertificateApiController {
     private GiftCertificateService service;
 
     @Autowired
+    private EntityManager entityManager;
+
+    @Autowired
+    @Qualifier("jpaGiftCertificateService")
     public void setService(GiftCertificateService service) {
         this.service = service;
     }
@@ -34,7 +41,7 @@ public class GiftCertificateApiController {
     @GetMapping
     public HttpEntity<List<GiftCertificate>> findAll(@RequestParam(required = false) Integer limit,
                                                      @RequestParam(required = false) Integer offset) {
-        List<GiftCertificate> giftCertificates = service.findAll(limit, offset);
+        List<GiftCertificate> giftCertificates = (List<GiftCertificate>) service.findAll(limit, offset);
         return addLinks(giftCertificates);
     }
 

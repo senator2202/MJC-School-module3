@@ -5,6 +5,7 @@ import com.epam.esm.model.dao.TagDao;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -31,6 +32,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Autowired
+    @Qualifier("jdbcTagDao")
     public void setDao(TagDao dao) {
         this.dao = dao;
     }

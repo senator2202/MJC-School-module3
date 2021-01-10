@@ -9,6 +9,7 @@ import com.epam.esm.model.entity.Tag;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.util.DateTimeUtility;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -39,11 +40,13 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Autowired
+    @Qualifier("jdbcGiftCertificateDao")
     public void setGiftCertificateDao(GiftCertificateDao giftCertificateDao) {
         this.giftCertificateDao = giftCertificateDao;
     }
 
     @Autowired
+    @Qualifier("jdbcTagDao")
     public void setTagDao(TagDao tagDao) {
         this.tagDao = tagDao;
     }
@@ -74,14 +77,15 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public GiftCertificate add(GiftCertificate certificate) {
-        String currentDate = DateTimeUtility.getCurrentDateIso();
+        /*String currentDate = DateTimeUtility.getCurrentDateIso();
         certificate.setCreateDate(currentDate);
         certificate.setLastUpdateDate(currentDate);
         return transactionTemplate.execute(transactionStatus -> {
             GiftCertificate added = giftCertificateDao.add(certificate);
             addTags(added, certificate.getTags());
             return added;
-        });
+        });*/
+        return null;
     }
 
     private void addTags(GiftCertificate added, List<Tag> tags) {
@@ -119,24 +123,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             optional = Optional.of(updated);
         }
         return optional;
-    }
-
-    private void updateNotEmptyFields(GiftCertificate source, GiftCertificate found) {
-        if (source.getName() != null) {
-            found.setName(source.getName());
-        }
-        if (source.getDescription() != null) {
-            found.setDescription(source.getDescription());
-        }
-        if (source.getPrice() != null) {
-            found.setPrice(source.getPrice());
-        }
-        if (source.getDuration() != null) {
-            found.setDuration(source.getDuration());
-        }
-        if (source.getTags() != null) {
-            found.setTags(source.getTags());
-        }
     }
 
     @Override
@@ -184,11 +170,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             default:
                 return Optional.empty();
         }
-    }
-
-    private void sortIfNecessary(List<GiftCertificate> certificates, String sortType, String direction) {
-        Optional<Comparator<GiftCertificate>> optional = GiftCertificateComparatorProvider.provide(sortType, direction);
-        optional.ifPresent(certificates::sort);
     }
 
     private Optional<GiftCertificate> updateName(long id, String newName) {

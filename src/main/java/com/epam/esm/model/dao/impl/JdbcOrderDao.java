@@ -19,10 +19,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 public class JdbcOrderDao implements OrderDao {
@@ -76,16 +73,17 @@ public class JdbcOrderDao implements OrderDao {
 
     @Override
     public Optional<Order> findById(long id) {
-        Optional<Order> optional;
+        /*Optional<Order> optional;
         try {
             Order order = jdbcTemplate.queryForObject(SQL_FIND_BY_ID, new OrderRowMapper(), id);
-            List<Tag> tags = giftCertificateTagDao.findAllTags(order.getGiftCertificate().getId());
+            Set<Tag> tags = giftCertificateTagDao.findAllTags(order.getGiftCertificate().getId());
             order.getGiftCertificate().setTags(tags);
             optional = Optional.of(order);
         } catch (EmptyResultDataAccessException e) {
             optional = Optional.empty();
         }
-        return optional;
+        return optional;*/
+        return null;
     }
 
     @Override

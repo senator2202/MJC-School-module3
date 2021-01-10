@@ -5,11 +5,11 @@ import com.epam.esm.model.entity.GiftCertificate;
 import java.util.Comparator;
 import java.util.Optional;
 
-class GiftCertificateComparatorProvider {
+public class GiftCertificateComparatorProvider {
     private static final String DESC = "desc";
     private static final String ASC = "asc";
 
-    static Optional<Comparator<GiftCertificate>> provide(String type, String direction) {
+    public static Optional<Comparator<GiftCertificate>> provide(String type, String direction) {
         Optional<Comparator<GiftCertificate>> optional;
         if (type != null) {
             try {

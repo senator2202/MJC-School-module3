@@ -11,6 +11,7 @@ import com.epam.esm.service.OrderService;
 import com.epam.esm.service.UserService;
 import com.epam.esm.validator.GiftEntityValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,7 @@ public class UserApiController {
     }
 
     @Autowired
+    @Qualifier("giftCertificateServiceImpl")
     public void setGiftCertificateService(GiftCertificateService giftCertificateService) {
         this.giftCertificateService = giftCertificateService;
     }
@@ -46,7 +48,7 @@ public class UserApiController {
     @GetMapping
     public HttpEntity<List<User>> findAll(@RequestParam(required = false) Integer limit,
                                           @RequestParam(required = false) Integer offset) {
-        List<User> users = userService.findAll(limit, offset);
+        List<User> users = (List<User>) userService.findAll(limit, offset);
         users.forEach(this::addLink);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }

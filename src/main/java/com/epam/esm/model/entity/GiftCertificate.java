@@ -1,19 +1,46 @@
 package com.epam.esm.model.entity;
 
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.hateoas.RepresentationModel;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Entity
+@Table(name = "gift_certificate")
 public class GiftCertificate extends RepresentationModel<GiftCertificate> implements GiftEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
+
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "description")
     private String description;
+
+    @Column(name = "price")
     private Integer price;
+
+    @Column(name = "duration")
     private Integer duration;
+
+    @Column(name = "create_date")
     private String createDate;
+
+    @Column(name = "last_update_date")
     private String lastUpdateDate;
+
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(
+            name = "certificate_tag",
+            joinColumns = @JoinColumn(name = "gift_certificate_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id")
+    )
     private List<Tag> tags;
 
     public GiftCertificate() {
