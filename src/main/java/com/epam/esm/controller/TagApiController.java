@@ -2,9 +2,11 @@ package com.epam.esm.controller;
 
 import com.epam.esm.controller.error_handler.ErrorCode;
 import com.epam.esm.controller.exception.GiftEntityNotFoundException;
+import com.epam.esm.controller.exception.WrongParameterFormatException;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -31,7 +33,7 @@ public class TagApiController {
     @GetMapping
     public HttpEntity<List<Tag>> findAll(@RequestParam(required = false) Integer limit,
                                          @RequestParam(required = false) Integer offset) {
-        List<Tag> tags = (List<Tag>) service.findAll(limit, offset);
+        List<Tag> tags = service.findAll(limit, offset);
         tags.forEach(t -> t.add(linkTo(TagApiController.class).slash(t.getId()).withSelfRel()));
         return new ResponseEntity<>(tags, HttpStatus.OK);
     }
@@ -46,6 +48,9 @@ public class TagApiController {
 
     @PostMapping
     public HttpEntity<Tag> create(@RequestBody Tag tag) {
+        if (tag.getName() == null) {
+            throw new WrongParameterFormatException("Tag name could not be null", ErrorCode.TAG_NAME_IS_NULL);
+        }
         Tag created = service.add(tag);
         created.add(linkTo(TagApiController.class).withRel(HateoasRel.POST));
         return new ResponseEntity<>(created, HttpStatus.OK);

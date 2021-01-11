@@ -9,7 +9,7 @@ public class Order extends RepresentationModel<GiftCertificate> implements GiftE
     private User user;
     private GiftCertificate giftCertificate;
     private String orderDate;
-    private int cost;
+    private Integer cost;
 
     public Order() {
     }

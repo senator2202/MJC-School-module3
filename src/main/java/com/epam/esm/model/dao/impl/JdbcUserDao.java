@@ -90,7 +90,7 @@ public class JdbcUserDao implements UserDao {
 
     @Override
     public Optional<Tag> mostWidelyUsedTagOfUserWithHighestOrdersSum() {
-        Optional<Tag> optional;
+        /*Optional<Tag> optional;
         try {
             Tag tag = jdbcTemplate.queryForObject(SQL_SELECT_MOST_POPULAR_TAG_OF_USER_WITH_MAX_ORDERS_SUM,
                     new JdbcTagDao.TagRowMapper());
@@ -98,7 +98,8 @@ public class JdbcUserDao implements UserDao {
         } catch (EmptyResultDataAccessException e) {
             optional = Optional.empty();
         }
-        return optional;
+        return optional;*/
+        return Optional.empty();
     }
 
     private class UserRowMapper implements RowMapper<User> {

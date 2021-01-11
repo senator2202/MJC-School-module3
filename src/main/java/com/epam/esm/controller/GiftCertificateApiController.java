@@ -12,10 +12,8 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityManager;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,10 +28,7 @@ public class GiftCertificateApiController {
     private GiftCertificateService service;
 
     @Autowired
-    private EntityManager entityManager;
-
-    @Autowired
-    @Qualifier("jpaGiftCertificateService")
+    @Qualifier("giftCertificateServiceImpl")
     public void setService(GiftCertificateService service) {
         this.service = service;
     }
@@ -41,7 +36,7 @@ public class GiftCertificateApiController {
     @GetMapping
     public HttpEntity<List<GiftCertificate>> findAll(@RequestParam(required = false) Integer limit,
                                                      @RequestParam(required = false) Integer offset) {
-        List<GiftCertificate> giftCertificates = (List<GiftCertificate>) service.findAll(limit, offset);
+        List<GiftCertificate> giftCertificates = service.findAll(limit, offset);
         return addLinks(giftCertificates);
     }
 
@@ -132,13 +127,13 @@ public class GiftCertificateApiController {
     }
 
     @GetMapping("/find/tags")
-    public List<GiftCertificate> findByTags(@RequestParam String tagNames,
+    public HttpEntity<List<GiftCertificate>> findByTags(@RequestParam String tagNames,
                                             @RequestParam(value = "sort", required = false) String sortType,
                                             @RequestParam(value = "direction", required = false) String direction) {
         if (!GiftEntityValidator.correctTagNames(tagNames)) {
             throw new WrongParameterFormatException("Wrong tag names format", ErrorCode.NAME_WRONG_FORMAT);
         }
-        return service.findByTagNames(tagNames, sortType, direction);
+        return addLinks(service.findByTagNames(tagNames, sortType, direction));
     }
 
     private HttpEntity<List<GiftCertificate>> addLinks(List<GiftCertificate> giftCertificates) {

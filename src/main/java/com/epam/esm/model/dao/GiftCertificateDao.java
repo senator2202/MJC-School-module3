@@ -10,12 +10,4 @@ public interface GiftCertificateDao extends BaseDao<GiftCertificate> {
     List<GiftCertificate> findByName(String name);
 
     List<GiftCertificate> findByDescription(String description);
-
-    GiftCertificate updateName(long id, String newName);
-
-    GiftCertificate updateDescription(long id, String newDescription);
-
-    GiftCertificate updatePrice(long id, int newPrice);
-
-    GiftCertificate updateDuration(long id, int newDuration);
 }

@@ -44,38 +44,6 @@ public class JpaGiftCertificateDao implements GiftCertificateDao {
     }
 
     @Override
-    @Transactional
-    public GiftCertificate updateName(long id, String newName) {
-        GiftCertificate updating = entityManager.find(GiftCertificate.class, id);
-        updating.setName(newName);
-        return entityManager.merge(updating);
-    }
-
-    @Override
-    @Transactional
-    public GiftCertificate updateDescription(long id, String newDescription) {
-        GiftCertificate updating = entityManager.find(GiftCertificate.class, id);
-        updating.setDescription(newDescription);
-        return entityManager.merge(updating);
-    }
-
-    @Override
-    @Transactional
-    public GiftCertificate updatePrice(long id, int newPrice) {
-        GiftCertificate updating = entityManager.find(GiftCertificate.class, id);
-        updating.setPrice(newPrice);
-        return entityManager.merge(updating);
-    }
-
-    @Override
-    @Transactional
-    public GiftCertificate updateDuration(long id, int newDuration) {
-        GiftCertificate updating = entityManager.find(GiftCertificate.class, id);
-        updating.setDuration(newDuration);
-        return entityManager.merge(updating);
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public Optional<GiftCertificate> findById(long id) {
         return Optional.ofNullable(entityManager.find(GiftCertificate.class, id));
@@ -104,11 +72,13 @@ public class JpaGiftCertificateDao implements GiftCertificateDao {
     }
 
     @Override
+    @Transactional
     public GiftCertificate update(GiftCertificate entity) {
         return entityManager.merge(entity);
     }
 
     @Override
+    @Transactional
     public boolean delete(long id) {
         GiftCertificate giftCertificate = entityManager.find(GiftCertificate.class, id);
         if (giftCertificate != null) {

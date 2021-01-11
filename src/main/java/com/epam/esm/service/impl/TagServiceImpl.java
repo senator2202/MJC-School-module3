@@ -7,8 +7,7 @@ import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,25 +15,12 @@ import java.util.Optional;
 @Service
 public class TagServiceImpl implements TagService {
 
-    private TagDao dao;
+    private TagDao tagDao;
     private GiftCertificateTagDao giftCertificateTagDao;
-    private TransactionTemplate transactionTemplate;
-
-    public TagServiceImpl() {
-    }
-
-    public TagServiceImpl(TagDao dao,
-                          GiftCertificateTagDao giftCertificateTagDao,
-                          TransactionTemplate transactionTemplate) {
-        this.dao = dao;
-        this.giftCertificateTagDao = giftCertificateTagDao;
-        this.transactionTemplate = transactionTemplate;
-    }
 
     @Autowired
-    @Qualifier("jdbcTagDao")
-    public void setDao(TagDao dao) {
-        this.dao = dao;
+    public void setTagDao(TagDao tagDao) {
+        this.tagDao = tagDao;
     }
 
     @Autowired
@@ -42,44 +28,40 @@ public class TagServiceImpl implements TagService {
         this.giftCertificateTagDao = giftCertificateTagDao;
     }
 
-    @Autowired
-    public void setPlatformTransactionManager(PlatformTransactionManager platformTransactionManager) {
-        transactionTemplate = new TransactionTemplate(platformTransactionManager);
-    }
-
     @Override
     public Optional<Tag> findById(long id) {
-        return dao.findById(id);
+        return tagDao.findById(id);
     }
 
     @Override
     public List<Tag> findAll(Integer limit, Integer offset) {
         if (limit != null) {
-            return dao.findAll(limit, offset != null ? offset : 0);
+            return tagDao.findAll(limit, offset != null ? offset : 0);
         } else {
-            return dao.findAll();
+            return tagDao.findAll();
         }
     }
 
     @Override
     public Tag add(Tag entity) {
-        return dao.add(entity);
+        Optional<Tag> optional = tagDao.findByName(entity.getName());
+        return optional.orElseGet(() -> tagDao.add(entity));
     }
 
     @Override
+    @Transactional
     public Optional<Tag> update(Tag entity) {
-        Optional<Tag> optional = dao.findById(entity.getId());
+        Optional<Tag> optional = tagDao.findById(entity.getId());
         if (optional.isPresent()) {
-            optional = Optional.of(dao.update(entity));
+            optional = Optional.of(tagDao.update(entity));
         }
         return optional;
     }
 
     @Override
+    @Transactional
     public boolean delete(long id) {
-        return transactionTemplate.execute(transactionStatus -> {
-            giftCertificateTagDao.deleteByTagId(id);
-            return dao.delete(id);
-        });
+        giftCertificateTagDao.deleteByTagId(id);
+        return tagDao.delete(id);
     }
 }

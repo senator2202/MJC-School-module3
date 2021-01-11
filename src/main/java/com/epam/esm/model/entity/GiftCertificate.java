@@ -1,6 +1,5 @@
 package com.epam.esm.model.entity;
 
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
@@ -35,7 +34,7 @@ public class GiftCertificate extends RepresentationModel<GiftCertificate> implem
     @Column(name = "last_update_date")
     private String lastUpdateDate;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "certificate_tag",
             joinColumns = @JoinColumn(name = "gift_certificate_id", referencedColumnName = "id"),
@@ -117,7 +116,7 @@ public class GiftCertificate extends RepresentationModel<GiftCertificate> implem
     }
 
     public List<Tag> getTags() {
-        return tags != null ? new ArrayList<>(tags) : null;
+        return tags;
     }
 
     public void setTags(List<Tag> tags) {
