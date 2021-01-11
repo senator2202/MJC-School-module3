@@ -17,6 +17,7 @@ public class JpaTagDao implements TagDao {
 
     private static final String JPQL_FIND_ALL = "select distinct t from Tag t";
     private static final String JPQL_FIND_BY_NAME = JPQL_FIND_ALL + " where t.name = ?1";
+    private static final String SQL_DELETE_BY_TAG_ID = "DELETE FROM certificate_tag WHERE tag_id = ?";
 
     private EntityManager entityManager;
 
@@ -26,7 +27,6 @@ public class JpaTagDao implements TagDao {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Optional<Tag> findByName(String name) {
         Optional<Tag> optionalTag;
         try {
@@ -42,31 +42,44 @@ public class JpaTagDao implements TagDao {
 
     @Override
     public Optional<Tag> findById(long id) {
-        return Optional.empty();
+        return Optional.ofNullable(entityManager.find(Tag.class, id));
     }
 
     @Override
     public List<Tag> findAll() {
-        return entityManager.createQuery("select t from Tag t", Tag.class).getResultList();
+        return entityManager.createQuery(JPQL_FIND_ALL, Tag.class).getResultList();
     }
 
     @Override
     public List<Tag> findAll(int limit, int offset) {
-        return null;
+        return entityManager.createQuery(JPQL_FIND_ALL, Tag.class)
+                .setMaxResults(limit)
+                .setFirstResult(offset)
+                .getResultList();
     }
 
     @Override
     public Tag add(Tag entity) {
-        return null;
+        entityManager.persist(entity);
+        return entity;
     }
 
     @Override
+    @Transactional
     public Tag update(Tag entity) {
-        return null;
+        return entityManager.merge(entity);
     }
 
     @Override
+    @Transactional
     public boolean delete(long id) {
-        return false;
+        Tag tag = entityManager.find(Tag.class, id);
+        if (tag != null) {
+            entityManager.createNativeQuery(SQL_DELETE_BY_TAG_ID).setParameter(1, id).executeUpdate();
+            entityManager.remove(tag);
+            return true;
+        } else {
+            return false;
+        }
     }
 }

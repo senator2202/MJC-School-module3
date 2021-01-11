@@ -1,11 +1,14 @@
 package com.epam.esm.service.impl;
 
+import com.epam.esm.model.dao.OrderDao;
+import com.epam.esm.model.dao.TagDao;
 import com.epam.esm.model.dao.UserDao;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.model.entity.User;
 import com.epam.esm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +17,8 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private UserDao userDao;
+    private OrderDao orderDao;
+    private TagDao tagDao;
 
     public UserServiceImpl() {
     }
@@ -25,6 +30,16 @@ public class UserServiceImpl implements UserService {
     @Autowired
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
+    }
+
+    @Autowired
+    public void setOrderDao(OrderDao orderDao) {
+        this.orderDao = orderDao;
+    }
+
+    @Autowired
+    public void setTagDao(TagDao tagDao) {
+        this.tagDao = tagDao;
     }
 
     @Override
@@ -57,7 +72,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public Optional<Tag> mostWidelyUsedTagOfUserWithHighestOrdersSum() {
-        return userDao.mostWidelyUsedTagOfUserWithHighestOrdersSum();
+        Long userId = userDao.userIdWithHighestOrderSum();
+        Long tagId = orderDao.selectMostPopularTagIdOfUser(userId);
+        return tagDao.findById(tagId);
     }
 }

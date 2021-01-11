@@ -14,4 +14,6 @@ public interface OrderDao {
     List<Order> findOrdersByUserId(long userId);
 
     List<Order> findOrdersByUserId(long userId, int limit, int offset);
+
+    Long selectMostPopularTagIdOfUser(long userId);
 }

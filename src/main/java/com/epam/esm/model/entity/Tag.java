@@ -1,8 +1,10 @@
 package com.epam.esm.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -19,6 +21,10 @@ public class Tag extends RepresentationModel<Tag> implements GiftEntity {
 
     @Column(name = "name")
     private String name;
+
+    @ManyToMany(mappedBy = "tags")
+    @JsonIgnore
+    private List<GiftCertificate> certificates;
 
     public Tag() {
     }
@@ -42,6 +48,14 @@ public class Tag extends RepresentationModel<Tag> implements GiftEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<GiftCertificate> getCertificates() {
+        return certificates;
+    }
+
+    public void setCertificates(List<GiftCertificate> certificates) {
+        this.certificates = certificates;
     }
 
     @Override

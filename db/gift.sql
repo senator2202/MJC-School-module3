@@ -28,9 +28,9 @@ CREATE TABLE IF NOT EXISTS `certificate_tag` (
   CONSTRAINT `FK_certificates_tags_tag` FOREIGN KEY (`tag_id`) REFERENCES `tag` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Дамп данных таблицы gift.certificate_tag: ~16 rows (приблизительно)
+-- Дамп данных таблицы gift.certificate_tag: ~20 rows (приблизительно)
 /*!40000 ALTER TABLE `certificate_tag` DISABLE KEYS */;
-INSERT INTO `certificate_tag` (`gift_certificate_id`, `tag_id`) VALUES
+REPLACE INTO `certificate_tag` (`gift_certificate_id`, `tag_id`) VALUES
 	(1, 8),
 	(1, 1),
 	(3, 2),
@@ -47,7 +47,11 @@ INSERT INTO `certificate_tag` (`gift_certificate_id`, `tag_id`) VALUES
 	(19, 14),
 	(20, 14),
 	(20, 15),
-	(26, 17);
+	(24, 2),
+	(24, 1),
+	(25, 18),
+	(25, 19),
+	(30, 19);
 /*!40000 ALTER TABLE `certificate_tag` ENABLE KEYS */;
 
 -- Дамп структуры для таблица gift.gift_certificate
@@ -61,11 +65,11 @@ CREATE TABLE IF NOT EXISTS `gift_certificate` (
   `create_date` varchar(50) DEFAULT NULL,
   `last_update_date` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Дамп данных таблицы gift.gift_certificate: ~10 rows (приблизительно)
+-- Дамп данных таблицы gift.gift_certificate: ~14 rows (приблизительно)
 /*!40000 ALTER TABLE `gift_certificate` DISABLE KEYS */;
-INSERT INTO `gift_certificate` (`id`, `name`, `description`, `price`, `duration`, `create_date`, `last_update_date`) VALUES
+REPLACE INTO `gift_certificate` (`id`, `name`, `description`, `price`, `duration`, `create_date`, `last_update_date`) VALUES
 	(1, 'Сауна Тритон', 'Сертификат на бесплатное посещение сауны Тритон на Маяковского, 16', 100, 60, '2020-12-16T14:48Z', '2020-12-16T14:49Z'),
 	(3, 'Тату салон "Лисица"', 'Бесплатная татуировка 10x10 см', 125, 180, '2020-12-16T14:51Z', '2020-12-16T14:52:Z'),
 	(5, 'SPA центр на Старовиленской, 15', 'Весь спектр SPA процедур', 125, 180, '2020-12-17T11:49Z', '2020-12-17T11:51Z'),
@@ -76,37 +80,41 @@ INSERT INTO `gift_certificate` (`id`, `name`, `description`, `price`, `duration`
 	(16, 'Тату салон "Imagine Dragon"', 'Бесплатная татуировка 12х12, + дизайн', 250, 90, '2020-12-21T12:21Z', '2020-12-21T12:21Z'),
 	(19, 'Онлайн курсы C#', 'Бесплатный курс C# в школе программирования Litrex', 1222, 120, '2020-12-22T12:33Z', '2020-12-22T12:57Z'),
 	(20, 'Курс Python Web development', 'Бесплатное прохождение курса веб разработки на Python', 900, 90, '2020-12-23T08:22Z', '2020-12-23T08:22Z'),
-	(26, 'new', 'something new', 222, 122, '2021-01-07T09:45Z', '2021-01-07T09:45Z');
+	(24, 'Pilates', 'Best pilates in whole Minsk', 225, 180, '2021-01-11T06:18Z', '2021-01-11T06:18Z'),
+	(25, 'Circus', 'Circus visit for 2 people', 100, 120, '2021-01-11T06:20Z', '2021-01-11T06:20Z'),
+	(30, 'Masterpiece gallery', 'Gallery visit for 2 people', 55, 120, '2021-01-12T08:44Z', '2021-01-12T08:44Z');
 /*!40000 ALTER TABLE `gift_certificate` ENABLE KEYS */;
 
 -- Дамп структуры для таблица gift.order
 DROP TABLE IF EXISTS `order`;
 CREATE TABLE IF NOT EXISTS `order` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `user_id` bigint DEFAULT NULL,
-  `certificate_id` bigint DEFAULT NULL,
+  `user_id` bigint NOT NULL,
+  `certificate_id` bigint NOT NULL,
   `order_date` varchar(50) DEFAULT NULL,
   `cost` int DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `FK_order_user` (`user_id`),
   KEY `FK_order_gift_certificate` (`certificate_id`),
+  KEY `FK_order_user` (`user_id`),
   CONSTRAINT `FK_order_gift_certificate` FOREIGN KEY (`certificate_id`) REFERENCES `gift_certificate` (`id`),
   CONSTRAINT `FK_order_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Дамп данных таблицы gift.order: ~10 rows (приблизительно)
 /*!40000 ALTER TABLE `order` DISABLE KEYS */;
-INSERT INTO `order` (`id`, `user_id`, `certificate_id`, `order_date`, `cost`) VALUES
+REPLACE INTO `order` (`id`, `user_id`, `certificate_id`, `order_date`, `cost`) VALUES
 	(1, 1, 6, '2020-12-24T12:21Z', 250),
 	(2, 6, 15, '2020-12-24T13:21Z', 400),
 	(3, 3, 19, '2020-12-24T14:21Z', 999),
 	(4, 4, 7, '2020-12-24T10:19Z', 60),
 	(5, 3, 1, '2020-12-24T10:20Z', 100),
 	(6, 3, 15, '2020-12-24T10:26Z', 150),
-	(7, 3, 15, '2020-12-24T10:26Z', 200),
+	(7, 3, 15, '2020-12-24T10:26Z', 150),
 	(8, 5, 5, '2020-12-24T10:27Z', 125),
 	(9, 5, 5, '2020-12-24T10:27Z', 125),
-	(10, 2, 16, '2020-12-24T10:28Z', 250);
+	(10, 2, 16, '2020-12-24T10:28Z', 250),
+	(14, 1, 25, '2021-01-12T07:43Z', 100),
+	(15, 1, 19, '2021-01-12T08:04Z', 222);
 /*!40000 ALTER TABLE `order` ENABLE KEYS */;
 
 -- Дамп структуры для таблица gift.tag
@@ -115,16 +123,18 @@ CREATE TABLE IF NOT EXISTS `tag` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  UNIQUE KEY `name` (`name`),
+  UNIQUE KEY `UK1wdpsed5kna2y38hnbgrnhi5b` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Дамп данных таблицы gift.tag: ~10 rows (приблизительно)
+-- Дамп данных таблицы gift.tag: ~14 rows (приблизительно)
 /*!40000 ALTER TABLE `tag` DISABLE KEYS */;
-INSERT INTO `tag` (`id`, `name`) VALUES
+REPLACE INTO `tag` (`id`, `name`) VALUES
+	(18, 'Circus'),
 	(14, 'IT'),
-	(18, 'new'),
+	(20, 'Museum'),
 	(13, 'Programming'),
-	(17, 'something'),
+	(25, 'Sladkii Bubaleh'),
 	(1, 'Активность'),
 	(10, 'Искусство'),
 	(7, 'Кино'),
@@ -132,6 +142,7 @@ INSERT INTO `tag` (`id`, `name`) VALUES
 	(3, 'Образование'),
 	(8, 'Отдых'),
 	(15, 'Программирование'),
+	(19, 'Развлечения'),
 	(6, 'Театр');
 /*!40000 ALTER TABLE `tag` ENABLE KEYS */;
 
@@ -145,7 +156,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 
 -- Дамп данных таблицы gift.user: ~6 rows (приблизительно)
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` (`id`, `name`) VALUES
+REPLACE INTO `user` (`id`, `name`) VALUES
 	(1, 'Alex'),
 	(2, 'Petr'),
 	(3, 'Valerii'),
