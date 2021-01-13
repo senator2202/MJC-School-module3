@@ -3,10 +3,12 @@ package com.epam.esm.service.impl;
 import com.epam.esm.controller.UpdatingField;
 import com.epam.esm.model.dao.GiftCertificateDao;
 import com.epam.esm.model.dao.TagDao;
+import com.epam.esm.model.dto.GiftCertificateDTO;
 import com.epam.esm.model.entity.GiftCertificate;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.util.DateTimeUtility;
+import com.epam.esm.util.ObjectConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -35,40 +37,40 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public List<GiftCertificate> findByTagName(String tagName, String sortType, String direction) {
+    public List<GiftCertificateDTO> findByTagName(String tagName, String sortType, String direction) {
         List<GiftCertificate> giftCertificates = giftCertificateDao.findByTagName(tagName);
         sortIfNecessary(giftCertificates, sortType, direction);
-        return giftCertificates;
+        return ObjectConverter.toDTOs(giftCertificates);
     }
 
     @Override
-    public List<GiftCertificate> findByName(String name, String sortType, String direction) {
+    public List<GiftCertificateDTO> findByName(String name, String sortType, String direction) {
         List<GiftCertificate> giftCertificates = giftCertificateDao.findByName(name);
         sortIfNecessary(giftCertificates, sortType, direction);
-        return giftCertificates;
+        return ObjectConverter.toDTOs(giftCertificates);
     }
 
     @Override
-    public List<GiftCertificate> findByDescription(String description, String sortType, String direction) {
+    public List<GiftCertificateDTO> findByDescription(String description, String sortType, String direction) {
         List<GiftCertificate> giftCertificates = giftCertificateDao.findByDescription(description);
         sortIfNecessary(giftCertificates, sortType, direction);
-        return giftCertificates;
+        return ObjectConverter.toDTOs(giftCertificates);
     }
 
     @Override
     @Transactional
-    public Optional<GiftCertificate> updateField(long id, UpdatingField updatingField) {
+    public Optional<GiftCertificateDTO> updateField(long id, UpdatingField updatingField) {
         UpdatingField.FieldName fieldName = updatingField.getFieldName();
         String fieldValue = updatingField.getFieldValue();
         switch (fieldName) {
             case NAME:
-                return updateName(id, fieldValue);
+                return updateName(id, fieldValue).map(ObjectConverter::toDTO);
             case DESCRIPTION:
-                return updateDescription(id, fieldValue);
+                return updateDescription(id, fieldValue).map(ObjectConverter::toDTO);
             case PRICE:
-                return updatePrice(id, fieldValue);
+                return updatePrice(id, fieldValue).map(ObjectConverter::toDTO);
             case DURATION:
-                return updateDuration(id, fieldValue);
+                return updateDuration(id, fieldValue).map(ObjectConverter::toDTO);
             default:
                 return Optional.empty();
         }
@@ -123,7 +125,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public List<GiftCertificate> findByTagNames(String tagNames, String sortType, String direction) {
+    public List<GiftCertificateDTO> findByTagNames(String tagNames, String sortType, String direction) {
         List<GiftCertificate> certificates = new ArrayList<>();
         List<String> tags = Arrays.asList(tagNames.split(TAGS_SPLITERATOR));
 
@@ -140,10 +142,12 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                 .filter(cert -> getTagNames(cert).containsAll(tags))
                 .distinct()
                 .sorted(c)
+                .map(ObjectConverter::toDTO)
                 .collect(Collectors.toList()))
                 .orElseGet(() -> certificates.stream()
                         .filter(cert -> getTagNames(cert).containsAll(tags))
                         .distinct()
+                        .map(ObjectConverter::toDTO)
                         .collect(Collectors.toList()));
         /*if optional is not present, do the same, but without sorting
          */
@@ -161,32 +165,33 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public Optional<GiftCertificate> findById(long id) {
-        return giftCertificateDao.findById(id);
+    public Optional<GiftCertificateDTO> findById(long id) {
+        return giftCertificateDao.findById(id).map(ObjectConverter::toDTO);
     }
 
     @Override
-    public List<GiftCertificate> findAll(Integer limit, Integer offset) {
+    public List<GiftCertificateDTO> findAll(Integer limit, Integer offset) {
         if (limit != null) {
-            return giftCertificateDao.findAll(limit, offset != null ? offset : 0);
+            return ObjectConverter.toDTOs(giftCertificateDao.findAll(limit, offset != null ? offset : 0));
         } else {
-            return giftCertificateDao.findAll();
+            return ObjectConverter.toDTOs(giftCertificateDao.findAll());
         }
     }
 
     @Override
     @Transactional
-    public GiftCertificate add(GiftCertificate certificate) {
+    public GiftCertificateDTO add(GiftCertificateDTO certificate) {
         String currentDate = DateTimeUtility.getCurrentDateIso();
         certificate.setCreateDate(currentDate);
         certificate.setLastUpdateDate(currentDate);
-        replaceTagsFromDB(certificate);
-        return giftCertificateDao.add(certificate);
+        GiftCertificate entity = ObjectConverter.toEntity(certificate);
+        findTagsInDB(entity);
+        return ObjectConverter.toDTO(giftCertificateDao.add(entity));
     }
 
     @Override
     @Transactional
-    public Optional<GiftCertificate> update(GiftCertificate certificate) {
+    public Optional<GiftCertificateDTO> update(GiftCertificateDTO certificate) {
         Optional<GiftCertificate> optional = giftCertificateDao.findById(certificate.getId());
         if (optional.isPresent()) {
             GiftCertificate found = optional.get();
@@ -195,7 +200,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             GiftCertificate updated = giftCertificateDao.update(found);
             optional = Optional.of(updated);
         }
-        return optional;
+        return optional.map(ObjectConverter::toDTO);
     }
 
     @Override
@@ -204,7 +209,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         return giftCertificateDao.delete(id);
     }
 
-    private void updateNotEmptyFields(GiftCertificate source, GiftCertificate found) {
+    private void updateNotEmptyFields(GiftCertificateDTO source, GiftCertificate found) {
         if (source.getName() != null) {
             found.setName(source.getName());
         }
@@ -218,12 +223,13 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             found.setDuration(source.getDuration());
         }
         if (source.getTags() != null) {
-            replaceTagsFromDB(source);
-            found.setTags(source.getTags());
+            GiftCertificate entity = ObjectConverter.toEntity(source);
+            findTagsInDB(entity);
+            found.setTags(entity.getTags());
         }
     }
 
-    private void replaceTagsFromDB(GiftCertificate source) {
+    private void findTagsInDB(GiftCertificate source) {
         List<Tag> tags = source.getTags();
         if (tags != null) {
             ListIterator<Tag> iterator = tags.listIterator();

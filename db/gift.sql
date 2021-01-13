@@ -85,9 +85,9 @@ REPLACE INTO `gift_certificate` (`id`, `name`, `description`, `price`, `duration
 	(30, 'Masterpiece gallery', 'Gallery visit for 2 people', 55, 120, '2021-01-12T08:44Z', '2021-01-12T08:44Z');
 /*!40000 ALTER TABLE `gift_certificate` ENABLE KEYS */;
 
--- Дамп структуры для таблица gift.order
-DROP TABLE IF EXISTS `order`;
-CREATE TABLE IF NOT EXISTS `order` (
+-- Дамп структуры для таблица gift.orderDTO
+DROP TABLE IF EXISTS `orderDTO`;
+CREATE TABLE IF NOT EXISTS `orderDTO` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `user_id` bigint NOT NULL,
   `certificate_id` bigint NOT NULL,
@@ -100,9 +100,9 @@ CREATE TABLE IF NOT EXISTS `order` (
   CONSTRAINT `FK_order_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Дамп данных таблицы gift.order: ~10 rows (приблизительно)
-/*!40000 ALTER TABLE `order` DISABLE KEYS */;
-REPLACE INTO `order` (`id`, `user_id`, `certificate_id`, `order_date`, `cost`) VALUES
+-- Дамп данных таблицы gift.orderDTO: ~10 rows (приблизительно)
+/*!40000 ALTER TABLE `orderDTO` DISABLE KEYS */;
+REPLACE INTO `orderDTO` (`id`, `user_id`, `certificate_id`, `order_date`, `cost`) VALUES
 	(1, 1, 6, '2020-12-24T12:21Z', 250),
 	(2, 6, 15, '2020-12-24T13:21Z', 400),
 	(3, 3, 19, '2020-12-24T14:21Z', 999),
@@ -115,7 +115,7 @@ REPLACE INTO `order` (`id`, `user_id`, `certificate_id`, `order_date`, `cost`) V
 	(10, 2, 16, '2020-12-24T10:28Z', 250),
 	(14, 1, 25, '2021-01-12T07:43Z', 100),
 	(15, 1, 19, '2021-01-12T08:04Z', 222);
-/*!40000 ALTER TABLE `order` ENABLE KEYS */;
+/*!40000 ALTER TABLE `orderDTO` ENABLE KEYS */;
 
 -- Дамп структуры для таблица gift.tag
 DROP TABLE IF EXISTS `tag`;

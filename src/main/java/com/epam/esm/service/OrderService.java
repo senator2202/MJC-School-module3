@@ -1,17 +1,17 @@
 package com.epam.esm.service;
 
-import com.epam.esm.model.entity.Order;
+import com.epam.esm.model.dto.OrderDTO;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface OrderService {
 
-    Order add(Order order);
+    OrderDTO add(OrderDTO order);
 
-    Optional<Order> findById(long id);
+    Optional<OrderDTO> findById(long id);
 
-    List<Order> findOrdersByUserId(long userId, Integer limit, Integer offset);
+    List<OrderDTO> findOrdersByUserId(long userId, Integer limit, Integer offset);
 
     boolean orderBelongsToUser(long userId, long orderId);
 }

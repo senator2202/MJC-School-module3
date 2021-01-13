@@ -3,10 +3,9 @@ package com.epam.esm.controller;
 import com.epam.esm.controller.error_handler.ErrorCode;
 import com.epam.esm.controller.exception.GiftEntityNotFoundException;
 import com.epam.esm.controller.exception.WrongParameterFormatException;
-import com.epam.esm.model.entity.Tag;
+import com.epam.esm.model.dto.TagDTO;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -31,35 +30,35 @@ public class TagApiController {
     }
 
     @GetMapping
-    public HttpEntity<List<Tag>> findAll(@RequestParam(required = false) Integer limit,
-                                         @RequestParam(required = false) Integer offset) {
-        List<Tag> tags = service.findAll(limit, offset);
+    public HttpEntity<List<TagDTO>> findAll(@RequestParam(required = false) Integer limit,
+                                            @RequestParam(required = false) Integer offset) {
+        List<TagDTO> tags = service.findAll(limit, offset);
         tags.forEach(t -> t.add(linkTo(TagApiController.class).slash(t.getId()).withSelfRel()));
         return new ResponseEntity<>(tags, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public HttpEntity<Tag> findById(@PathVariable long id) {
-        Tag tag = service.findById(id).orElseThrow(() ->
+    public HttpEntity<TagDTO> findById(@PathVariable long id) {
+        TagDTO tag = service.findById(id).orElseThrow(() ->
                 new GiftEntityNotFoundException("Tag not found", ErrorCode.TAG_NOT_FOUND));
         tag.add(linkTo(TagApiController.class).slash(tag.getId()).withSelfRel());
         return new ResponseEntity<>(tag, HttpStatus.OK);
     }
 
     @PostMapping
-    public HttpEntity<Tag> create(@RequestBody Tag tag) {
+    public HttpEntity<TagDTO> create(@RequestBody TagDTO tag) {
         if (tag.getName() == null) {
             throw new WrongParameterFormatException("Tag name could not be null", ErrorCode.TAG_NAME_IS_NULL);
         }
-        Tag created = service.add(tag);
+        TagDTO created = service.add(tag);
         created.add(linkTo(TagApiController.class).withRel(HateoasRel.POST));
         return new ResponseEntity<>(created, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public HttpEntity<Tag> update(@RequestBody Tag tag, @PathVariable long id) {
+    public HttpEntity<TagDTO> update(@RequestBody TagDTO tag, @PathVariable long id) {
         tag.setId(id);
-        Tag updated = service.update(tag).orElseThrow(() ->
+        TagDTO updated = service.update(tag).orElseThrow(() ->
                 new GiftEntityNotFoundException("Tag not found", ErrorCode.TAG_NOT_FOUND));
         updated.add(linkTo(TagApiController.class).slash(id).withRel(HateoasRel.POST));
         return new ResponseEntity<>(updated, HttpStatus.OK);

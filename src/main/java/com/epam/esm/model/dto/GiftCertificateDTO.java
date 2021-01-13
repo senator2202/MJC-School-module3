@@ -1,55 +1,33 @@
-package com.epam.esm.model.entity;
+package com.epam.esm.model.dto;
 
-import javax.persistence.*;
+import com.epam.esm.model.entity.GiftEntity;
+import org.springframework.hateoas.RepresentationModel;
+
 import java.util.List;
 import java.util.Objects;
 
-@Entity
-@Table(name = "gift_certificate")
-public class GiftCertificate implements GiftEntity {
+public class GiftCertificateDTO extends RepresentationModel<GiftCertificateDTO> implements GiftEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
-
-    @Column(name = "name")
     private String name;
-
-    @Column(name = "description")
     private String description;
-
-    @Column(name = "price")
     private Integer price;
-
-    @Column(name = "duration")
     private Integer duration;
-
-    @Column(name = "create_date")
     private String createDate;
-
-    @Column(name = "last_update_date")
     private String lastUpdateDate;
+    private List<TagDTO> tags;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-            name = "certificate_tag",
-            joinColumns = @JoinColumn(name = "gift_certificate_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id")
-    )
-    private List<Tag> tags;
-
-    public GiftCertificate() {
+    public GiftCertificateDTO() {
     }
 
-    public GiftCertificate(Long id,
-                           String name,
-                           String description,
-                           Integer price,
-                           Integer duration,
-                           String createDate,
-                           String lastUpdateDate,
-                           List<Tag> tags) {
+    public GiftCertificateDTO(Long id,
+                              String name,
+                              String description,
+                              Integer price,
+                              Integer duration,
+                              String createDate,
+                              String lastUpdateDate,
+                              List<TagDTO> tags) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -116,11 +94,11 @@ public class GiftCertificate implements GiftEntity {
         this.lastUpdateDate = lastUpdateDate;
     }
 
-    public List<Tag> getTags() {
+    public List<TagDTO> getTags() {
         return tags;
     }
 
-    public void setTags(List<Tag> tags) {
+    public void setTags(List<TagDTO> tags) {
         this.tags = tags;
     }
 
@@ -128,7 +106,7 @@ public class GiftCertificate implements GiftEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        GiftCertificate that = (GiftCertificate) o;
+        GiftCertificateDTO that = (GiftCertificateDTO) o;
         if (!Objects.equals(id, that.id)) {
             return false;
         }

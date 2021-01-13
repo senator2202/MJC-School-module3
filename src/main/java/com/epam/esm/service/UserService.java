@@ -1,10 +1,10 @@
 package com.epam.esm.service;
 
-import com.epam.esm.model.entity.Tag;
-import com.epam.esm.model.entity.User;
+import com.epam.esm.model.dto.TagDTO;
+import com.epam.esm.model.dto.UserDTO;
 
 import java.util.Optional;
 
-public interface UserService extends BaseService<User> {
-    Optional<Tag> mostWidelyUsedTagOfUserWithHighestOrdersSum();
+public interface UserService extends BaseService<UserDTO> {
+    Optional<TagDTO> mostWidelyUsedTagOfUserWithHighestOrdersSum();
 }

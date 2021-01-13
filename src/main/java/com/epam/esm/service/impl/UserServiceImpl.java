@@ -3,9 +3,10 @@ package com.epam.esm.service.impl;
 import com.epam.esm.model.dao.OrderDao;
 import com.epam.esm.model.dao.TagDao;
 import com.epam.esm.model.dao.UserDao;
-import com.epam.esm.model.entity.Tag;
-import com.epam.esm.model.entity.User;
+import com.epam.esm.model.dto.TagDTO;
+import com.epam.esm.model.dto.UserDTO;
 import com.epam.esm.service.UserService;
+import com.epam.esm.util.ObjectConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,26 +44,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> findById(long id) {
-        return userDao.findById(id);
+    public Optional<UserDTO> findById(long id) {
+        return userDao.findById(id).map(ObjectConverter::toDTO);
     }
 
     @Override
-    public List<User> findAll(Integer limit, Integer offset) {
+    public List<UserDTO> findAll(Integer limit, Integer offset) {
         if (limit != null) {
-            return userDao.findAll(limit, offset != null ? offset : 0);
+            return ObjectConverter.toUserDTOs(userDao.findAll(limit, offset != null ? offset : 0));
         } else {
-            return userDao.findAll();
+            return ObjectConverter.toUserDTOs(userDao.findAll());
         }
     }
 
     @Override
-    public User add(User entity) {
+    public UserDTO add(UserDTO entity) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Optional<User> update(User entity) {
+    public Optional<UserDTO> update(UserDTO entity) {
         throw new UnsupportedOperationException();
     }
 
@@ -73,9 +74,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public Optional<Tag> mostWidelyUsedTagOfUserWithHighestOrdersSum() {
+    public Optional<TagDTO> mostWidelyUsedTagOfUserWithHighestOrdersSum() {
         Long userId = userDao.userIdWithHighestOrderSum();
         Long tagId = orderDao.selectMostPopularTagIdOfUser(userId);
-        return tagDao.findById(tagId);
+        return tagDao.findById(tagId).map(ObjectConverter::toDTO);
     }
 }

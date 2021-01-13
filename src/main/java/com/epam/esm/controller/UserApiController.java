@@ -3,9 +3,9 @@ package com.epam.esm.controller;
 import com.epam.esm.controller.error_handler.ErrorCode;
 import com.epam.esm.controller.exception.GiftEntityNotFoundException;
 import com.epam.esm.controller.exception.WrongParameterFormatException;
-import com.epam.esm.model.entity.Order;
-import com.epam.esm.model.entity.Tag;
-import com.epam.esm.model.entity.User;
+import com.epam.esm.model.dto.OrderDTO;
+import com.epam.esm.model.dto.TagDTO;
+import com.epam.esm.model.dto.UserDTO;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.UserService;
@@ -46,16 +46,16 @@ public class UserApiController {
     }
 
     @GetMapping
-    public HttpEntity<List<User>> findAll(@RequestParam(required = false) Integer limit,
-                                          @RequestParam(required = false) Integer offset) {
-        List<User> users = userService.findAll(limit, offset);
+    public HttpEntity<List<UserDTO>> findAll(@RequestParam(required = false) Integer limit,
+                                             @RequestParam(required = false) Integer offset) {
+        List<UserDTO> users = userService.findAll(limit, offset);
         users.forEach(this::addLink);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @GetMapping("/{id:^[1-9]\\d{0,18}$}")
-    public HttpEntity<User> findById(@PathVariable long id) {
-        User user = userService.findById(id).orElseThrow(
+    public HttpEntity<UserDTO> findById(@PathVariable long id) {
+        UserDTO user = userService.findById(id).orElseThrow(
                 () -> new GiftEntityNotFoundException("User not found", ErrorCode.USER_NOT_FOUND)
         );
         addLink(user);
@@ -63,7 +63,7 @@ public class UserApiController {
     }
 
     @PostMapping("/buy")
-    public HttpEntity<Order> buyCertificate(@RequestBody Order order) {
+    public HttpEntity<OrderDTO> buyCertificate(@RequestBody OrderDTO order) {
         long userId = order.getUser().getId();
         long certificateId = order.getGiftCertificate().getId();
         if (!GiftEntityValidator.correctId(userId, certificateId)) {
@@ -76,25 +76,25 @@ public class UserApiController {
         if (giftCertificateService.findById(certificateId).isEmpty()) {
             throw new GiftEntityNotFoundException("Certificate not found", ErrorCode.GIFT_CERTIFICATE_NOT_FOUND);
         }
-        Order added = orderService.add(order);
+        OrderDTO added = orderService.add(order);
         addLink(added);
         return new ResponseEntity<>(added, HttpStatus.OK);
     }
 
     @GetMapping("/{userId:^[1-9]\\d{0,18}$}/orders")
-    public HttpEntity<List<Order>> findUserOrders(@PathVariable long userId,
-                                                  @RequestParam(required = false) Integer limit,
-                                                  @RequestParam(required = false) Integer offset) {
-        List<Order> orders = orderService.findOrdersByUserId(userId, limit, offset);
+    public HttpEntity<List<OrderDTO>> findUserOrders(@PathVariable long userId,
+                                                     @RequestParam(required = false) Integer limit,
+                                                     @RequestParam(required = false) Integer offset) {
+        List<OrderDTO> orders = orderService.findOrdersByUserId(userId, limit, offset);
         orders.forEach(this::addLink);
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
     @GetMapping("/{userId:^[1-9]\\d{0,18}$}/orders/{orderId:^[1-9]\\d{0,18}$}")
-    public HttpEntity<Order> findUserOrder(@PathVariable long userId,
-                                           @PathVariable long orderId) {
+    public HttpEntity<OrderDTO> findUserOrder(@PathVariable long userId,
+                                              @PathVariable long orderId) {
         if (orderService.orderBelongsToUser(userId, orderId)) {
-            Order order = orderService.findById(orderId).orElseThrow(
+            OrderDTO order = orderService.findById(orderId).orElseThrow(
                     () -> new GiftEntityNotFoundException("Order not found", ErrorCode.ORDER_NOT_FOUND)
             );
             addLink(order);
@@ -106,14 +106,14 @@ public class UserApiController {
     }
 
     @GetMapping("/widelyUsedTag")
-    public HttpEntity<Tag> widelyUsedTag() {
-        Tag tag = userService.mostWidelyUsedTagOfUserWithHighestOrdersSum().orElseThrow(() ->
+    public HttpEntity<TagDTO> widelyUsedTag() {
+        TagDTO tag = userService.mostWidelyUsedTagOfUserWithHighestOrdersSum().orElseThrow(() ->
                 new GiftEntityNotFoundException("Tag not found", ErrorCode.TAG_NOT_FOUND));
         tag.add(linkTo(TagApiController.class).slash(tag.getId()).withSelfRel());
         return new ResponseEntity<>(tag, HttpStatus.OK);
     }
 
-    private void addLink(Order o) {
+    private void addLink(OrderDTO o) {
         o.add(linkTo(UserApiController.class).slash(o.getUser().getId()).withSelfRel());
         o.getUser().add(linkTo(UserApiController.class).slash(o.getUser().getId()).withSelfRel());
         o.getGiftCertificate().add(linkTo(GiftCertificateApiController.class)
@@ -126,7 +126,7 @@ public class UserApiController {
         }
     }
 
-    private void addLink(User user) {
+    private void addLink(UserDTO user) {
         user.add(linkTo(UserApiController.class).slash(user.getId()).withSelfRel());
         user.add(linkTo(UserApiController.class).slash(user.getId())
                 .slash(HateoasRel.ORDERS)

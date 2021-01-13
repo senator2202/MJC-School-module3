@@ -1,13 +1,11 @@
 package com.epam.esm.model.entity;
 
-import org.springframework.hateoas.RepresentationModel;
-
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 @Table(name = "user")
-public class User extends RepresentationModel<User> implements GiftEntity {
+public class User implements GiftEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,6 +14,14 @@ public class User extends RepresentationModel<User> implements GiftEntity {
 
     @Column(name = "name")
     private String name;
+
+    public User() {
+    }
+
+    public User(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
     public Long getId() {
         return id;

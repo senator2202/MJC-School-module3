@@ -1,13 +1,11 @@
 package com.epam.esm.model.entity;
 
-import org.springframework.hateoas.RepresentationModel;
-
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 @Table(name = "`order`")
-public class Order extends RepresentationModel<GiftCertificate> implements GiftEntity {
+public class Order implements GiftEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +25,10 @@ public class Order extends RepresentationModel<GiftCertificate> implements GiftE
 
     @Column(name = "cost")
     private Integer cost;
+
+    public Order() {
+    }
+
 
     public Long getId() {
         return id;
@@ -79,7 +81,7 @@ public class Order extends RepresentationModel<GiftCertificate> implements GiftE
 
         Order order = (Order) o;
 
-        if (cost != order.cost) {
+        if (!cost.equals(order.cost)) {
             return false;
         }
         if (!Objects.equals(id, order.id)) {

@@ -26,8 +26,8 @@ CREATE TABLE IF NOT EXISTS `gift_certificate` (
                                                   `last_update_date` varchar(50) DEFAULT NULL
 ) ENGINE = InnoDB;
 -- Экспортируемые данные не выделены.
--- Дамп структуры для таблица gift.order
-CREATE TABLE IF NOT EXISTS `order` (
+-- Дамп структуры для таблица gift.orderDTO
+CREATE TABLE IF NOT EXISTS `orderDTO` (
                                        `id` bigint NOT NULL AUTO_INCREMENT,
                                        `user_id` bigint DEFAULT NULL,
                                        `certificate_id` bigint DEFAULT NULL,

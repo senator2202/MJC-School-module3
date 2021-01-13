@@ -1,6 +1,6 @@
 package com.epam.esm.service;
 
-import com.epam.esm.model.entity.Tag;
+import com.epam.esm.model.dto.TagDTO;
 
-public interface TagService extends BaseService<Tag> {
+public interface TagService extends BaseService<TagDTO> {
 }

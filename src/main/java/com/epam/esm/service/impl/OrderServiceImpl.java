@@ -3,11 +3,13 @@ package com.epam.esm.service.impl;
 import com.epam.esm.model.dao.GiftCertificateDao;
 import com.epam.esm.model.dao.OrderDao;
 import com.epam.esm.model.dao.UserDao;
+import com.epam.esm.model.dto.OrderDTO;
 import com.epam.esm.model.entity.GiftCertificate;
 import com.epam.esm.model.entity.Order;
 import com.epam.esm.model.entity.User;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.util.DateTimeUtility;
+import com.epam.esm.util.ObjectConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -41,27 +43,28 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public Order add(Order order) {
+    public OrderDTO add(OrderDTO order) {
         User user = userDao.findById(order.getUser().getId()).get();
         GiftCertificate giftCertificate = giftCertificateDao.findById(order.getGiftCertificate().getId()).get();
-        order.setUser(user);
-        order.setGiftCertificate(giftCertificate);
-        order.setCost(giftCertificate.getPrice());
-        order.setOrderDate(DateTimeUtility.getCurrentDateIso());
-        return orderDao.add(order);
+        Order orderEntity = new Order();
+        orderEntity.setUser(user);
+        orderEntity.setGiftCertificate(giftCertificate);
+        orderEntity.setCost(giftCertificate.getPrice());
+        orderEntity.setOrderDate(DateTimeUtility.getCurrentDateIso());
+        return ObjectConverter.toDTO(orderDao.add(orderEntity));
     }
 
     @Override
-    public Optional<Order> findById(long id) {
-        return orderDao.findById(id);
+    public Optional<OrderDTO> findById(long id) {
+        return orderDao.findById(id).map(ObjectConverter::toDTO);
     }
 
     @Override
-    public List<Order> findOrdersByUserId(long userId, Integer limit, Integer offset) {
+    public List<OrderDTO> findOrdersByUserId(long userId, Integer limit, Integer offset) {
         if (limit != null) {
-            return orderDao.findOrdersByUserId(userId, limit, offset != null ? offset : 0);
+            return ObjectConverter.toOrderDTOs(orderDao.findOrdersByUserId(userId, limit, offset != null ? offset : 0));
         } else {
-            return orderDao.findOrdersByUserId(userId);
+            return ObjectConverter.toOrderDTOs(orderDao.findOrdersByUserId(userId));
         }
     }
 

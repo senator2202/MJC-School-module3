@@ -1,27 +1,19 @@
-package com.epam.esm.model.entity;
+package com.epam.esm.model.dto;
 
-import javax.persistence.*;
+import com.epam.esm.model.entity.GiftEntity;
+import org.springframework.hateoas.RepresentationModel;
+
 import java.util.Objects;
 
-@Entity
-@Table(
-        name = "tag",
-        uniqueConstraints = {@UniqueConstraint(columnNames = "id"), @UniqueConstraint(columnNames = "name")}
-)
-public class Tag implements GiftEntity {
+public class TagDTO extends RepresentationModel<TagDTO> implements GiftEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
-
-    @Column(name = "name")
     private String name;
 
-    public Tag() {
+    public TagDTO() {
     }
 
-    public Tag(Long id, String name) {
+    public TagDTO(Long id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -54,7 +46,7 @@ public class Tag implements GiftEntity {
             return false;
         }
 
-        Tag tag = (Tag) o;
+        TagDTO tag = (TagDTO) o;
 
         if (!Objects.equals(id, tag.id)) {
             return false;
