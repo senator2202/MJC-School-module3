@@ -1,5 +1,7 @@
 package com.epam.esm.model.entity;
 
+import com.epam.esm.util.DateTimeUtility;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -17,6 +19,12 @@ public class Tag implements GiftEntity {
 
     @Column(name = "name")
     private String name;
+
+    @Column(name = "operation")
+    private String operation;
+
+    @Column(name = "operation_date")
+    private String operationDate;
 
     public Tag() {
     }
@@ -40,6 +48,37 @@ public class Tag implements GiftEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getOperation() {
+        return operation;
+    }
+
+    public void setOperation(String operation) {
+        this.operation = operation;
+    }
+
+    public String getOperationDate() {
+        return operationDate;
+    }
+
+    public void setOperationDate(String operationDate) {
+        this.operationDate = operationDate;
+    }
+
+    @PrePersist
+    public void onPrePersist() {
+        audit("INSERT");
+    }
+
+    @PreUpdate
+    public void onPreUpdate() {
+        audit("UPDATE");
+    }
+
+    private void audit(String operation) {
+        this.operation = operation;
+        operationDate = DateTimeUtility.getCurrentDateIso();
     }
 
     @Override

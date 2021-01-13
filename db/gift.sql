@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS `certificate_tag` (
   CONSTRAINT `FK_certificates_tags_tag` FOREIGN KEY (`tag_id`) REFERENCES `tag` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Дамп данных таблицы gift.certificate_tag: ~20 rows (приблизительно)
+-- Дамп данных таблицы gift.certificate_tag: ~22 rows (приблизительно)
 /*!40000 ALTER TABLE `certificate_tag` DISABLE KEYS */;
 REPLACE INTO `certificate_tag` (`gift_certificate_id`, `tag_id`) VALUES
 	(1, 8),
@@ -51,6 +51,7 @@ REPLACE INTO `certificate_tag` (`gift_certificate_id`, `tag_id`) VALUES
 	(24, 1),
 	(25, 18),
 	(25, 19),
+	(30, 41),
 	(30, 19);
 /*!40000 ALTER TABLE `certificate_tag` ENABLE KEYS */;
 
@@ -65,9 +66,9 @@ CREATE TABLE IF NOT EXISTS `gift_certificate` (
   `create_date` varchar(50) DEFAULT NULL,
   `last_update_date` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Дамп данных таблицы gift.gift_certificate: ~14 rows (приблизительно)
+-- Дамп данных таблицы gift.gift_certificate: ~13 rows (приблизительно)
 /*!40000 ALTER TABLE `gift_certificate` DISABLE KEYS */;
 REPLACE INTO `gift_certificate` (`id`, `name`, `description`, `price`, `duration`, `create_date`, `last_update_date`) VALUES
 	(1, 'Сауна Тритон', 'Сертификат на бесплатное посещение сауны Тритон на Маяковского, 16', 100, 60, '2020-12-16T14:48Z', '2020-12-16T14:49Z'),
@@ -82,12 +83,12 @@ REPLACE INTO `gift_certificate` (`id`, `name`, `description`, `price`, `duration
 	(20, 'Курс Python Web development', 'Бесплатное прохождение курса веб разработки на Python', 900, 90, '2020-12-23T08:22Z', '2020-12-23T08:22Z'),
 	(24, 'Pilates', 'Best pilates in whole Minsk', 225, 180, '2021-01-11T06:18Z', '2021-01-11T06:18Z'),
 	(25, 'Circus', 'Circus visit for 2 people', 100, 120, '2021-01-11T06:20Z', '2021-01-11T06:20Z'),
-	(30, 'Masterpiece gallery', 'Gallery visit for 2 people', 55, 120, '2021-01-12T08:44Z', '2021-01-12T08:44Z');
+	(30, 'Masterpiece gallery', 'Gallery visit for 2 people', 55, 365, '2021-01-12T08:44Z', '2021-01-12T08:44Z');
 /*!40000 ALTER TABLE `gift_certificate` ENABLE KEYS */;
 
--- Дамп структуры для таблица gift.orderDTO
-DROP TABLE IF EXISTS `orderDTO`;
-CREATE TABLE IF NOT EXISTS `orderDTO` (
+-- Дамп структуры для таблица gift.order
+DROP TABLE IF EXISTS `order`;
+CREATE TABLE IF NOT EXISTS `order` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `user_id` bigint NOT NULL,
   `certificate_id` bigint NOT NULL,
@@ -98,11 +99,11 @@ CREATE TABLE IF NOT EXISTS `orderDTO` (
   KEY `FK_order_user` (`user_id`),
   CONSTRAINT `FK_order_gift_certificate` FOREIGN KEY (`certificate_id`) REFERENCES `gift_certificate` (`id`),
   CONSTRAINT `FK_order_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Дамп данных таблицы gift.orderDTO: ~10 rows (приблизительно)
-/*!40000 ALTER TABLE `orderDTO` DISABLE KEYS */;
-REPLACE INTO `orderDTO` (`id`, `user_id`, `certificate_id`, `order_date`, `cost`) VALUES
+-- Дамп данных таблицы gift.order: ~13 rows (приблизительно)
+/*!40000 ALTER TABLE `order` DISABLE KEYS */;
+REPLACE INTO `order` (`id`, `user_id`, `certificate_id`, `order_date`, `cost`) VALUES
 	(1, 1, 6, '2020-12-24T12:21Z', 250),
 	(2, 6, 15, '2020-12-24T13:21Z', 400),
 	(3, 3, 19, '2020-12-24T14:21Z', 999),
@@ -114,36 +115,41 @@ REPLACE INTO `orderDTO` (`id`, `user_id`, `certificate_id`, `order_date`, `cost`
 	(9, 5, 5, '2020-12-24T10:27Z', 125),
 	(10, 2, 16, '2020-12-24T10:28Z', 250),
 	(14, 1, 25, '2021-01-12T07:43Z', 100),
-	(15, 1, 19, '2021-01-12T08:04Z', 222);
-/*!40000 ALTER TABLE `orderDTO` ENABLE KEYS */;
+	(15, 1, 19, '2021-01-12T08:04Z', 222),
+	(16, 1, 30, '2021-01-13T08:58Z', 55);
+/*!40000 ALTER TABLE `order` ENABLE KEYS */;
 
 -- Дамп структуры для таблица gift.tag
 DROP TABLE IF EXISTS `tag`;
 CREATE TABLE IF NOT EXISTS `tag` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `operation` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `operation_date` varchar(50) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   UNIQUE KEY `UK1wdpsed5kna2y38hnbgrnhi5b` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Дамп данных таблицы gift.tag: ~14 rows (приблизительно)
+-- Дамп данных таблицы gift.tag: ~15 rows (приблизительно)
 /*!40000 ALTER TABLE `tag` DISABLE KEYS */;
-REPLACE INTO `tag` (`id`, `name`) VALUES
-	(18, 'Circus'),
-	(14, 'IT'),
-	(20, 'Museum'),
-	(13, 'Programming'),
-	(25, 'Sladkii Bubaleh'),
-	(1, 'Активность'),
-	(10, 'Искусство'),
-	(7, 'Кино'),
-	(2, 'Красота'),
-	(3, 'Образование'),
-	(8, 'Отдых'),
-	(15, 'Программирование'),
-	(19, 'Развлечения'),
-	(6, 'Театр');
+REPLACE INTO `tag` (`id`, `name`, `operation`, `operation_date`) VALUES
+	(1, 'Активность', '', ''),
+	(2, 'Красота', '', ''),
+	(3, 'Образование', '', ''),
+	(6, 'Театр', '', ''),
+	(7, 'Кино', '', ''),
+	(8, 'Отдых', '', ''),
+	(10, 'Искусство', '', ''),
+	(13, 'Programming', '', ''),
+	(14, 'IT', '', ''),
+	(15, 'Программирование', '', ''),
+	(18, 'Circus', '', ''),
+	(19, 'Развлечения', '', ''),
+	(20, 'Museum', '', ''),
+	(25, 'Sladkii Bubaleh', '', ''),
+	(41, 'trololo', '', ''),
+	(43, 'Drotiki', 'INSERT', '2021-01-13T11:03Z');
 /*!40000 ALTER TABLE `tag` ENABLE KEYS */;
 
 -- Дамп структуры для таблица gift.user
