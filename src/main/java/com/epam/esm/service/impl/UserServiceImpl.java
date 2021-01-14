@@ -21,25 +21,10 @@ public class UserServiceImpl implements UserService {
     private OrderDao orderDao;
     private TagDao tagDao;
 
-    public UserServiceImpl() {
-    }
-
-    public UserServiceImpl(UserDao userDao) {
-        this.userDao = userDao;
-    }
-
     @Autowired
-    public void setUserDao(UserDao userDao) {
+    public UserServiceImpl(UserDao userDao, OrderDao orderDao, TagDao tagDao) {
         this.userDao = userDao;
-    }
-
-    @Autowired
-    public void setOrderDao(OrderDao orderDao) {
         this.orderDao = orderDao;
-    }
-
-    @Autowired
-    public void setTagDao(TagDao tagDao) {
         this.tagDao = tagDao;
     }
 

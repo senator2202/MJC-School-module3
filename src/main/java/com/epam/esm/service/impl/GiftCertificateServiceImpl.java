@@ -10,7 +10,6 @@ import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.util.DateTimeUtility;
 import com.epam.esm.util.ObjectConverter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,14 +24,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     private TagDao tagDao;
 
     @Autowired
-    @Qualifier("jpaGiftCertificateDao")
-    public void setGiftCertificateDao(GiftCertificateDao giftCertificateDao) {
+    public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao, TagDao tagDao) {
         this.giftCertificateDao = giftCertificateDao;
-    }
-
-    @Autowired
-    @Qualifier("jpaTagDao")
-    public void setTagDao(TagDao tagDao) {
         this.tagDao = tagDao;
     }
 
@@ -60,68 +53,27 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     @Transactional
     public Optional<GiftCertificateDTO> updateField(long id, UpdatingField updatingField) {
+        Optional<GiftCertificate> optional = giftCertificateDao.findById(id);
+        if (optional.isEmpty()) {
+            return Optional.empty();
+        }
+        GiftCertificate giftCertificate = optional.get();
         UpdatingField.FieldName fieldName = updatingField.getFieldName();
         String fieldValue = updatingField.getFieldValue();
         switch (fieldName) {
             case NAME:
-                return updateName(id, fieldValue).map(ObjectConverter::toDTO);
+                giftCertificate.setName(fieldValue);
+                break;
             case DESCRIPTION:
-                return updateDescription(id, fieldValue).map(ObjectConverter::toDTO);
+                giftCertificate.setDescription(fieldValue);
+                break;
             case PRICE:
-                return updatePrice(id, fieldValue).map(ObjectConverter::toDTO);
+                giftCertificate.setPrice(Integer.parseInt(fieldValue));
+                break;
             case DURATION:
-                return updateDuration(id, fieldValue).map(ObjectConverter::toDTO);
-            default:
-                return Optional.empty();
+                giftCertificate.setDuration(Integer.parseInt(fieldValue));
         }
-    }
-
-    private Optional<GiftCertificate> updateName(long id, String newName) {
-        Optional<GiftCertificate> optional = giftCertificateDao.findById(id);
-        if (optional.isPresent()) {
-            GiftCertificate giftCertificate = optional.get();
-            giftCertificate.setName(newName);
-            optional = Optional.of(giftCertificateDao.update(giftCertificate));
-        } else {
-            optional = Optional.empty();
-        }
-        return optional;
-    }
-
-    private Optional<GiftCertificate> updateDescription(long id, String newDescription) {
-        Optional<GiftCertificate> optional = giftCertificateDao.findById(id);
-        if (optional.isPresent()) {
-            GiftCertificate giftCertificate = optional.get();
-            giftCertificate.setDescription(newDescription);
-            optional = Optional.of(giftCertificateDao.update(giftCertificate));
-        } else {
-            optional = Optional.empty();
-        }
-        return optional;
-    }
-
-    private Optional<GiftCertificate> updatePrice(long id, String newPrice) {
-        Optional<GiftCertificate> optional = giftCertificateDao.findById(id);
-        if (optional.isPresent()) {
-            GiftCertificate giftCertificate = optional.get();
-            giftCertificate.setPrice(Integer.parseInt(newPrice));
-            optional = Optional.of(giftCertificateDao.update(giftCertificate));
-        } else {
-            optional = Optional.empty();
-        }
-        return optional;
-    }
-
-    private Optional<GiftCertificate> updateDuration(long id, String newDuration) {
-        Optional<GiftCertificate> optional = giftCertificateDao.findById(id);
-        if (optional.isPresent()) {
-            GiftCertificate giftCertificate = optional.get();
-            giftCertificate.setDuration(Integer.parseInt(newDuration));
-            optional = Optional.of(giftCertificateDao.update(giftCertificate));
-        } else {
-            optional = Optional.empty();
-        }
-        return optional;
+        return Optional.of(giftCertificateDao.update(giftCertificate)).map(ObjectConverter::toDTO);
     }
 
     @Override

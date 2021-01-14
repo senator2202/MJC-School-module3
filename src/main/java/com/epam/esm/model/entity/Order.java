@@ -29,6 +29,13 @@ public class Order implements GiftEntity {
     public Order() {
     }
 
+    public Order(Long id, User user, GiftCertificate giftCertificate, String orderDate, Integer cost) {
+        this.id = id;
+        this.user = user;
+        this.giftCertificate = giftCertificate;
+        this.orderDate = orderDate;
+        this.cost = cost;
+    }
 
     public Long getId() {
         return id;
@@ -81,9 +88,6 @@ public class Order implements GiftEntity {
 
         Order order = (Order) o;
 
-        if (!cost.equals(order.cost)) {
-            return false;
-        }
         if (!Objects.equals(id, order.id)) {
             return false;
         }
@@ -93,7 +97,7 @@ public class Order implements GiftEntity {
         if (!Objects.equals(giftCertificate, order.giftCertificate)) {
             return false;
         }
-        return Objects.equals(orderDate, order.orderDate);
+        return Objects.equals(cost, order.cost);
     }
 
     @Override
@@ -101,8 +105,7 @@ public class Order implements GiftEntity {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (user != null ? user.hashCode() : 0);
         result = 31 * result + (giftCertificate != null ? giftCertificate.hashCode() : 0);
-        result = 31 * result + (orderDate != null ? orderDate.hashCode() : 0);
-        result = 31 * result + cost;
+        result = 31 * result + (cost != null ? cost.hashCode() : 0);
         return result;
     }
 }

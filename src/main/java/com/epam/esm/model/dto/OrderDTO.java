@@ -72,12 +72,12 @@ public class OrderDTO extends RepresentationModel<GiftCertificateDTO> implements
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        if (!super.equals(o)) {
+            return false;
+        }
 
         OrderDTO orderDTO = (OrderDTO) o;
 
-        if (!cost.equals(orderDTO.cost)) {
-            return false;
-        }
         if (!Objects.equals(id, orderDTO.id)) {
             return false;
         }
@@ -87,16 +87,16 @@ public class OrderDTO extends RepresentationModel<GiftCertificateDTO> implements
         if (!Objects.equals(giftCertificateDTO, orderDTO.giftCertificateDTO)) {
             return false;
         }
-        return Objects.equals(orderDate, orderDTO.orderDate);
+        return Objects.equals(cost, orderDTO.cost);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
+        int result = super.hashCode();
+        result = 31 * result + (id != null ? id.hashCode() : 0);
         result = 31 * result + (user != null ? user.hashCode() : 0);
         result = 31 * result + (giftCertificateDTO != null ? giftCertificateDTO.hashCode() : 0);
-        result = 31 * result + (orderDate != null ? orderDate.hashCode() : 0);
-        result = 31 * result + cost;
+        result = 31 * result + (cost != null ? cost.hashCode() : 0);
         return result;
     }
 }

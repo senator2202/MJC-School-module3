@@ -11,7 +11,6 @@ import com.epam.esm.service.OrderService;
 import com.epam.esm.util.DateTimeUtility;
 import com.epam.esm.util.ObjectConverter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,18 +25,9 @@ public class OrderServiceImpl implements OrderService {
     private GiftCertificateDao giftCertificateDao;
 
     @Autowired
-    public void setOrderDao(OrderDao orderDao) {
+    public OrderServiceImpl(OrderDao orderDao, UserDao userDao, GiftCertificateDao giftCertificateDao) {
         this.orderDao = orderDao;
-    }
-
-    @Autowired
-    @Qualifier("jpaUserDao")
-    public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
-    }
-
-    @Autowired
-    public void setGiftCertificateDao(GiftCertificateDao giftCertificateDao) {
         this.giftCertificateDao = giftCertificateDao;
     }
 
