@@ -51,7 +51,7 @@ public class ObjectConverter {
         );
     }
 
-    public static List<GiftCertificateDTO> toDTOs(List<GiftCertificate> giftCertificates) {
+    public static List<GiftCertificateDTO> toGiftCertificateDTOs(List<GiftCertificate> giftCertificates) {
         return giftCertificates.stream().map(ObjectConverter::toDTO).collect(Collectors.toList());
     }
 

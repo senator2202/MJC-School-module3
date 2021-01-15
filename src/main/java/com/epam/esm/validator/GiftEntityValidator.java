@@ -2,6 +2,8 @@ package com.epam.esm.validator;
 
 import com.epam.esm.controller.UpdatingField;
 
+import java.util.Arrays;
+
 public class GiftEntityValidator {
     private static final String ID_REGEX = "^[1-9]\\d{0,18}$";
     private static final String NAME_REGEX = "^.{1,50}$";
@@ -13,12 +15,7 @@ public class GiftEntityValidator {
     }
 
     public static boolean correctId(long... ids) {
-        for (long id : ids) {
-            if (!String.valueOf(id).matches(ID_REGEX)) {
-                return false;
-            }
-        }
-        return true;
+        return Arrays.stream(ids).allMatch(id -> String.valueOf(id).matches(ID_REGEX));
     }
 
     public static boolean correctTagName(String tagName) {
@@ -43,11 +40,6 @@ public class GiftEntityValidator {
     }
 
     public static boolean correctTagNames(String tagNames) {
-        for (String s : tagNames.split(TAG_SPLITERATOR)) {
-            if (!correctTagName(s)) {
-                return false;
-            }
-        }
-        return true;
+        return Arrays.stream(tagNames.split(TAG_SPLITERATOR)).allMatch(GiftEntityValidator::correctTagName);
     }
 }

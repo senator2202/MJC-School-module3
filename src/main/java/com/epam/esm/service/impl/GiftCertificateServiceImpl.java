@@ -33,21 +33,21 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public List<GiftCertificateDTO> findByTagName(String tagName, String sortType, String direction) {
         List<GiftCertificate> giftCertificates = giftCertificateDao.findByTagName(tagName);
         sortIfNecessary(giftCertificates, sortType, direction);
-        return ObjectConverter.toDTOs(giftCertificates);
+        return ObjectConverter.toGiftCertificateDTOs(giftCertificates);
     }
 
     @Override
     public List<GiftCertificateDTO> findByName(String name, String sortType, String direction) {
         List<GiftCertificate> giftCertificates = giftCertificateDao.findByName(name);
         sortIfNecessary(giftCertificates, sortType, direction);
-        return ObjectConverter.toDTOs(giftCertificates);
+        return ObjectConverter.toGiftCertificateDTOs(giftCertificates);
     }
 
     @Override
     public List<GiftCertificateDTO> findByDescription(String description, String sortType, String direction) {
         List<GiftCertificate> giftCertificates = giftCertificateDao.findByDescription(description);
         sortIfNecessary(giftCertificates, sortType, direction);
-        return ObjectConverter.toDTOs(giftCertificates);
+        return ObjectConverter.toGiftCertificateDTOs(giftCertificates);
     }
 
     @Override
@@ -124,9 +124,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public List<GiftCertificateDTO> findAll(Integer limit, Integer offset) {
         if (limit != null) {
-            return ObjectConverter.toDTOs(giftCertificateDao.findAll(limit, offset != null ? offset : 0));
+            return ObjectConverter.toGiftCertificateDTOs(giftCertificateDao.findAll(limit, offset != null ? offset : 0));
         } else {
-            return ObjectConverter.toDTOs(giftCertificateDao.findAll());
+            return ObjectConverter.toGiftCertificateDTOs(giftCertificateDao.findAll());
         }
     }
 
