@@ -10,6 +10,7 @@ import com.epam.esm.model.entity.Order;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.model.entity.User;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
@@ -73,7 +74,7 @@ public class StaticDataProvider {
                 1L,
                 "English courses",
                 "English courses in school of foreign languages SkyEng",
-                250,
+                BigDecimal.valueOf(250.00),
                 180,
                 "2021-01-13T12:42Z",
                 "2021-01-13T12:42Z",
@@ -83,7 +84,7 @@ public class StaticDataProvider {
                 1L,
                 "English courses",
                 "English courses in school of foreign languages SkyEng",
-                250,
+                BigDecimal.valueOf(250.00),
                 180,
                 "2021-01-13T12:42Z",
                 "2021-01-13T12:42Z",
@@ -99,8 +100,8 @@ public class StaticDataProvider {
                 "English courses in school of foreign languages SkyEng");
         UPDATING_PRICE = new UpdatingField(UpdatingField.FieldName.PRICE, "250");
         UPDATING_DURATION = new UpdatingField(UpdatingField.FieldName.DURATION, "180");
-        ORDER = new Order(1L, USER, GIFT_CERTIFICATE, "2021-01-13T12:42Z", 250);
-        ORDER_DTO = new OrderDTO(1L, USER_DTO, GIFT_CERTIFICATE_DTO, "2021-01-13T12:42Z", 250);
+        ORDER = new Order(1L, USER, GIFT_CERTIFICATE, "2021-01-13T12:42Z", BigDecimal.valueOf(250.00));
+        ORDER_DTO = new OrderDTO(1L, USER_DTO, GIFT_CERTIFICATE_DTO, "2021-01-13T12:42Z", BigDecimal.valueOf(250.00));
         ORDER_LIST = Collections.nCopies(10, ORDER);
         ORDER_LIST_LIMIT = Collections.nCopies(LIMIT, ORDER);
         ORDER_DTO_LIST = Collections.nCopies(10, ORDER_DTO);

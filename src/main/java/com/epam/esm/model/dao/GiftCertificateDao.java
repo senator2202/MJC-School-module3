@@ -6,9 +6,6 @@ import java.util.List;
 
 public interface GiftCertificateDao extends BaseDao<GiftCertificate> {
 
-    List<GiftCertificate> findByTagName(String tagName);
-
-    List<GiftCertificate> findByName(String name);
-
-    List<GiftCertificate> findByDescription(String description);
+    List<GiftCertificate> findAll(String name, String description, String[] tagNames,
+                                  String sortType, String direction, Integer limit, Integer offset);
 }

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
@@ -36,30 +37,14 @@ public class JpaUserDao implements UserDao {
     }
 
     @Override
-    public List<User> findAll() {
-        return entityManager.createQuery(JPQL_FIND_ALL, User.class).getResultList();
-    }
-
-    @Override
-    public List<User> findAll(int limit, int offset) {
-        return entityManager.createQuery(JPQL_FIND_ALL, User.class)
-                .setMaxResults(limit)
-                .setFirstResult(offset)
-                .getResultList();
-    }
-
-    @Override
-    public User add(User entity) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public User update(User entity) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean delete(long id) {
-        throw new UnsupportedOperationException();
+    public List<User> findAll(Integer limit, Integer offset) {
+        TypedQuery<User> query = entityManager.createQuery(JPQL_FIND_ALL, User.class);
+        if (limit != null) {
+            query.setMaxResults(limit);
+        }
+        if (offset != null) {
+            query.setFirstResult(offset);
+        }
+        return query.getResultList();
     }
 }

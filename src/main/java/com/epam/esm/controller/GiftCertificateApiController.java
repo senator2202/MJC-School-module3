@@ -7,7 +7,6 @@ import com.epam.esm.model.dto.GiftCertificateDTO;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.validator.GiftEntityValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -28,15 +27,24 @@ public class GiftCertificateApiController {
     private GiftCertificateService service;
 
     @Autowired
-    @Qualifier("giftCertificateServiceImpl")
     public void setService(GiftCertificateService service) {
         this.service = service;
     }
 
     @GetMapping
-    public HttpEntity<List<GiftCertificateDTO>> findAll(@RequestParam(required = false) Integer limit,
+    public HttpEntity<List<GiftCertificateDTO>> findAll(@RequestParam(required = false) String name,
+                                                        @RequestParam(required = false) String description,
+                                                        @RequestParam(value = "tags", required = false) String tagNames,
+                                                        @RequestParam(value = "sort", required = false) String sortType,
+                                                        @RequestParam(required = false) String direction,
+                                                        @RequestParam(required = false) Integer limit,
                                                         @RequestParam(required = false) Integer offset) {
-        List<GiftCertificateDTO> giftCertificates = service.findAll(limit, offset);
+        if (!GiftEntityValidator.
+                correctOptionalParameters(name, description, tagNames, sortType, direction, limit, offset)) {
+            throw new WrongParameterFormatException("Wrong optional parameters", ErrorCode.WRONG_OPTIONAL_PARAMETERS);
+        }
+        List<GiftCertificateDTO> giftCertificates =
+                service.findAll(name, description, tagNames, sortType, direction, limit, offset);
         return addLinks(giftCertificates);
     }
 
@@ -76,40 +84,7 @@ public class GiftCertificateApiController {
         return entityModel;
     }
 
-    @GetMapping("/find/tag/{tagName}")
-    public HttpEntity<List<GiftCertificateDTO>> findByTagName(@PathVariable String tagName,
-                                                              @RequestParam(value = "sort", required = false) String sortType,
-                                                              @RequestParam(value = "direction", required = false) String direction) {
-        if (!GiftEntityValidator.correctTagName(tagName)) {
-            throw new WrongParameterFormatException("Wrong tag name format", ErrorCode.NAME_WRONG_FORMAT);
-        }
-        List<GiftCertificateDTO> giftCertificates = service.findByTagName(tagName, sortType, direction);
-        return addLinks(giftCertificates);
-    }
-
-    @GetMapping("/find/name/{name}")
-    public HttpEntity<List<GiftCertificateDTO>> findByName(@PathVariable String name,
-                                                           @RequestParam(value = "sort", required = false) String sortType,
-                                                           @RequestParam(value = "direction", required = false) String direction) {
-        if (!GiftEntityValidator.correctTagName(name)) {
-            throw new WrongParameterFormatException("Wrong certificate name format", ErrorCode.NAME_WRONG_FORMAT);
-        }
-        List<GiftCertificateDTO> giftCertificates = service.findByName(name, sortType, direction);
-        return addLinks(giftCertificates);
-    }
-
-    @GetMapping("/find/description/{description}")
-    public HttpEntity<List<GiftCertificateDTO>> findByDescription(@PathVariable String description,
-                                                                  @RequestParam(value = "sort", required = false) String sortType,
-                                                                  @RequestParam(value = "direction", required = false) String direction) {
-        if (!GiftEntityValidator.correctCertificateDescription(description)) {
-            throw new WrongParameterFormatException("Wrong certificate name format", ErrorCode.DESCRIPTION_WRONG_FORMAT);
-        }
-        List<GiftCertificateDTO> giftCertificates = service.findByDescription(description, sortType, direction);
-        return addLinks(giftCertificates);
-    }
-
-    @PutMapping("/{id}/updateField")
+    @PutMapping("/{id}/field")
     public HttpEntity<GiftCertificateDTO> updateField(@PathVariable long id,
                                                       @RequestBody UpdatingField field) {
         UpdatingField.FieldName fieldName = field.getFieldName();
@@ -124,16 +99,6 @@ public class GiftCertificateApiController {
         );
         addLink(updated);
         return new ResponseEntity<>(updated, HttpStatus.OK);
-    }
-
-    @GetMapping("/find/tags")
-    public HttpEntity<List<GiftCertificateDTO>> findByTags(@RequestParam String tagNames,
-                                                           @RequestParam(value = "sort", required = false) String sortType,
-                                                           @RequestParam(value = "direction", required = false) String direction) {
-        if (!GiftEntityValidator.correctTagNames(tagNames)) {
-            throw new WrongParameterFormatException("Wrong tag names format", ErrorCode.NAME_WRONG_FORMAT);
-        }
-        return addLinks(service.findByTagNames(tagNames, sortType, direction));
     }
 
     private HttpEntity<List<GiftCertificateDTO>> addLinks(List<GiftCertificateDTO> giftCertificates) {

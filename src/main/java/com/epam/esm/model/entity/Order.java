@@ -1,6 +1,7 @@
 package com.epam.esm.model.entity;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
@@ -24,12 +25,12 @@ public class Order implements GiftEntity {
     private String orderDate;
 
     @Column(name = "cost")
-    private Integer cost;
+    private BigDecimal cost;
 
     public Order() {
     }
 
-    public Order(Long id, User user, GiftCertificate giftCertificate, String orderDate, Integer cost) {
+    public Order(Long id, User user, GiftCertificate giftCertificate, String orderDate, BigDecimal cost) {
         this.id = id;
         this.user = user;
         this.giftCertificate = giftCertificate;
@@ -69,11 +70,11 @@ public class Order implements GiftEntity {
         this.orderDate = orderDate;
     }
 
-    public int getCost() {
+    public BigDecimal getCost() {
         return cost;
     }
 
-    public void setCost(int cost) {
+    public void setCost(BigDecimal cost) {
         this.cost = cost;
     }
 

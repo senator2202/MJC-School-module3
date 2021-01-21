@@ -46,11 +46,6 @@ public class JpaTagDao implements TagDao {
     }
 
     @Override
-    public List<Tag> findAll() {
-        return entityManager.createQuery(JPQL_FIND_ALL, Tag.class).getResultList();
-    }
-
-    @Override
     public List<Tag> findAll(int limit, int offset) {
         return entityManager.createQuery(JPQL_FIND_ALL, Tag.class)
                 .setMaxResults(limit)

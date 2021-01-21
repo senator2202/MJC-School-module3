@@ -7,13 +7,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface GiftCertificateService extends BaseService<GiftCertificateDTO> {
-    List<GiftCertificateDTO> findByTagName(String tagName, String sortType, String direction);
 
-    List<GiftCertificateDTO> findByName(String name, String sortType, String direction);
-
-    List<GiftCertificateDTO> findByDescription(String description, String sortType, String direction);
+    List<GiftCertificateDTO> findAll(String name, String description, String tagNames, String sortType,
+                                     String direction, Integer limit, Integer offset);
 
     Optional<GiftCertificateDTO> updateField(long id, UpdatingField updatingField);
-
-    List<GiftCertificateDTO> findByTagNames(String tagNames, String sortType, String direction);
 }

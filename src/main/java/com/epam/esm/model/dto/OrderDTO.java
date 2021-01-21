@@ -3,6 +3,7 @@ package com.epam.esm.model.dto;
 import com.epam.esm.model.entity.GiftEntity;
 import org.springframework.hateoas.RepresentationModel;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 public class OrderDTO extends RepresentationModel<GiftCertificateDTO> implements GiftEntity {
@@ -11,12 +12,12 @@ public class OrderDTO extends RepresentationModel<GiftCertificateDTO> implements
     private UserDTO user;
     private GiftCertificateDTO giftCertificateDTO;
     private String orderDate;
-    private Integer cost;
+    private BigDecimal cost;
 
     public OrderDTO() {
     }
 
-    public OrderDTO(Long id, UserDTO user, GiftCertificateDTO giftCertificateDTO, String orderDate, Integer cost) {
+    public OrderDTO(Long id, UserDTO user, GiftCertificateDTO giftCertificateDTO, String orderDate, BigDecimal cost) {
         this.id = id;
         this.user = user;
         this.giftCertificateDTO = giftCertificateDTO;
@@ -56,11 +57,11 @@ public class OrderDTO extends RepresentationModel<GiftCertificateDTO> implements
         this.orderDate = orderDate;
     }
 
-    public int getCost() {
+    public BigDecimal getCost() {
         return cost;
     }
 
-    public void setCost(int cost) {
+    public void setCost(BigDecimal cost) {
         this.cost = cost;
     }
 

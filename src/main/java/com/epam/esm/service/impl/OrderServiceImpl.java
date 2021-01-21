@@ -1,5 +1,7 @@
 package com.epam.esm.service.impl;
 
+import com.epam.esm.controller.error_handler.ErrorCode;
+import com.epam.esm.controller.exception.GiftEntityNotFoundException;
 import com.epam.esm.model.dao.GiftCertificateDao;
 import com.epam.esm.model.dao.OrderDao;
 import com.epam.esm.model.dao.UserDao;
@@ -34,8 +36,12 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public OrderDTO add(OrderDTO order) {
-        User user = userDao.findById(order.getUser().getId()).get();
-        GiftCertificate giftCertificate = giftCertificateDao.findById(order.getGiftCertificate().getId()).get();
+        User user = userDao.findById(order.getUser().getId()).orElseThrow(
+                () -> new GiftEntityNotFoundException("User was not found!", ErrorCode.USER_NOT_FOUND)
+        );
+        GiftCertificate giftCertificate = giftCertificateDao.findById(order.getGiftCertificate().getId()).orElseThrow(
+                () -> new GiftEntityNotFoundException("Certificate not found", ErrorCode.GIFT_CERTIFICATE_NOT_FOUND)
+        );
         Order orderEntity = new Order();
         orderEntity.setUser(user);
         orderEntity.setGiftCertificate(giftCertificate);
@@ -45,17 +51,18 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Optional<OrderDTO> findById(long id) {
-        return orderDao.findById(id).map(ObjectConverter::toDTO);
+    @Transactional
+    public Optional<OrderDTO> findUserOrderById(long userId, long orderId) {
+        if (userDao.findById(userId).isPresent()) {
+            return orderDao.findById(orderId).filter(o -> o.getUser().getId() == userId).map(ObjectConverter::toDTO);
+        } else {
+            throw new GiftEntityNotFoundException("User not found", ErrorCode.USER_NOT_FOUND);
+        }
     }
 
     @Override
     public List<OrderDTO> findOrdersByUserId(long userId, Integer limit, Integer offset) {
-        if (limit != null) {
-            return ObjectConverter.toOrderDTOs(orderDao.findOrdersByUserId(userId, limit, offset != null ? offset : 0));
-        } else {
-            return ObjectConverter.toOrderDTOs(orderDao.findOrdersByUserId(userId));
-        }
+        return ObjectConverter.toOrderDTOs(orderDao.findOrdersByUserId(userId, limit, offset));
     }
 
     @Override

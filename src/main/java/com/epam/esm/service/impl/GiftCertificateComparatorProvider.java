@@ -38,7 +38,7 @@ public class GiftCertificateComparatorProvider {
         NAME((c1, c2) -> c1.getName().compareTo(c2.getName())),
         CREATE_DATE((c1, c2) -> c1.getCreateDate().compareTo(c2.getCreateDate())),
         LAST_UPDATE_DATE((c1, c2) -> c1.getLastUpdateDate().compareTo(c2.getLastUpdateDate())),
-        PRICE((c1, c2) -> c1.getPrice() - c2.getPrice()),
+        PRICE((c1, c2) -> Double.compare(c1.getPrice().doubleValue(), c2.getPrice().doubleValue())),
         DURATION((c1, c2) -> c1.getDuration() - c2.getDuration());
 
         private final Comparator<GiftCertificate> comparator;

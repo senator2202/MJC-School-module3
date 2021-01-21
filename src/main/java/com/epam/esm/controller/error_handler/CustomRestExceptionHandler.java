@@ -14,9 +14,15 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler({GiftEntityNotFoundException.class, WrongParameterFormatException.class})
-    public ResponseEntity<ApiError> handleAll(AbstractRuntimeException e, WebRequest request) {
+    @ExceptionHandler(GiftEntityNotFoundException.class)
+    public ResponseEntity<ApiError> notFound(AbstractRuntimeException e) {
         ApiError apiError = new ApiError(e.getMessage(), e.getErrorCode());
         return new ResponseEntity<>(apiError, new HttpHeaders(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(WrongParameterFormatException.class)
+    public ResponseEntity<ApiError> wrongParameters(AbstractRuntimeException e) {
+        ApiError apiError = new ApiError(e.getMessage(), e.getErrorCode());
+        return new ResponseEntity<>(apiError, new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 }

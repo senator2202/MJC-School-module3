@@ -30,17 +30,10 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public List<TagDTO> findAll(Integer limit, Integer offset) {
-        if (limit != null) {
-            return tagDao.findAll(limit, offset != null ? offset : 0)
-                    .stream()
-                    .map(ObjectConverter::toDTO)
-                    .collect(Collectors.toList());
-        } else {
-            return tagDao.findAll()
-                    .stream()
-                    .map(ObjectConverter::toDTO)
-                    .collect(Collectors.toList());
-        }
+        return tagDao.findAll(limit, offset != null ? offset : 0)
+                .stream()
+                .map(ObjectConverter::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override

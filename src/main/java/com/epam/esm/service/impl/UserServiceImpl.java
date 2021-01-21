@@ -35,26 +35,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDTO> findAll(Integer limit, Integer offset) {
-        if (limit != null) {
-            return ObjectConverter.toUserDTOs(userDao.findAll(limit, offset != null ? offset : 0));
-        } else {
-            return ObjectConverter.toUserDTOs(userDao.findAll());
-        }
-    }
-
-    @Override
-    public UserDTO add(UserDTO entity) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Optional<UserDTO> update(UserDTO entity) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean delete(long id) {
-        throw new UnsupportedOperationException();
+        return ObjectConverter.toUserDTOs(userDao.findAll(limit, offset));
     }
 
     @Override

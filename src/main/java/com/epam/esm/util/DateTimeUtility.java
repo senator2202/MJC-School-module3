@@ -1,18 +1,11 @@
 package com.epam.esm.util;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class DateTimeUtility {
-    private static final String TIME_ZONE = "UTC";
-    private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm'Z'";
 
     public static String getCurrentDateIso() {
-        TimeZone tz = TimeZone.getTimeZone(TIME_ZONE);
-        DateFormat df = new SimpleDateFormat(DATE_FORMAT);
-        df.setTimeZone(tz);
-        return df.format(new Date());
+        return LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     }
 }

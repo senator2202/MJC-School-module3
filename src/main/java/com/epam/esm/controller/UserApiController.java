@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -62,20 +63,14 @@ public class UserApiController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @PostMapping("/buy")
-    public HttpEntity<OrderDTO> buyCertificate(@RequestBody OrderDTO order) {
-        long userId = order.getUser().getId();
+    @PostMapping("/{userId:^[1-9]\\d{0,18}$}/orders")
+    public HttpEntity<OrderDTO> buyCertificate(@PathVariable long userId, @RequestBody OrderDTO order) {
         long certificateId = order.getGiftCertificate().getId();
         if (!GiftEntityValidator.correctId(userId, certificateId)) {
             throw new WrongParameterFormatException("Wrong buy certificate parameters",
                     ErrorCode.BUY_PARAMETERS_WRONG_FORMAT);
         }
-        if (userService.findById(userId).isEmpty()) {
-            throw new GiftEntityNotFoundException("User was not found!", ErrorCode.USER_NOT_FOUND);
-        }
-        if (giftCertificateService.findById(certificateId).isEmpty()) {
-            throw new GiftEntityNotFoundException("Certificate not found", ErrorCode.GIFT_CERTIFICATE_NOT_FOUND);
-        }
+        order.setUser(new UserDTO(userId));
         OrderDTO added = orderService.add(order);
         addLink(added);
         return new ResponseEntity<>(added, HttpStatus.OK);
@@ -93,19 +88,17 @@ public class UserApiController {
     @GetMapping("/{userId:^[1-9]\\d{0,18}$}/orders/{orderId:^[1-9]\\d{0,18}$}")
     public HttpEntity<OrderDTO> findUserOrder(@PathVariable long userId,
                                               @PathVariable long orderId) {
-        if (orderService.orderBelongsToUser(userId, orderId)) {
-            OrderDTO order = orderService.findById(orderId).orElseThrow(
-                    () -> new GiftEntityNotFoundException("Order not found", ErrorCode.ORDER_NOT_FOUND)
-            );
+        Optional<OrderDTO> optional = orderService.findUserOrderById(userId, orderId);
+        if (optional.isPresent()) {
+            OrderDTO order = optional.get();
             addLink(order);
             return new ResponseEntity<>(order, HttpStatus.OK);
         } else {
-            throw new GiftEntityNotFoundException("Order does not belong to user",
-                    ErrorCode.ORDER_DOES_NOT_BELONG_TO_USER);
+            throw new GiftEntityNotFoundException("Order not found", ErrorCode.ORDER_NOT_FOUND);
         }
     }
 
-    @GetMapping("/widelyUsedTag")
+    @GetMapping("/widely-used-tag")
     public HttpEntity<TagDTO> widelyUsedTag() {
         TagDTO tag = userService.mostWidelyUsedTagOfUserWithHighestOrdersSum().orElseThrow(() ->
                 new GiftEntityNotFoundException("Tag not found", ErrorCode.TAG_NOT_FOUND));

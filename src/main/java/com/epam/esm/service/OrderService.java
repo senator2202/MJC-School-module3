@@ -9,7 +9,7 @@ public interface OrderService {
 
     OrderDTO add(OrderDTO order);
 
-    Optional<OrderDTO> findById(long id);
+    Optional<OrderDTO> findUserOrderById(long userId, long orderId);
 
     List<OrderDTO> findOrdersByUserId(long userId, Integer limit, Integer offset);
 

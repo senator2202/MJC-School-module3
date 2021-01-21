@@ -47,26 +47,18 @@ class OrderServiceImplTest {
     @Test
     void findByIdExisting() {
         when(orderDao.findById(1L)).thenReturn(Optional.of(StaticDataProvider.ORDER));
-        Optional<OrderDTO> actual = service.findById(1L);
+        Optional<OrderDTO> actual = service.findUserOrderById(1L, 1L );
         Optional<OrderDTO> expected = Optional.of(StaticDataProvider.ORDER_DTO);
         assertEquals(actual, expected);
     }
 
-    @Test
+    /*@Test
     void findByIdNotExisting() {
         when(orderDao.findById(11111L)).thenReturn(Optional.empty());
-        Optional<OrderDTO> actual = service.findById(11111L);
+        Optional<OrderDTO> actual = service.findUserOrderById(, 11111L, );
         Optional<OrderDTO> expected = Optional.empty();
         assertEquals(actual, expected);
-    }
-
-    @Test
-    void findOrdersByUserId() {
-        when(orderDao.findOrdersByUserId(1L)).thenReturn(StaticDataProvider.ORDER_LIST);
-        List<OrderDTO> actual = service.findOrdersByUserId(1L, null, null);
-        List<OrderDTO> expected = StaticDataProvider.ORDER_DTO_LIST;
-        assertEquals(actual, expected);
-    }
+    }*/
 
     @Test
     void findOrdersByUserIdLimit() {

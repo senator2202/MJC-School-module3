@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +15,7 @@ import java.util.Optional;
 @Repository
 public class JpaOrderDao implements OrderDao {
 
-    private static final String JPQL_FIND_USERS_ORDERS = "select o from Order o where o.user.id = ?1";
+    private static final String JPQL_FIND_USER_ORDERS = "select o from Order o where o.user.id = ?1";
     private static final String SQL_SELECT_MOST_POPULAR_TAG_OF_USER =
             "SELECT tag_id FROM (SELECT tag_id, COUNT(tag_id) AS most_popular \n" +
                     "FROM `order` JOIN certificate_tag ON `order`.certificate_id=certificate_tag.gift_certificate_id \n" +
@@ -40,18 +41,16 @@ public class JpaOrderDao implements OrderDao {
     }
 
     @Override
-    public List<Order> findOrdersByUserId(long userId) {
-        return entityManager.createQuery(JPQL_FIND_USERS_ORDERS, Order.class)
+    public List<Order> findOrdersByUserId(long userId, Integer limit, Integer offset) {
+        TypedQuery<Order> query = entityManager.createQuery(JPQL_FIND_USER_ORDERS, Order.class);
+        if (limit != null) {
+            query.setMaxResults(limit);
+        }
+        if (offset != null) {
+            query.setFirstResult(offset);
+        }
+        return query
                 .setParameter(1, userId)
-                .getResultList();
-    }
-
-    @Override
-    public List<Order> findOrdersByUserId(long userId, int limit, int offset) {
-        return entityManager.createQuery(JPQL_FIND_USERS_ORDERS, Order.class)
-                .setParameter(1, userId)
-                .setMaxResults(limit)
-                .setFirstResult(offset)
                 .getResultList();
     }
 
