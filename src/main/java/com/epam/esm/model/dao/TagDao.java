@@ -9,5 +9,5 @@ public interface TagDao extends BaseDao<Tag> {
 
     Optional<Tag> findByName(String name);
 
-    List<Tag> findAll(int limit, int offset);
+    List<Tag> findAll(Integer limit, Integer offset);
 }

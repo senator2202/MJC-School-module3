@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,11 +47,16 @@ public class JpaTagDao implements TagDao {
     }
 
     @Override
-    public List<Tag> findAll(int limit, int offset) {
-        return entityManager.createQuery(JPQL_FIND_ALL, Tag.class)
-                .setMaxResults(limit)
-                .setFirstResult(offset)
-                .getResultList();
+    public List<Tag> findAll(Integer limit, Integer offset) {
+        TypedQuery<Tag> query = entityManager.createQuery(JPQL_FIND_ALL, Tag.class);
+        if (limit != null) {
+            query.setMaxResults(limit);
+        }
+        if (offset != null) {
+            query.setFirstResult(offset);
+        }
+
+        return query.getResultList();
     }
 
     @Override

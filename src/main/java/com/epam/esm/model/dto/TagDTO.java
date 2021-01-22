@@ -5,7 +5,7 @@ import org.springframework.hateoas.RepresentationModel;
 
 import java.util.Objects;
 
-public class TagDTO extends RepresentationModel<TagDTO> implements GiftEntity {
+public class TagDTO implements GiftEntity {
 
     private Long id;
     private String name;

@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface OrderService {
 
-    OrderDTO add(OrderDTO order);
+    OrderDTO add(long userId, long certificateId);
 
     Optional<OrderDTO> findUserOrderById(long userId, long orderId);
 

@@ -8,14 +8,10 @@ import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.validator.GiftEntityValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -32,61 +28,68 @@ public class GiftCertificateApiController {
     }
 
     @GetMapping
-    public HttpEntity<List<GiftCertificateDTO>> findAll(@RequestParam(required = false) String name,
-                                                        @RequestParam(required = false) String description,
-                                                        @RequestParam(value = "tags", required = false) String tagNames,
-                                                        @RequestParam(value = "sort", required = false) String sortType,
-                                                        @RequestParam(required = false) String direction,
-                                                        @RequestParam(required = false) Integer limit,
-                                                        @RequestParam(required = false) Integer offset) {
+    public List<EntityModel<GiftCertificateDTO>> findAll(@RequestParam(required = false) String name,
+                                                         @RequestParam(required = false) String description,
+                                                         @RequestParam(value = "tags", required = false) String tagNames,
+                                                         @RequestParam(value = "sort", required = false) String sortType,
+                                                         @RequestParam(required = false) String direction,
+                                                         @RequestParam(required = false) Integer limit,
+                                                         @RequestParam(required = false) Integer offset) {
         if (!GiftEntityValidator.
                 correctOptionalParameters(name, description, tagNames, sortType, direction, limit, offset)) {
             throw new WrongParameterFormatException("Wrong optional parameters", ErrorCode.WRONG_OPTIONAL_PARAMETERS);
         }
         List<GiftCertificateDTO> giftCertificates =
                 service.findAll(name, description, tagNames, sortType, direction, limit, offset);
-        return addLinks(giftCertificates);
+        return giftCertificates.stream()
+                .map(this::addSelfLink)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id:^[1-9]\\d{0,18}$}")
-    public HttpEntity<GiftCertificateDTO> findById(@PathVariable long id) {
+    public EntityModel<GiftCertificateDTO> findById(@PathVariable long id) {
         GiftCertificateDTO giftCertificate = service.findById(id)
                 .orElseThrow(() ->
                         new GiftEntityNotFoundException("Certificate not found", ErrorCode.GIFT_CERTIFICATE_NOT_FOUND));
-        addLink(giftCertificate);
-        return new ResponseEntity<>(giftCertificate, HttpStatus.OK);
+        return addSelfLink(giftCertificate);
     }
 
     @PostMapping
-    public HttpEntity<GiftCertificateDTO> create(@RequestBody GiftCertificateDTO certificate) {
+    public EntityModel<GiftCertificateDTO> create(@RequestBody GiftCertificateDTO certificate) {
+        if (!GiftEntityValidator.correctGiftCertificate(certificate)) {
+            throw new WrongParameterFormatException("Wrong certificate parameters",
+                    ErrorCode.CERTIFICATE_WRONG_PARAMETERS);
+        }
         GiftCertificateDTO created = service.add(certificate);
-        created.add(linkTo(methodOn(GiftCertificateApiController.class).create(certificate)).withRel(HateoasRel.POST));
-        return new ResponseEntity<>(created, HttpStatus.OK);
+        return addSelfLink(created);
     }
 
     @PutMapping("/{id:^[1-9]\\d{0,18}$}")
-    public HttpEntity<GiftCertificateDTO> update(@RequestBody GiftCertificateDTO certificate, @PathVariable long id) {
+    public EntityModel<GiftCertificateDTO> update(@RequestBody GiftCertificateDTO certificate, @PathVariable long id) {
+        if (!GiftEntityValidator.correctOptionalCertificateName(certificate.getName()) ||
+                !GiftEntityValidator.correctOptionalDescription(certificate.getDescription()) ||
+                !GiftEntityValidator.correctOptionalPrice(certificate.getPrice()) ||
+                !GiftEntityValidator.correctOptionalDuration(certificate.getDuration()) ||
+                !GiftEntityValidator.correctTags(certificate.getTags())) {
+            throw new WrongParameterFormatException("Wrong certificate parameters",
+                    ErrorCode.CERTIFICATE_WRONG_PARAMETERS);
+        }
         certificate.setId(id);
         GiftCertificateDTO updated = service.update(certificate)
                 .orElseThrow(() ->
                         new GiftEntityNotFoundException("Certificate not found", ErrorCode.GIFT_CERTIFICATE_NOT_FOUND));
-        updated.add(linkTo(GiftCertificateApiController.class).slash(id).withRel(HateoasRel.PUT));
-        updated.getTags().forEach(t -> t.add(linkTo(methodOn(TagApiController.class).findById(t.getId())).withSelfRel()));
-        return new ResponseEntity<>(updated, HttpStatus.OK);
+        return addSelfLink(updated);
     }
 
     @DeleteMapping("/{id:^[1-9]\\d{0,18}$}")
-    public EntityModel<Map<String, Boolean>> delete(@PathVariable long id) {
-        Map<String, Boolean> map = new HashMap<>();
-        map.put(HateoasRel.RESULT, service.delete(id));
-        EntityModel<Map<String, Boolean>> entityModel = EntityModel.of(map);
-        entityModel.add(linkTo(GiftCertificateApiController.class).slash(id).withRel(HateoasRel.DELETE));
-        return entityModel;
+    public EntityModel<DeleteResult> delete(@PathVariable long id) {
+        boolean result = service.delete(id);
+        return EntityModel.of(new DeleteResult(result));
     }
 
     @PutMapping("/{id}/field")
-    public HttpEntity<GiftCertificateDTO> updateField(@PathVariable long id,
-                                                      @RequestBody UpdatingField field) {
+    public EntityModel<GiftCertificateDTO> updateField(@PathVariable long id,
+                                                       @RequestBody UpdatingField field) {
         UpdatingField.FieldName fieldName = field.getFieldName();
         String fieldValue = field.getFieldValue();
         if (!GiftEntityValidator.correctUpdateFieldParameters(fieldName, fieldValue)) {
@@ -97,19 +100,20 @@ public class GiftCertificateApiController {
                 () -> new GiftEntityNotFoundException("Certificate not found",
                         ErrorCode.GIFT_CERTIFICATE_NOT_FOUND)
         );
-        addLink(updated);
-        return new ResponseEntity<>(updated, HttpStatus.OK);
+        return addSelfLink(updated);
     }
 
-    private HttpEntity<List<GiftCertificateDTO>> addLinks(List<GiftCertificateDTO> giftCertificates) {
-        giftCertificates.forEach(this::addLink);
-        return new ResponseEntity<>(giftCertificates, HttpStatus.OK);
+    private EntityModel<GiftCertificateDTO> addSelfLink(GiftCertificateDTO certificate) {
+        certificate.setTags(
+                certificate.getTags().stream().map(TagApiController::addSelfLink).collect(Collectors.toList())
+        );
+        return EntityModel
+                .of(certificate)
+                .add(linkTo(methodOn(GiftCertificateApiController.class).findById(certificate.getId())).withSelfRel());
     }
 
-    private void addLink(GiftCertificateDTO giftCertificate) {
-        giftCertificate.add(linkTo(methodOn(GiftCertificateApiController.class).findById(giftCertificate.getId()))
-                .withSelfRel());
-        giftCertificate.getTags().forEach(t -> t.add(linkTo(methodOn(TagApiController.class).findById(t.getId()))
-                .withSelfRel()));
+    static void addSelfLink(EntityModel<GiftCertificateDTO> entityModel) {
+        Long id = entityModel.getContent().getId();
+        entityModel.add(linkTo(methodOn(GiftCertificateApiController.class).findById(id)).withSelfRel());
     }
 }

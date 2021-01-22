@@ -9,6 +9,7 @@ import com.epam.esm.model.entity.GiftCertificate;
 import com.epam.esm.model.entity.Order;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.model.entity.User;
+import org.springframework.hateoas.EntityModel;
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -88,7 +89,7 @@ public class StaticDataProvider {
                 180,
                 "2021-01-13T12:42Z",
                 "2021-01-13T12:42Z",
-                List.of(TAG_DTO)
+                List.of(EntityModel.of(TAG_DTO))
         );
         GIFT_CERTIFICATE_LIST = Collections.nCopies(10, GIFT_CERTIFICATE);
         GIFT_CERTIFICATE_LIST_LIMIT = Collections.nCopies(LIMIT, GIFT_CERTIFICATE);
@@ -101,7 +102,8 @@ public class StaticDataProvider {
         UPDATING_PRICE = new UpdatingField(UpdatingField.FieldName.PRICE, "250");
         UPDATING_DURATION = new UpdatingField(UpdatingField.FieldName.DURATION, "180");
         ORDER = new Order(1L, USER, GIFT_CERTIFICATE, "2021-01-13T12:42Z", BigDecimal.valueOf(250.00));
-        ORDER_DTO = new OrderDTO(1L, USER_DTO, GIFT_CERTIFICATE_DTO, "2021-01-13T12:42Z", BigDecimal.valueOf(250.00));
+        ORDER_DTO = new OrderDTO(1L, EntityModel.of(USER_DTO), EntityModel.of(GIFT_CERTIFICATE_DTO),
+                "2021-01-13T12:42Z", BigDecimal.valueOf(250.00));
         ORDER_LIST = Collections.nCopies(10, ORDER);
         ORDER_LIST_LIMIT = Collections.nCopies(LIMIT, ORDER);
         ORDER_DTO_LIST = Collections.nCopies(10, ORDER_DTO);

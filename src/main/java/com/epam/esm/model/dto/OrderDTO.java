@@ -1,26 +1,25 @@
 package com.epam.esm.model.dto;
 
 import com.epam.esm.model.entity.GiftEntity;
-import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.EntityModel;
 
 import java.math.BigDecimal;
 import java.util.Objects;
 
-public class OrderDTO extends RepresentationModel<GiftCertificateDTO> implements GiftEntity {
+public class OrderDTO implements GiftEntity {
 
     private Long id;
-    private UserDTO user;
-    private GiftCertificateDTO giftCertificateDTO;
+    private EntityModel<UserDTO> user;
+    private EntityModel<GiftCertificateDTO> giftCertificate;
     private String orderDate;
     private BigDecimal cost;
 
-    public OrderDTO() {
-    }
-
-    public OrderDTO(Long id, UserDTO user, GiftCertificateDTO giftCertificateDTO, String orderDate, BigDecimal cost) {
+    public OrderDTO(Long id, EntityModel<UserDTO> user,
+                    EntityModel<GiftCertificateDTO> giftCertificate,
+                    String orderDate, BigDecimal cost) {
         this.id = id;
         this.user = user;
-        this.giftCertificateDTO = giftCertificateDTO;
+        this.giftCertificate = giftCertificate;
         this.orderDate = orderDate;
         this.cost = cost;
     }
@@ -33,20 +32,20 @@ public class OrderDTO extends RepresentationModel<GiftCertificateDTO> implements
         this.id = id;
     }
 
-    public UserDTO getUser() {
+    public EntityModel<UserDTO> getUser() {
         return user;
     }
 
-    public void setUser(UserDTO user) {
+    public void setUser(EntityModel<UserDTO> user) {
         this.user = user;
     }
 
-    public GiftCertificateDTO getGiftCertificate() {
-        return giftCertificateDTO;
+    public EntityModel<GiftCertificateDTO> getGiftCertificate() {
+        return giftCertificate;
     }
 
-    public void setGiftCertificate(GiftCertificateDTO giftCertificateDTO) {
-        this.giftCertificateDTO = giftCertificateDTO;
+    public void setGiftCertificate(EntityModel<GiftCertificateDTO> giftCertificateDTO) {
+        this.giftCertificate = giftCertificateDTO;
     }
 
     public String getOrderDate() {
@@ -85,7 +84,7 @@ public class OrderDTO extends RepresentationModel<GiftCertificateDTO> implements
         if (!Objects.equals(user, orderDTO.user)) {
             return false;
         }
-        if (!Objects.equals(giftCertificateDTO, orderDTO.giftCertificateDTO)) {
+        if (!Objects.equals(giftCertificate, orderDTO.giftCertificate)) {
             return false;
         }
         return Objects.equals(cost, orderDTO.cost);
@@ -96,7 +95,7 @@ public class OrderDTO extends RepresentationModel<GiftCertificateDTO> implements
         int result = super.hashCode();
         result = 31 * result + (id != null ? id.hashCode() : 0);
         result = 31 * result + (user != null ? user.hashCode() : 0);
-        result = 31 * result + (giftCertificateDTO != null ? giftCertificateDTO.hashCode() : 0);
+        result = 31 * result + (giftCertificate != null ? giftCertificate.hashCode() : 0);
         result = 31 * result + (cost != null ? cost.hashCode() : 0);
         return result;
     }

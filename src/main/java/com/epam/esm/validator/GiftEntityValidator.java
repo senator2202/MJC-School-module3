@@ -1,8 +1,14 @@
 package com.epam.esm.validator;
 
 import com.epam.esm.controller.UpdatingField;
+import com.epam.esm.model.dto.GiftCertificateDTO;
+import com.epam.esm.model.dto.TagDTO;
+import org.springframework.hateoas.EntityModel;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 public class GiftEntityValidator {
     private static final String ID_REGEX = "^[1-9]\\d{0,18}$";
@@ -83,5 +89,46 @@ public class GiftEntityValidator {
 
     public static boolean correctTagNames(String tagNames) {
         return Arrays.stream(tagNames.split(TAG_SPLITERATOR)).allMatch(GiftEntityValidator::correctTagName);
+    }
+
+    public static boolean correctTag(TagDTO tag) {
+        return tag.getName() != null && tag.getName().matches(NAME_REGEX);
+    }
+
+    public static boolean correctGiftCertificate(GiftCertificateDTO certificate) {
+        return correctCertificateName(certificate.getName()) &&
+                correctOptionalDescription(certificate.getDescription()) &&
+                correctOptionalPrice(certificate.getPrice()) &&
+                correctOptionalDuration(certificate.getDuration()) &&
+                correctTags(certificate.getTags());
+    }
+
+    private static boolean correctCertificateName(String name) {
+        return name != null && name.matches(NAME_REGEX);
+    }
+
+    public static boolean correctOptionalCertificateName(String name) {
+        return name == null || name.matches(NAME_REGEX);
+    }
+
+
+    public static boolean correctOptionalDescription(String description) {
+        return description == null || description.matches(CERTIFICATE_DESCRIPTION_REGEX);
+    }
+
+    public static boolean correctOptionalPrice(BigDecimal price) {
+        return price == null || price.doubleValue() > 0;
+    }
+
+    public static boolean correctOptionalDuration(Integer duration) {
+        return duration == null || String.valueOf(duration).matches(INT_REGEX);
+    }
+
+    public static boolean correctTags(List<EntityModel<TagDTO>> tags) {
+        return tags == null ||
+                tags.stream()
+                        .map(EntityModel::getContent)
+                        .filter(Objects::nonNull)
+                        .allMatch(GiftEntityValidator::correctTag);
     }
 }

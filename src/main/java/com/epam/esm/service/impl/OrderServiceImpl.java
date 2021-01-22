@@ -35,11 +35,12 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public OrderDTO add(OrderDTO order) {
-        User user = userDao.findById(order.getUser().getId()).orElseThrow(
+    public OrderDTO add(long userId, long certificateId) {
+        User user = userDao.findById(userId).orElseThrow(
                 () -> new GiftEntityNotFoundException("User was not found!", ErrorCode.USER_NOT_FOUND)
         );
-        GiftCertificate giftCertificate = giftCertificateDao.findById(order.getGiftCertificate().getId()).orElseThrow(
+        GiftCertificate giftCertificate =
+                giftCertificateDao.findById(certificateId).orElseThrow(
                 () -> new GiftEntityNotFoundException("Certificate not found", ErrorCode.GIFT_CERTIFICATE_NOT_FOUND)
         );
         Order orderEntity = new Order();

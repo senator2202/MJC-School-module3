@@ -8,6 +8,7 @@ import com.epam.esm.model.entity.GiftCertificate;
 import com.epam.esm.model.entity.Order;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.model.entity.User;
+import org.springframework.hateoas.EntityModel;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,7 +35,11 @@ public class ObjectConverter {
                 giftCertificate.getDuration(),
                 giftCertificate.getCreateDate(),
                 giftCertificate.getLastUpdateDate(),
-                giftCertificate.getTags().stream().map(ObjectConverter::toDTO).collect(Collectors.toList())
+                giftCertificate.getTags()
+                        .stream()
+                        .map(ObjectConverter::toDTO)
+                        .map(EntityModel::of)
+                        .collect(Collectors.toList())
         );
     }
 
@@ -47,7 +52,10 @@ public class ObjectConverter {
                 giftCertificate.getDuration(),
                 giftCertificate.getCreateDate(),
                 giftCertificate.getLastUpdateDate(),
-                giftCertificate.getTags().stream().map(ObjectConverter::toEntity).collect(Collectors.toList())
+                giftCertificate.getTags()
+                        .stream()
+                        .map(EntityModel::getContent)
+                        .map(ObjectConverter::toEntity).collect(Collectors.toList())
         );
     }
 
@@ -66,8 +74,8 @@ public class ObjectConverter {
     public static OrderDTO toDTO(Order order) {
         return new OrderDTO(
                 order.getId(),
-                toDTO(order.getUser()),
-                toDTO(order.getGiftCertificate()),
+                EntityModel.of(toDTO(order.getUser())),
+                EntityModel.of(toDTO(order.getGiftCertificate())),
                 order.getOrderDate(),
                 order.getCost());
     }
