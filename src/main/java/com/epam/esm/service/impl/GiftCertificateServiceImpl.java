@@ -15,18 +15,27 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Optional;
 
+/**
+ * The type Gift certificate service.
+ */
 @Service
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
-    private static final String TAGS_SPLITERATOR = ",";
     private static final String DASH = "-";
     private static final String UNDER_SCOPE = "_";
-    private GiftCertificateDao giftCertificateDao;
-    private TagDao tagDao;
+    private final GiftCertificateDao giftCertificateDao;
+    private final TagDao tagDao;
 
+    /**
+     * Instantiates a new Gift certificate service.
+     *
+     * @param giftCertificateDao the gift certificate dao
+     * @param tagDao             the tag dao
+     */
     @Autowired
     public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao, TagDao tagDao) {
         this.giftCertificateDao = giftCertificateDao;
@@ -58,17 +67,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         }
 
         return Optional.of(giftCertificateDao.update(giftCertificate)).map(ObjectConverter::toDTO);
-    }
-
-    private List<String> getTagNames(GiftCertificate giftCertificate) {
-        List<String> tagNames = null;
-        if (giftCertificate.getTags() != null) {
-            tagNames = new ArrayList<>();
-            for (Tag tag : giftCertificate.getTags()) {
-                tagNames.add(tag.getName());
-            }
-        }
-        return tagNames;
     }
 
     @Override
@@ -119,6 +117,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         return giftCertificateDao.delete(id);
     }
 
+    /**
+     * Method copies non-empty fields from DTO object to entity object, found in DB
+     */
     private void updateNotEmptyFields(GiftCertificateDTO source, GiftCertificate found) {
         if (source.getName() != null) {
             found.setName(source.getName());
@@ -139,6 +140,10 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         }
     }
 
+    /**
+     * Method updates GiftCertificate tags. It iterates on list of tags, looks for tag with the same name in db.
+     * If tag with the same name found, replace tag in list on existing tag from DB.
+     */
     private void findTagsInDB(GiftCertificate source) {
         List<Tag> tags = source.getTags();
         if (tags != null) {
@@ -149,10 +154,5 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                 optionalTag.ifPresent(iterator::set);
             }
         }
-    }
-
-    private void sortIfNecessary(List<GiftCertificate> certificates, String sortType, String direction) {
-        Optional<Comparator<GiftCertificate>> optional = GiftCertificateComparatorProvider.provide(sortType, direction);
-        optional.ifPresent(certificates::sort);
     }
 }

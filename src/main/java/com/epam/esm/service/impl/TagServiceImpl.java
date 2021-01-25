@@ -13,11 +13,19 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * The type Tag service.
+ */
 @Service
 public class TagServiceImpl implements TagService {
 
-    private TagDao tagDao;
+    private final TagDao tagDao;
 
+    /**
+     * Instantiates a new Tag service.
+     *
+     * @param tagDao the tag dao
+     */
     @Autowired
     public TagServiceImpl(TagDao tagDao) {
         this.tagDao = tagDao;

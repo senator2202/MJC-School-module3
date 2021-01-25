@@ -12,6 +12,9 @@ import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The type Jpa tag dao.
+ */
 @Repository
 @Transactional
 public class JpaTagDao implements TagDao {
@@ -22,6 +25,11 @@ public class JpaTagDao implements TagDao {
 
     private EntityManager entityManager;
 
+    /**
+     * Sets entity manager.
+     *
+     * @param entityManager the entity manager
+     */
     @PersistenceContext
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;

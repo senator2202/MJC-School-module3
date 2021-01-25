@@ -5,14 +5,12 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Entity class, representing gift certificate .
+ */
 @Entity
 @Table(name = "gift_certificate")
-public class GiftCertificate implements GiftEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+public class GiftCertificate extends GiftEntity {
 
     @Column(name = "name")
     private String name;
@@ -23,6 +21,9 @@ public class GiftCertificate implements GiftEntity {
     @Column(name = "price")
     private BigDecimal price;
 
+    /**
+     * Duration in days, while gift certificate is valid
+     */
     @Column(name = "duration")
     private Integer duration;
 
@@ -40,9 +41,24 @@ public class GiftCertificate implements GiftEntity {
     )
     private List<Tag> tags;
 
+    /**
+     * Instantiates a new Gift certificate.
+     */
     public GiftCertificate() {
     }
 
+    /**
+     * Instantiates a new Gift certificate.
+     *
+     * @param id             the id
+     * @param name           the name
+     * @param description    the description
+     * @param price          the price
+     * @param duration       the duration
+     * @param createDate     the create date
+     * @param lastUpdateDate the last update date
+     * @param tags           the tags
+     */
     public GiftCertificate(Long id,
                            String name,
                            String description,
@@ -61,62 +77,119 @@ public class GiftCertificate implements GiftEntity {
         this.tags = tags;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
+    /**
+     * Gets name.
+     *
+     * @return the name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets name.
+     *
+     * @param name the name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Gets description.
+     *
+     * @return the description
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * Sets description.
+     *
+     * @param description the description
+     */
     public void setDescription(String description) {
         this.description = description;
     }
 
+    /**
+     * Gets price.
+     *
+     * @return the price
+     */
     public BigDecimal getPrice() {
         return price;
     }
 
+    /**
+     * Sets price.
+     *
+     * @param price the price
+     */
     public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
+    /**
+     * Gets duration.
+     *
+     * @return the duration
+     */
     public Integer getDuration() {
         return duration;
     }
 
+    /**
+     * Sets duration.
+     *
+     * @param duration the duration
+     */
     public void setDuration(Integer duration) {
         this.duration = duration;
     }
 
+    /**
+     * Gets create date.
+     *
+     * @return the create date
+     */
     public String getCreateDate() {
         return createDate;
     }
 
+    /**
+     * Sets create date.
+     *
+     * @param createDate the create date
+     */
     public void setCreateDate(String createDate) {
         this.createDate = createDate;
     }
 
+    /**
+     * Gets last update date.
+     *
+     * @return the last update date
+     */
     public String getLastUpdateDate() {
         return lastUpdateDate;
     }
 
+    /**
+     * Sets last update date.
+     *
+     * @param lastUpdateDate the last update date
+     */
     public void setLastUpdateDate(String lastUpdateDate) {
         this.lastUpdateDate = lastUpdateDate;
     }
 
+    /**
+     * Gets tags.
+     *
+     * @return the tags
+     */
     public List<Tag> getTags() {
         return tags;
     }

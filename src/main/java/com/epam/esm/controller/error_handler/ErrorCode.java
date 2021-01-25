@@ -1,5 +1,8 @@
 package com.epam.esm.controller.error_handler;
 
+/**
+ * Class contains int constants for error codes
+ */
 public class ErrorCode {
     public static final int GIFT_CERTIFICATE_NOT_FOUND = 40401;
     public static final int TAG_NOT_FOUND = 40402;

@@ -8,24 +8,44 @@ import com.epam.esm.model.entity.GiftCertificate;
 import com.epam.esm.model.entity.Order;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.model.entity.User;
-import org.springframework.hateoas.EntityModel;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Utility class with methods, converting objects from DTO to Entities and back.
+ */
 public class ObjectConverter {
 
     private ObjectConverter() {
     }
 
+    /**
+     * To dto tag dto.
+     *
+     * @param tag the tag
+     * @return the tag dto
+     */
     public static TagDTO toDTO(Tag tag) {
         return new TagDTO(tag.getId(), tag.getName());
     }
 
+    /**
+     * To entity tag.
+     *
+     * @param tagDTO the tag dto
+     * @return the tag
+     */
     public static Tag toEntity(TagDTO tagDTO) {
         return new Tag(tagDTO.getId(), tagDTO.getName());
     }
 
+    /**
+     * To dto gift certificate dto.
+     *
+     * @param giftCertificate the gift certificate
+     * @return the gift certificate dto
+     */
     public static GiftCertificateDTO toDTO(GiftCertificate giftCertificate) {
         return new GiftCertificateDTO(
                 giftCertificate.getId(),
@@ -38,11 +58,16 @@ public class ObjectConverter {
                 giftCertificate.getTags()
                         .stream()
                         .map(ObjectConverter::toDTO)
-                        .map(EntityModel::of)
                         .collect(Collectors.toList())
         );
     }
 
+    /**
+     * To entity gift certificate.
+     *
+     * @param giftCertificate the gift certificate
+     * @return the gift certificate
+     */
     public static GiftCertificate toEntity(GiftCertificateDTO giftCertificate) {
         return new GiftCertificate(
                 giftCertificate.getId(),
@@ -54,32 +79,61 @@ public class ObjectConverter {
                 giftCertificate.getLastUpdateDate(),
                 giftCertificate.getTags()
                         .stream()
-                        .map(EntityModel::getContent)
                         .map(ObjectConverter::toEntity).collect(Collectors.toList())
         );
     }
 
+    /**
+     * To gift certificate dt os list.
+     *
+     * @param giftCertificates the gift certificates
+     * @return the list
+     */
     public static List<GiftCertificateDTO> toGiftCertificateDTOs(List<GiftCertificate> giftCertificates) {
         return giftCertificates.stream().map(ObjectConverter::toDTO).collect(Collectors.toList());
     }
 
+    /**
+     * To dto user dto.
+     *
+     * @param user the user
+     * @return the user dto
+     */
     public static UserDTO toDTO(User user) {
         return new UserDTO(user.getId(), user.getName());
     }
 
+    /**
+     * To user dt os list.
+     *
+     * @param users the users
+     * @return the list
+     */
     public static List<UserDTO> toUserDTOs(List<User> users) {
         return users.stream().map(ObjectConverter::toDTO).collect(Collectors.toList());
     }
 
+    /**
+     * To dto order dto.
+     *
+     * @param order the order
+     * @return the order dto
+     */
     public static OrderDTO toDTO(Order order) {
         return new OrderDTO(
                 order.getId(),
-                EntityModel.of(toDTO(order.getUser())),
-                EntityModel.of(toDTO(order.getGiftCertificate())),
+                toDTO(order.getUser()),
+                toDTO(order.getGiftCertificate()),
                 order.getOrderDate(),
                 order.getCost());
     }
 
+    /**
+     * To order dt os list.
+     *
+     * @param orders the orders
+     * @return the list
+     */
     public static List<OrderDTO> toOrderDTOs(List<Order> orders) {
         return orders.stream().map(ObjectConverter::toDTO).collect(Collectors.toList());
     }

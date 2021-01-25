@@ -1,11 +1,11 @@
 package com.epam.esm.controller;
 
+/**
+ * Class represents field of updating entity
+ */
 public class UpdatingField {
     private FieldName fieldName;
     private String fieldValue;
-
-    public UpdatingField() {
-    }
 
     public UpdatingField(FieldName fieldName, String fieldValue) {
         this.fieldName = fieldName;
@@ -28,6 +28,9 @@ public class UpdatingField {
         this.fieldValue = fieldValue;
     }
 
+    /**
+     * The enum Field name.
+     */
     public enum FieldName {
         NAME, DESCRIPTION, PRICE, DURATION
     }

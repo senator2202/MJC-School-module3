@@ -19,13 +19,23 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The type Order service.
+ */
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    private OrderDao orderDao;
-    private UserDao userDao;
-    private GiftCertificateDao giftCertificateDao;
+    private final OrderDao orderDao;
+    private final UserDao userDao;
+    private final GiftCertificateDao giftCertificateDao;
 
+    /**
+     * Instantiates a new Order service.
+     *
+     * @param orderDao           the order dao
+     * @param userDao            the user dao
+     * @param giftCertificateDao the gift certificate dao
+     */
     @Autowired
     public OrderServiceImpl(OrderDao orderDao, UserDao userDao, GiftCertificateDao giftCertificateDao) {
         this.orderDao = orderDao;
@@ -41,8 +51,8 @@ public class OrderServiceImpl implements OrderService {
         );
         GiftCertificate giftCertificate =
                 giftCertificateDao.findById(certificateId).orElseThrow(
-                () -> new GiftEntityNotFoundException("Certificate not found", ErrorCode.GIFT_CERTIFICATE_NOT_FOUND)
-        );
+                        () -> new GiftEntityNotFoundException("Certificate not found", ErrorCode.GIFT_CERTIFICATE_NOT_FOUND)
+                );
         Order orderEntity = new Order();
         orderEntity.setUser(user);
         orderEntity.setGiftCertificate(giftCertificate);

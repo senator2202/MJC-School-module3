@@ -9,28 +9,33 @@ import com.epam.esm.model.dto.UserDTO;
 import com.epam.esm.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 class UserServiceImplTest {
 
-    private UserService service;
+    @Mock
     private UserDao userDao;
+
+    @Mock
     private OrderDao orderDao;
+
+    @Mock
     private TagDao tagDao;
+
+    @InjectMocks
+    private final UserService service = new UserServiceImpl(userDao, orderDao, tagDao);
 
     @BeforeEach
     void setUp() {
-        userDao = Mockito.mock(UserDao.class);
-        orderDao = Mockito.mock(OrderDao.class);
-        tagDao = Mockito.mock(TagDao.class);
-        service = new UserServiceImpl(userDao, orderDao, tagDao);
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
@@ -49,44 +54,13 @@ class UserServiceImplTest {
         assertEquals(actual, expected);
     }
 
-    /*@Test
+    @Test
     void findAll() {
-        when(userDao.findAll()).thenReturn(StaticDataProvider.USER_LIST);
-        List<UserDTO> actual = service.findAll(name, description, tagName, sortType, direction, null, null);
+        when(userDao.findAll(null, null)).thenReturn(StaticDataProvider.USER_LIST);
+        List<UserDTO> actual = service.findAll(null, null);
         List<UserDTO> expected = StaticDataProvider.USER_DTO_LIST;
         assertEquals(actual, expected);
     }
-
-    @Test
-    void findAllLimit() {
-        when(userDao.findAll(2, 0)).thenReturn(StaticDataProvider.USER_LIST_LIMIT);
-        List<UserDTO> actual = service.findAll(name, description, tagName, sortType, direction, 2, null);
-        List<UserDTO> expected = StaticDataProvider.USER_DTO_LIST_LIMIT;
-        assertEquals(actual, expected);
-    }
-
-    @Test
-    void findAllLimitOffset() {
-        when(userDao.findAll(2, 10)).thenReturn(StaticDataProvider.USER_LIST_LIMIT);
-        List<UserDTO> actual = service.findAll(name, description, tagName, sortType, direction, 2, 10);
-        List<UserDTO> expected = StaticDataProvider.USER_DTO_LIST_LIMIT;
-        assertEquals(actual, expected);
-    }*/
-
-    /*@Test
-    void add() {
-        assertThrows(UnsupportedOperationException.class, () -> service.add(StaticDataProvider.USER_DTO));
-    }
-
-    @Test
-    void update() {
-        assertThrows(UnsupportedOperationException.class, () -> service.update(StaticDataProvider.USER_DTO));
-    }
-
-    @Test
-    void delete() {
-        assertThrows(UnsupportedOperationException.class, () -> service.delete(1L));
-    }*/
 
     @Test
     void mostWidelyUsedTagOfUserWithHighestOrdersSum() {

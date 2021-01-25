@@ -1,11 +1,13 @@
 package com.epam.esm.model.dto;
 
-import com.epam.esm.model.entity.GiftEntity;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.util.Objects;
 
-public class TagDTO implements GiftEntity {
+/**
+ * DTO class for tag of certificate.
+ */
+public class TagDTO extends RepresentationModel<TagDTO> {
 
     private Long id;
     private String name;

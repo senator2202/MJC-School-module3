@@ -11,6 +11,9 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The type Jpa user dao.
+ */
 @Repository
 public class JpaUserDao implements UserDao {
 

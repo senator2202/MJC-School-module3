@@ -5,17 +5,15 @@ import com.epam.esm.util.DateTimeUtility;
 import javax.persistence.*;
 import java.util.Objects;
 
+/**
+ * Entity class, representing tag of a gift certificate .
+ */
 @Entity
 @Table(
         name = "tag",
         uniqueConstraints = {@UniqueConstraint(columnNames = "id"), @UniqueConstraint(columnNames = "name")}
 )
-public class Tag implements GiftEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+public class Tag extends GiftEntity {
 
     @Column(name = "name")
     private String name;
@@ -32,14 +30,6 @@ public class Tag implements GiftEntity {
     public Tag(Long id, String name) {
         this.id = id;
         this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {

@@ -1,17 +1,16 @@
 package com.epam.esm.model.dto;
 
-import com.epam.esm.model.entity.GiftEntity;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.util.Objects;
 
-public class UserDTO implements GiftEntity {
+/**
+ * DTO class for user.
+ */
+public class UserDTO extends RepresentationModel<UserDTO> {
 
     private Long id;
     private String name;
-
-    public UserDTO(Long id) {
-        this.id = id;
-    }
 
     public UserDTO(Long id, String name) {
         this.id = id;

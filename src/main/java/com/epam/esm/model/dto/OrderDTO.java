@@ -1,22 +1,22 @@
 package com.epam.esm.model.dto;
 
-import com.epam.esm.model.entity.GiftEntity;
-import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.math.BigDecimal;
 import java.util.Objects;
 
-public class OrderDTO implements GiftEntity {
+/**
+ * DTO class for order.
+ */
+public class OrderDTO extends RepresentationModel<OrderDTO> {
 
     private Long id;
-    private EntityModel<UserDTO> user;
-    private EntityModel<GiftCertificateDTO> giftCertificate;
+    private UserDTO user;
+    private GiftCertificateDTO giftCertificate;
     private String orderDate;
     private BigDecimal cost;
 
-    public OrderDTO(Long id, EntityModel<UserDTO> user,
-                    EntityModel<GiftCertificateDTO> giftCertificate,
-                    String orderDate, BigDecimal cost) {
+    public OrderDTO(Long id, UserDTO user, GiftCertificateDTO giftCertificate, String orderDate, BigDecimal cost) {
         this.id = id;
         this.user = user;
         this.giftCertificate = giftCertificate;
@@ -32,19 +32,19 @@ public class OrderDTO implements GiftEntity {
         this.id = id;
     }
 
-    public EntityModel<UserDTO> getUser() {
+    public UserDTO getUser() {
         return user;
     }
 
-    public void setUser(EntityModel<UserDTO> user) {
+    public void setUser(UserDTO user) {
         this.user = user;
     }
 
-    public EntityModel<GiftCertificateDTO> getGiftCertificate() {
+    public GiftCertificateDTO getGiftCertificate() {
         return giftCertificate;
     }
 
-    public void setGiftCertificate(EntityModel<GiftCertificateDTO> giftCertificateDTO) {
+    public void setGiftCertificate(GiftCertificateDTO giftCertificateDTO) {
         this.giftCertificate = giftCertificateDTO;
     }
 

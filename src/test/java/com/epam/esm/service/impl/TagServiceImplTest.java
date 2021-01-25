@@ -6,7 +6,9 @@ import com.epam.esm.model.dto.TagDTO;
 import com.epam.esm.service.TagService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,13 +19,15 @@ import static org.mockito.Mockito.when;
 
 class TagServiceImplTest {
 
-    private TagService service;
+    @Mock
     private TagDao tagDao;
+
+    @InjectMocks
+    private final TagService service = new TagServiceImpl(tagDao);
 
     @BeforeEach
     void setUp() {
-        tagDao = Mockito.mock(TagDao.class);
-        service = new TagServiceImpl(tagDao);
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
@@ -42,29 +46,13 @@ class TagServiceImplTest {
         assertEquals(actual, expected);
     }
 
-    /*@Test
+    @Test
     void findAll() {
-        when(tagDao.findAll()).thenReturn(StaticDataProvider.TAG_LIST);
-        List<TagDTO> actual = service.findAll(name, description, tagName, sortType, direction, null, null);
+        when(tagDao.findAll(null, null)).thenReturn(StaticDataProvider.TAG_LIST);
+        List<TagDTO> actual = service.findAll(null, null);
         List<TagDTO> expected = StaticDataProvider.TAG_DTO_LIST;
         assertEquals(actual, expected);
     }
-
-    @Test
-    void findAllLimit() {
-        when(tagDao.findAll(2, 0)).thenReturn(StaticDataProvider.TAG_LIST_LIMIT);
-        List<TagDTO> actual = service.findAll(name, description, tagName, sortType, direction, 2, null);
-        List<TagDTO> expected = StaticDataProvider.TAG_DTO_LIST_LIMIT;
-        assertEquals(actual, expected);
-    }
-
-    @Test
-    void findAllLimitOffset() {
-        when(tagDao.findAll(2, 10)).thenReturn(StaticDataProvider.TAG_LIST_LIMIT);
-        List<TagDTO> actual = service.findAll(name, description, tagName, sortType, direction, 2, 10);
-        List<TagDTO> expected = StaticDataProvider.TAG_DTO_LIST_LIMIT;
-        assertEquals(actual, expected);
-    }*/
 
     @Test
     void addExisting() {

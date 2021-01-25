@@ -11,24 +11,29 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.Mockito;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 class GiftCertificateServiceImplTest {
 
-    private GiftCertificateService service;
+    @Mock
     private GiftCertificateDao giftCertificateDao;
+
+    @Mock
     private TagDao tagDao;
 
-    static Stream<Arguments> args() {
+    @InjectMocks
+    private final GiftCertificateService service = new GiftCertificateServiceImpl(giftCertificateDao, tagDao);
+
+    static Stream<Arguments> argsUpdateField() {
         return Stream.of(
                 Arguments.of(StaticDataProvider.UPDATING_NAME),
                 Arguments.of(StaticDataProvider.UPDATING_DESCRIPTION),
@@ -37,15 +42,21 @@ class GiftCertificateServiceImplTest {
         );
     }
 
+    static Stream<Arguments> argsFindAll() {
+        return Stream.of(
+                Arguments.of("Certificate", "Good certificate", null, null, "price", "asc", 10, 0),
+                Arguments.of("Certificate", "Good certificate",
+                        "Активность,Отдых", new String[]{"Активность", "Отдых"}, null, "asc", 10, 20)
+        );
+    }
+
     @BeforeEach
     void setUp() {
-        giftCertificateDao = Mockito.mock(GiftCertificateDao.class);
-        tagDao = Mockito.mock(TagDao.class);
-        service = new GiftCertificateServiceImpl(giftCertificateDao, tagDao);
+        MockitoAnnotations.openMocks(this);
     }
 
     @ParameterizedTest
-    @MethodSource("args")
+    @MethodSource("argsUpdateField")
     void updateFieldExisting(UpdatingField field) {
         when(giftCertificateDao.findById(1L)).thenReturn(Optional.of(StaticDataProvider.GIFT_CERTIFICATE));
         when(giftCertificateDao.update(StaticDataProvider.GIFT_CERTIFICATE))
@@ -79,29 +90,17 @@ class GiftCertificateServiceImplTest {
         assertEquals(actual, expected);
     }
 
-    /*@Test
-    void findAll() {
-        when(giftCertificateDao.findAll()).thenReturn(StaticDataProvider.GIFT_CERTIFICATE_LIST);
-        List<GiftCertificateDTO> actual = service.findAll(name, description, tagName, sortType, direction, null, null);
+    @ParameterizedTest
+    @MethodSource("argsFindAll")
+    void findAll(String name, String description, String tagNames, String[] tagNameArray,
+                 String sortType, String direction, Integer limit, Integer offset) {
+        when(giftCertificateDao.findAll(name, description, tagNameArray, sortType, direction, limit, offset))
+                .thenReturn(StaticDataProvider.GIFT_CERTIFICATE_LIST);
+        List<GiftCertificateDTO> actual =
+                service.findAll(name, description, tagNames, sortType, direction, limit, offset);
         List<GiftCertificateDTO> expected = StaticDataProvider.GIFT_CERTIFICATE_DTO_LIST;
         assertEquals(actual, expected);
     }
-
-    @Test
-    void findAllLimit() {
-        when(giftCertificateDao.findAll(2, 0)).thenReturn(StaticDataProvider.GIFT_CERTIFICATE_LIST_LIMIT);
-        List<GiftCertificateDTO> actual = service.findAll(name, description, tagName, sortType, direction, 2, null);
-        List<GiftCertificateDTO> expected = StaticDataProvider.GIFT_CERTIFICATE_DTO_LIST_LIMIT;
-        assertEquals(actual, expected);
-    }
-
-    @Test
-    void findAllLimitOffset() {
-        when(giftCertificateDao.findAll(2, 10)).thenReturn(StaticDataProvider.GIFT_CERTIFICATE_LIST_LIMIT);
-        List<GiftCertificateDTO> actual = service.findAll(name, description, tagName, sortType, direction, 2, 10);
-        List<GiftCertificateDTO> expected = StaticDataProvider.GIFT_CERTIFICATE_DTO_LIST_LIMIT;
-        assertEquals(actual, expected);
-    }*/
 
     @Test
     void add() {

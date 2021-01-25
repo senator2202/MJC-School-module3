@@ -13,11 +13,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * The type Jpa gift certificate dao.
+ */
 @Repository
 @Transactional
 public class JpaGiftCertificateDao implements GiftCertificateDao {
     private static final String JPQL_FIND_ALL = "select g from GiftCertificate g join g.tags t ";
     private static final String GROUP_BY_HAVING = "group by g.id having count(g.id) >= ?1";
+    private static final String GIFT_CERTIFICATE_NAME = "name";
+    private static final String GIFT_CERTIFICATE_DESCRIPTION = "description";
     private static final String PERCENT = "%";
     private static final String WHERE = "where ";
     private static final String NAME_LIKE = "g.name like :name ";
@@ -49,14 +54,14 @@ public class JpaGiftCertificateDao implements GiftCertificateDao {
         Map<String, String> parameterMap = new HashMap<>();
         if (name != null) {
             jpql.append(WHERE).append(NAME_LIKE);
-            parameterMap.put(QueryParameterName.GIFT_CERTIFICATE_NAME, PERCENT + name + PERCENT);
+            parameterMap.put(GIFT_CERTIFICATE_NAME, PERCENT + name + PERCENT);
         }
         if (description != null) {
             jpql.append(parameterMap.isEmpty() ? WHERE + DESCRIPTION_LIKE : AND + DESCRIPTION_LIKE);
-            parameterMap.put(QueryParameterName.GIFT_CERTIFICATE_DESCRIPTION, PERCENT + description + PERCENT);
+            parameterMap.put(GIFT_CERTIFICATE_DESCRIPTION, PERCENT + description + PERCENT);
         }
         if (tagNames != null) {
-            jpql.append(parameterMap.isEmpty() ? WHERE: AND);
+            jpql.append(parameterMap.isEmpty() ? WHERE : AND);
             jpql.append(LEFT_BRACKET);
             jpql.append(TAG_NAME_EQUALS.concat(ZERO));
             parameterMap.put(TAG_NAME + ZERO, tagNames[0]);

@@ -12,6 +12,9 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The type Jpa order dao.
+ */
 @Repository
 public class JpaOrderDao implements OrderDao {
 

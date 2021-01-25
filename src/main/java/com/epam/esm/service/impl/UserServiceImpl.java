@@ -14,13 +14,23 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The type User service.
+ */
 @Service
 public class UserServiceImpl implements UserService {
 
-    private UserDao userDao;
-    private OrderDao orderDao;
-    private TagDao tagDao;
+    private final UserDao userDao;
+    private final OrderDao orderDao;
+    private final TagDao tagDao;
 
+    /**
+     * Instantiates a new User service.
+     *
+     * @param userDao  the user dao
+     * @param orderDao the order dao
+     * @param tagDao   the tag dao
+     */
     @Autowired
     public UserServiceImpl(UserDao userDao, OrderDao orderDao, TagDao tagDao) {
         this.userDao = userDao;

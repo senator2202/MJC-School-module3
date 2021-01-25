@@ -4,14 +4,12 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+/**
+ * Entity class, representing order for a certificate from a user .
+ */
 @Entity
 @Table(name = "`order`")
-public class Order implements GiftEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+public class Order extends GiftEntity {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id")
@@ -36,14 +34,6 @@ public class Order implements GiftEntity {
         this.giftCertificate = giftCertificate;
         this.orderDate = orderDate;
         this.cost = cost;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public User getUser() {

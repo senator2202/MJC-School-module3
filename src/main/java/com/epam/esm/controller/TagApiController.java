@@ -15,11 +15,21 @@ import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
+/**
+ * RestController for Tag entity.
+ */
 @RestController
 @RequestMapping("api/tags")
 public class TagApiController {
 
     private TagService service;
+
+    /**
+     * Method adds HATEOAS link to TagDTO entity
+     */
+    static TagDTO addSelfLink(TagDTO tag) {
+        return tag.add(linkTo(TagApiController.class).slash(tag.getId()).withSelfRel());
+    }
 
     @Autowired
     public void setService(TagService service) {
@@ -27,24 +37,23 @@ public class TagApiController {
     }
 
     @GetMapping
-    public List<EntityModel<TagDTO>> findAll(@RequestParam(required = false) Integer limit,
-                                             @RequestParam(required = false) Integer offset) {
+    public List<TagDTO> findAll(@RequestParam(required = false) Integer limit,
+                                @RequestParam(required = false) Integer offset) {
         List<TagDTO> tags = service.findAll(limit, offset);
         return tags.stream()
-                .map(EntityModel::of)
                 .map(TagApiController::addSelfLink)
                 .collect(Collectors.toList());
     }
 
     @GetMapping("/{id:^[1-9]\\d{0,18}$}")
-    public EntityModel<TagDTO> findById(@PathVariable long id) {
+    public TagDTO findById(@PathVariable long id) {
         TagDTO tag = service.findById(id).orElseThrow(() ->
                 new GiftEntityNotFoundException("Tag not found", ErrorCode.TAG_NOT_FOUND));
         return addSelfLink(tag);
     }
 
     @PostMapping
-    public EntityModel<TagDTO> create(@RequestBody TagDTO tag) {
+    public TagDTO create(@RequestBody TagDTO tag) {
         if (!GiftEntityValidator.correctTag(tag)) {
             throw new WrongParameterFormatException("Tag parameters are wrong!", ErrorCode.TAG_WRONG_PARAMETERS);
         }
@@ -52,27 +61,19 @@ public class TagApiController {
     }
 
     @PutMapping("/{id:^[1-9]\\d{0,18}$}")
-    public EntityModel<TagDTO> update(@RequestBody TagDTO tag, @PathVariable long id) {
+    public TagDTO update(@RequestBody TagDTO tag, @PathVariable long id) {
         if (!GiftEntityValidator.correctTag(tag)) {
             throw new WrongParameterFormatException("Tag parameters are wrong!", ErrorCode.TAG_WRONG_PARAMETERS);
         }
         tag.setId(id);
         TagDTO updated = service.update(tag).orElseThrow(() ->
                 new GiftEntityNotFoundException("Tag not found", ErrorCode.TAG_NOT_FOUND));
-       return addSelfLink(updated);
+        return addSelfLink(updated);
     }
 
     @DeleteMapping("/{id:^[1-9]\\d{0,18}$}")
     public EntityModel<DeleteResult> delete(@PathVariable int id) {
         boolean result = service.delete(id);
         return EntityModel.of(new DeleteResult(result));
-    }
-
-    private EntityModel<TagDTO> addSelfLink(TagDTO tag) {
-        return addSelfLink(EntityModel.of(tag));
-    }
-
-    static EntityModel<TagDTO> addSelfLink(EntityModel<TagDTO> entityModel) {
-        return entityModel.add(linkTo(TagApiController.class).slash(entityModel.getContent().getId()).withSelfRel());
     }
 }
