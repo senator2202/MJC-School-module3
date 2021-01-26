@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Service
 public class TagServiceImpl implements TagService {
 
-    private final TagDao tagDao;
+    private TagDao tagDao;
 
     /**
      * Instantiates a new Tag service.

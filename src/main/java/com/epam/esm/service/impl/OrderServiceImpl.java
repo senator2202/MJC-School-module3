@@ -25,9 +25,9 @@ import java.util.Optional;
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    private final OrderDao orderDao;
-    private final UserDao userDao;
-    private final GiftCertificateDao giftCertificateDao;
+    private OrderDao orderDao;
+    private UserDao userDao;
+    private GiftCertificateDao giftCertificateDao;
 
     /**
      * Instantiates a new Order service.

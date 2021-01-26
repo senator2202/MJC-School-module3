@@ -27,8 +27,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private static final String DASH = "-";
     private static final String UNDER_SCOPE = "_";
-    private final GiftCertificateDao giftCertificateDao;
-    private final TagDao tagDao;
+    private GiftCertificateDao giftCertificateDao;
+    private TagDao tagDao;
 
     /**
      * Instantiates a new Gift certificate service.

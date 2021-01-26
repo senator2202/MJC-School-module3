@@ -20,9 +20,9 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final UserDao userDao;
-    private final OrderDao orderDao;
-    private final TagDao tagDao;
+    private UserDao userDao;
+    private OrderDao orderDao;
+    private TagDao tagDao;
 
     /**
      * Instantiates a new User service.
