@@ -19,6 +19,9 @@ import java.util.Optional;
 @Repository
 @Transactional
 public class JpaGiftCertificateDao implements GiftCertificateDao {
+
+    private static final String JPQL_DELETE_ORDERS_BY_CERTIFICATE_ID =
+            "delete from Order o where o.giftCertificate.id = ?1 ";
     private static final String JPQL_FIND_ALL = "select g from GiftCertificate g join g.tags t ";
     private static final String GROUP_BY_HAVING = "group by g.id having count(g.id) >= ?1";
     private static final String GIFT_CERTIFICATE_NAME = "name";
@@ -112,6 +115,9 @@ public class JpaGiftCertificateDao implements GiftCertificateDao {
     public boolean delete(long id) {
         GiftCertificate giftCertificate = entityManager.find(GiftCertificate.class, id);
         if (giftCertificate != null) {
+            entityManager.createQuery(JPQL_DELETE_ORDERS_BY_CERTIFICATE_ID)
+                    .setParameter(1, id)
+                    .executeUpdate();
             entityManager.remove(giftCertificate);
             return true;
         } else {
