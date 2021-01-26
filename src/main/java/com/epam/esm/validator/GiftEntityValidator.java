@@ -21,7 +21,7 @@ public class GiftEntityValidator {
     private static final String ID_REGEX = "^[1-9]\\d{0,18}$";
     private static final String NAME_REGEX = "^.{1,50}$";
     private static final String CERTIFICATE_DESCRIPTION_REGEX = "^.{1,250}$";
-    private static final String INT_REGEX = "^[1-9]\\d{0,9}$";
+    private static final String POSITIVE_INT_REGEX = "^[1-9]\\d{0,9}$";
     private static final String PRICE = "price";
     private static final String NAME = "name";
     private static final String CREATE_DATE = "create-date";
@@ -63,8 +63,8 @@ public class GiftEntityValidator {
         }
         return correctSortType(sortType) &&
                 correctDirection(direction) &&
-                correctOptionalPositiveIntValue(limit) &&
-                correctOptionalPositiveIntValue(offset);
+                correctOptionalNotNegativeIntValue(limit) &&
+                correctOptionalNotNegativeIntValue(offset);
     }
 
     /**
@@ -88,8 +88,8 @@ public class GiftEntityValidator {
      * @param value the value
      * @return the boolean
      */
-    public static boolean correctOptionalPositiveIntValue(Integer value) {
-        return value == null || String.valueOf(value).matches(INT_REGEX);
+    public static boolean correctOptionalNotNegativeIntValue(Integer value) {
+        return value == null || value == 0 || String.valueOf(value).matches(POSITIVE_INT_REGEX);
     }
 
     /**
@@ -137,7 +137,7 @@ public class GiftEntityValidator {
             return fieldValue != null && fieldValue.matches(CERTIFICATE_DESCRIPTION_REGEX);
         }
         if (fieldName == UpdatingField.FieldName.PRICE || fieldName == UpdatingField.FieldName.DURATION) {
-            return fieldValue != null && fieldValue.matches(INT_REGEX);
+            return fieldValue != null && fieldValue.matches(POSITIVE_INT_REGEX);
         }
         return false;
     }
@@ -218,7 +218,7 @@ public class GiftEntityValidator {
      * @return the boolean
      */
     public static boolean correctOptionalDuration(Integer duration) {
-        return duration == null || String.valueOf(duration).matches(INT_REGEX);
+        return duration == null || String.valueOf(duration).matches(POSITIVE_INT_REGEX);
     }
 
     /**
