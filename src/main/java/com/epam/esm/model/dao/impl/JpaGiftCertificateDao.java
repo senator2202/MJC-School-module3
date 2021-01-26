@@ -76,9 +76,9 @@ public class JpaGiftCertificateDao implements GiftCertificateDao {
         jpql.append(GROUP_BY_HAVING);
         if (sortType != null) {
             jpql.append(ORDER_BY).append(SPACE).append(SqlJpqlMap.getInstance().get(sortType)).append(SPACE);
-        }
-        if (direction != null) {
-            jpql.append(direction).append(SPACE);
+            if (direction != null) {
+                jpql.append(direction).append(SPACE);
+            }
         }
         TypedQuery<GiftCertificate> query = entityManager.createQuery(jpql.toString(), GiftCertificate.class);
         for (Map.Entry<String, String> entry : parameterMap.entrySet()) {
