@@ -1,15 +1,18 @@
 package com.epam.esm.model.entity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.util.Objects;
 
 /**
  * Entity class, representing order for a certificate from a user .
  */
-@Entity
+@javax.persistence.Entity
 @Table(name = "`order`")
-public class Order extends GiftEntity {
+public class Order extends Entity {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id")

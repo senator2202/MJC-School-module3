@@ -1,5 +1,6 @@
 package com.epam.esm.service.impl;
 
+import com.epam.esm.controller.exception.ExceptionProvider;
 import com.epam.esm.controller.exception.GiftEntityNotFoundException;
 import com.epam.esm.data_provider.StaticDataProvider;
 import com.epam.esm.model.dao.GiftCertificateDao;
@@ -13,8 +14,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.context.support.ResourceBundleMessageSource;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,8 +36,11 @@ class OrderServiceImplTest {
     @Mock
     private GiftCertificateDao giftCertificateDao;
 
+    @Mock
+    private ExceptionProvider exceptionProvider;
+
     @InjectMocks
-    private final OrderService service = new OrderServiceImpl(orderDao, userDao, giftCertificateDao);
+    private final OrderService service = new OrderServiceImpl(orderDao, userDao, giftCertificateDao, exceptionProvider);
 
     @BeforeEach
     void setUp() {
@@ -52,14 +59,14 @@ class OrderServiceImplTest {
 
     @Test
     void addUserNotExisting() {
-        when(userDao.findById(11111L)).thenReturn(Optional.empty());
+        when(userDao.findById(11111L)).thenThrow(GiftEntityNotFoundException.class);
         assertThrows(GiftEntityNotFoundException.class, () -> service.add(11111L, 1L));
     }
 
     @Test
     void addCertificateNotExisting() {
         when(userDao.findById(1L)).thenReturn(Optional.of(StaticDataProvider.USER));
-        when(giftCertificateDao.findById(11111L)).thenReturn(Optional.empty());
+        when(giftCertificateDao.findById(11111L)).thenThrow(GiftEntityNotFoundException.class);
         assertThrows(GiftEntityNotFoundException.class, () -> service.add(1L, 11111L));
     }
 
@@ -74,11 +81,8 @@ class OrderServiceImplTest {
 
     @Test
     void findByIdUserNotExisting() {
-        when(userDao.findById(11111L)).thenReturn(Optional.empty());
+        when(userDao.findById(11111L)).thenThrow(GiftEntityNotFoundException.class);
         assertThrows(GiftEntityNotFoundException.class, () -> service.findUserOrderById(11111L, 1L));
-        /*Optional<OrderDTO> actual = service.findUserOrderById(11111L, 1L);
-        Optional<OrderDTO> expected = Optional.empty();
-        assertEquals(actual, expected);*/
     }
 
     @Test

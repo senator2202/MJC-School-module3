@@ -66,12 +66,12 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                 giftCertificate.setDuration(Integer.parseInt(fieldValue));
         }
 
-        return Optional.of(giftCertificateDao.update(giftCertificate)).map(ObjectConverter::toDTO);
+        return Optional.of(giftCertificateDao.update(giftCertificate)).map(ObjectConverter::toGiftCertificateDTO);
     }
 
     @Override
     public Optional<GiftCertificateDTO> findById(long id) {
-        return giftCertificateDao.findById(id).map(ObjectConverter::toDTO);
+        return giftCertificateDao.findById(id).map(ObjectConverter::toGiftCertificateDTO);
     }
 
     @Override
@@ -92,9 +92,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         String currentDate = DateTimeUtility.getCurrentDateIso();
         certificate.setCreateDate(currentDate);
         certificate.setLastUpdateDate(currentDate);
-        GiftCertificate entity = ObjectConverter.toEntity(certificate);
+        GiftCertificate entity = ObjectConverter.toGiftCertificateEntity(certificate);
         findTagsInDB(entity);
-        return ObjectConverter.toDTO(giftCertificateDao.add(entity));
+        return ObjectConverter.toGiftCertificateDTO(giftCertificateDao.add(entity));
     }
 
     @Override
@@ -108,7 +108,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             GiftCertificate updated = giftCertificateDao.update(found);
             optional = Optional.of(updated);
         }
-        return optional.map(ObjectConverter::toDTO);
+        return optional.map(ObjectConverter::toGiftCertificateDTO);
     }
 
     @Override
@@ -134,7 +134,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             found.setDuration(source.getDuration());
         }
         if (source.getTags() != null) {
-            GiftCertificate entity = ObjectConverter.toEntity(source);
+            GiftCertificate entity = ObjectConverter.toGiftCertificateEntity(source);
             findTagsInDB(entity);
             found.setTags(entity.getTags());
         }

@@ -1,14 +1,20 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.controller.error_handler.ErrorCode;
-import com.epam.esm.controller.exception.GiftEntityNotFoundException;
-import com.epam.esm.controller.exception.WrongParameterFormatException;
+import com.epam.esm.controller.error_handler.ProjectError;
+import com.epam.esm.controller.exception.ExceptionProvider;
 import com.epam.esm.model.dto.GiftCertificateDTO;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.validator.GiftEntityValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,9 +30,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class GiftCertificateApiController {
 
     private GiftCertificateService service;
+    private ExceptionProvider exceptionProvider;
 
     /**
      * Method adds HATEOAS link to GiftCertificateDTO entity
+     *
+     * @param certificate the certificate
+     * @return the gift certificate dto
      */
     static GiftCertificateDTO addSelfLink(GiftCertificateDTO certificate) {
         certificate.setTags(
@@ -36,11 +46,38 @@ public class GiftCertificateApiController {
                 .add(linkTo(methodOn(GiftCertificateApiController.class).findById(certificate.getId())).withSelfRel());
     }
 
+    /**
+     * Sets service.
+     *
+     * @param service the service
+     */
     @Autowired
     public void setService(GiftCertificateService service) {
         this.service = service;
     }
 
+    /**
+     * Sets exception provider.
+     *
+     * @param exceptionProvider the exception provider
+     */
+    @Autowired
+    public void setExceptionProvider(ExceptionProvider exceptionProvider) {
+        this.exceptionProvider = exceptionProvider;
+    }
+
+    /**
+     * Find all certificates, satisfying optional find parameters, sort parameters, limit and offset.
+     *
+     * @param name        the name
+     * @param description the description
+     * @param tagNames    the tag names
+     * @param sortType    the sort type (price, duration, create-date, last-update-date)
+     * @param direction   the direction (desc, asc)
+     * @param limit       the limit
+     * @param offset      the offset
+     * @return the list
+     */
     @GetMapping
     public List<GiftCertificateDTO> findAll(@RequestParam(required = false) String name,
                                             @RequestParam(required = false) String description,
@@ -51,7 +88,7 @@ public class GiftCertificateApiController {
                                             @RequestParam(required = false) Integer offset) {
         if (!GiftEntityValidator.
                 correctOptionalParameters(name, description, tagNames, sortType, direction, limit, offset)) {
-            throw new WrongParameterFormatException("Wrong optional parameters", ErrorCode.WRONG_OPTIONAL_PARAMETERS);
+            throw exceptionProvider.wrongParameterFormatException(ProjectError.WRONG_OPTIONAL_PARAMETERS);
         }
         List<GiftCertificateDTO> giftCertificates =
                 service.findAll(name, description, tagNames, sortType, direction, limit, offset);
@@ -60,59 +97,83 @@ public class GiftCertificateApiController {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Find certificate by id, return gift certificate dto.
+     *
+     * @param id the id
+     * @return the gift certificate dto
+     */
     @GetMapping("/{id:^[1-9]\\d{0,18}$}")
     public GiftCertificateDTO findById(@PathVariable long id) {
         GiftCertificateDTO giftCertificate = service.findById(id)
-                .orElseThrow(() ->
-                        new GiftEntityNotFoundException("Certificate not found", ErrorCode.GIFT_CERTIFICATE_NOT_FOUND));
+                .orElseThrow(
+                        () -> exceptionProvider.giftEntityNotFoundException(ProjectError.GIFT_CERTIFICATE_NOT_FOUND)
+                );
         return addSelfLink(giftCertificate);
     }
 
+    /**
+     * Create gift certificate, return created dto.
+     *
+     * @param certificate the certificate
+     * @return the gift certificate dto
+     */
     @PostMapping
     public GiftCertificateDTO create(@RequestBody GiftCertificateDTO certificate) {
         if (!GiftEntityValidator.correctGiftCertificate(certificate)) {
-            throw new WrongParameterFormatException("Wrong certificate parameters",
-                    ErrorCode.CERTIFICATE_WRONG_PARAMETERS);
+            throw exceptionProvider.wrongParameterFormatException(ProjectError.CERTIFICATE_WRONG_PARAMETERS);
         }
         GiftCertificateDTO created = service.add(certificate);
         return addSelfLink(created);
     }
 
+    /**
+     * Update gift certificate, return updated dto.
+     *
+     * @param certificate the certificate
+     * @param id          the id
+     * @return the gift certificate dto
+     */
     @PutMapping("/{id:^[1-9]\\d{0,18}$}")
     public GiftCertificateDTO update(@RequestBody GiftCertificateDTO certificate, @PathVariable long id) {
-        if (!GiftEntityValidator.correctOptionalCertificateName(certificate.getName()) ||
-                !GiftEntityValidator.correctOptionalDescription(certificate.getDescription()) ||
-                !GiftEntityValidator.correctOptionalPrice(certificate.getPrice()) ||
-                !GiftEntityValidator.correctOptionalDuration(certificate.getDuration()) ||
-                !GiftEntityValidator.correctTags(certificate.getTags())) {
-            throw new WrongParameterFormatException("Wrong certificate parameters",
-                    ErrorCode.CERTIFICATE_WRONG_PARAMETERS);
+        if (!GiftEntityValidator.correctGiftCertificateOptional(certificate)) {
+            throw exceptionProvider.wrongParameterFormatException(ProjectError.CERTIFICATE_WRONG_PARAMETERS);
         }
         certificate.setId(id);
         GiftCertificateDTO updated = service.update(certificate)
-                .orElseThrow(() ->
-                        new GiftEntityNotFoundException("Certificate not found", ErrorCode.GIFT_CERTIFICATE_NOT_FOUND));
+                .orElseThrow(() -> exceptionProvider.giftEntityNotFoundException(ProjectError.TAG_NOT_FOUND));
         return addSelfLink(updated);
     }
 
+    /**
+     * Delete gift certificate, return result of deleting.
+     *
+     * @param id the id
+     * @return the delete result
+     */
     @DeleteMapping("/{id:^[1-9]\\d{0,18}$}")
-    public EntityModel<DeleteResult> delete(@PathVariable long id) {
+    public DeleteResult delete(@PathVariable long id) {
         boolean result = service.delete(id);
-        return EntityModel.of(new DeleteResult(result));
+        return new DeleteResult(result);
     }
 
+    /**
+     * Update concrete field of gift certificate, return dto of updated certificate.
+     *
+     * @param id    the id
+     * @param field the updating field field
+     * @return the gift certificate dto
+     */
     @PutMapping("/{id}/field")
     public GiftCertificateDTO updateField(@PathVariable long id,
                                           @RequestBody UpdatingField field) {
         UpdatingField.FieldName fieldName = field.getFieldName();
         String fieldValue = field.getFieldValue();
         if (!GiftEntityValidator.correctUpdateFieldParameters(fieldName, fieldValue)) {
-            throw new WrongParameterFormatException("Wrong update field parameters",
-                    ErrorCode.UPDATE_PARAMETERS_WRONG_FORMAT);
+            throw exceptionProvider.wrongParameterFormatException(ProjectError.UPDATE_PARAMETERS_WRONG_FORMAT);
         }
         GiftCertificateDTO updated = service.updateField(id, field).orElseThrow(
-                () -> new GiftEntityNotFoundException("Certificate not found",
-                        ErrorCode.GIFT_CERTIFICATE_NOT_FOUND)
+                () -> exceptionProvider.giftEntityNotFoundException(ProjectError.GIFT_CERTIFICATE_NOT_FOUND)
         );
         return addSelfLink(updated);
     }

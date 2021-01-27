@@ -9,34 +9,34 @@ class ObjectConverterTest {
 
     @Test
     void toTagDTO() {
-        assertEquals(StaticDataProvider.TAG_DTO, ObjectConverter.toDTO(StaticDataProvider.TAG));
+        assertEquals(StaticDataProvider.TAG_DTO, ObjectConverter.toTagDTO(StaticDataProvider.TAG));
     }
 
     @Test
     void toTagEntity() {
-        assertEquals(StaticDataProvider.TAG, ObjectConverter.toEntity(StaticDataProvider.TAG_DTO));
+        assertEquals(StaticDataProvider.TAG, ObjectConverter.toTagEntity(StaticDataProvider.TAG_DTO));
     }
 
     @Test
     void toGiftCertificateDTO() {
         assertEquals(StaticDataProvider.GIFT_CERTIFICATE_DTO,
-                ObjectConverter.toDTO(StaticDataProvider.GIFT_CERTIFICATE));
+                ObjectConverter.toGiftCertificateDTO(StaticDataProvider.GIFT_CERTIFICATE));
     }
 
     @Test
     void toGiftCertificateEntity() {
         assertEquals(StaticDataProvider.GIFT_CERTIFICATE,
-                ObjectConverter.toEntity(StaticDataProvider.GIFT_CERTIFICATE_DTO));
+                ObjectConverter.toGiftCertificateEntity(StaticDataProvider.GIFT_CERTIFICATE_DTO));
     }
 
     @Test
     void toUserDTO() {
-        assertEquals(StaticDataProvider.USER_DTO, ObjectConverter.toDTO(StaticDataProvider.USER));
+        assertEquals(StaticDataProvider.USER_DTO, ObjectConverter.toUserDTO(StaticDataProvider.USER));
     }
 
     @Test
     void toOrderDTO() {
-        assertEquals(StaticDataProvider.ORDER_DTO, ObjectConverter.toDTO(StaticDataProvider.ORDER));
+        assertEquals(StaticDataProvider.ORDER_DTO, ObjectConverter.toOrderDTO(StaticDataProvider.ORDER));
     }
 
     @Test

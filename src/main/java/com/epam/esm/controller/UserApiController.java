@@ -1,8 +1,7 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.controller.error_handler.ErrorCode;
-import com.epam.esm.controller.exception.GiftEntityNotFoundException;
-import com.epam.esm.controller.exception.WrongParameterFormatException;
+import com.epam.esm.controller.error_handler.ProjectError;
+import com.epam.esm.controller.exception.ExceptionProvider;
 import com.epam.esm.model.dto.GiftCertificateDTO;
 import com.epam.esm.model.dto.OrderDTO;
 import com.epam.esm.model.dto.TagDTO;
@@ -11,7 +10,13 @@ import com.epam.esm.service.OrderService;
 import com.epam.esm.service.UserService;
 import com.epam.esm.validator.GiftEntityValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,17 +39,44 @@ public class UserApiController {
 
     private UserService userService;
     private OrderService orderService;
+    private ExceptionProvider exceptionProvider;
 
+    /**
+     * Sets user service.
+     *
+     * @param userService the user service
+     */
     @Autowired
     public void setUserService(UserService userService) {
         this.userService = userService;
     }
 
+    /**
+     * Sets order service.
+     *
+     * @param orderService the order service
+     */
     @Autowired
     public void setOrderService(OrderService orderService) {
         this.orderService = orderService;
     }
 
+    /**
+     * Sets exception provider.
+     *
+     * @param exceptionProvider the exception provider
+     */
+    public void setExceptionProvider(ExceptionProvider exceptionProvider) {
+        this.exceptionProvider = exceptionProvider;
+    }
+
+    /**
+     * Find all users, optionally with limit and offset.
+     *
+     * @param limit  the limit
+     * @param offset the offset
+     * @return the list of user dto
+     */
     @GetMapping
     public List<UserDTO> findAll(@RequestParam(required = false) Integer limit,
                                  @RequestParam(required = false) Integer offset) {
@@ -54,25 +86,45 @@ public class UserApiController {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Find user by id, return user dto.
+     *
+     * @param id the id
+     * @return the user dto
+     */
     @GetMapping("/{id:^[1-9]\\d{0,18}$}")
     public UserDTO findById(@PathVariable long id) {
         UserDTO user = userService.findById(id).orElseThrow(
-                () -> new GiftEntityNotFoundException("User not found", ErrorCode.USER_NOT_FOUND)
+                () -> exceptionProvider.giftEntityNotFoundException(ProjectError.USER_NOT_FOUND)
         );
         return addUserLinks(user);
     }
 
+    /**
+     * Buy certificate, return order dto.
+     *
+     * @param userId      the user id
+     * @param certificate the certificate
+     * @return the order dto
+     */
     @PostMapping("/{userId:^[1-9]\\d{0,18}$}/orders")
     public OrderDTO buyCertificate(@PathVariable long userId, @RequestBody GiftCertificateDTO certificate) {
         long certificateId = certificate.getId();
         if (!GiftEntityValidator.correctId(userId, certificateId)) {
-            throw new WrongParameterFormatException("Wrong buy certificate parameters",
-                    ErrorCode.BUY_PARAMETERS_WRONG_FORMAT);
+            throw exceptionProvider.wrongParameterFormatException(ProjectError.BUY_PARAMETERS_WRONG_FORMAT);
         }
         OrderDTO added = orderService.add(userId, certificateId);
         return addOrderLinks(added);
     }
 
+    /**
+     * Find user orders, optionally with limit and offset.
+     *
+     * @param userId the user id
+     * @param limit  the limit
+     * @param offset the offset
+     * @return the list
+     */
     @GetMapping("/{userId:^[1-9]\\d{0,18}$}/orders")
     public List<OrderDTO> findUserOrders(@PathVariable long userId,
                                          @RequestParam(required = false) Integer limit,
@@ -81,22 +133,32 @@ public class UserApiController {
         return orders.stream().map(this::addOrderLinks).collect(Collectors.toList());
     }
 
+    /**
+     * Find user order, return its dto.
+     *
+     * @param userId  the user id
+     * @param orderId the order id
+     * @return the order dto
+     */
     @GetMapping("/{userId:^[1-9]\\d{0,18}$}/orders/{orderId:^[1-9]\\d{0,18}$}")
     public OrderDTO findUserOrder(@PathVariable long userId,
                                   @PathVariable long orderId) {
         Optional<OrderDTO> optional = orderService.findUserOrderById(userId, orderId);
-        if (optional.isPresent()) {
-            OrderDTO order = optional.get();
-            return addOrderLinks(order);
-        } else {
-            throw new GiftEntityNotFoundException("Order not found", ErrorCode.ORDER_NOT_FOUND);
-        }
+        return optional.map(this::addOrderLinks).orElseThrow(
+                () -> exceptionProvider.giftEntityNotFoundException(ProjectError.ORDER_NOT_FOUND)
+        );
     }
 
+    /**
+     * Find most widely used tag of user with highest total orders sum, return its dto.
+     *
+     * @return the tag dto
+     */
     @GetMapping("/widely-used-tag")
     public TagDTO widelyUsedTag() {
-        TagDTO tag = userService.mostWidelyUsedTagOfUserWithHighestOrdersSum().orElseThrow(() ->
-                new GiftEntityNotFoundException("Tag not found", ErrorCode.TAG_NOT_FOUND));
+        TagDTO tag = userService.mostWidelyUsedTagOfUserWithHighestOrdersSum().orElseThrow(
+                () -> exceptionProvider.giftEntityNotFoundException(ProjectError.TAG_NOT_FOUND)
+        );
         return TagApiController.addSelfLink(tag);
     }
 

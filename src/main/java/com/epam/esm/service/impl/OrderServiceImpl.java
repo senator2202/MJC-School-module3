@@ -1,7 +1,7 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.controller.error_handler.ErrorCode;
-import com.epam.esm.controller.exception.GiftEntityNotFoundException;
+import com.epam.esm.controller.error_handler.ProjectError;
+import com.epam.esm.controller.exception.ExceptionProvider;
 import com.epam.esm.model.dao.GiftCertificateDao;
 import com.epam.esm.model.dao.OrderDao;
 import com.epam.esm.model.dao.UserDao;
@@ -28,46 +28,43 @@ public class OrderServiceImpl implements OrderService {
     private OrderDao orderDao;
     private UserDao userDao;
     private GiftCertificateDao giftCertificateDao;
+    private ExceptionProvider exceptionProvider;
 
-    /**
-     * Instantiates a new Order service.
-     *
-     * @param orderDao           the order dao
-     * @param userDao            the user dao
-     * @param giftCertificateDao the gift certificate dao
-     */
     @Autowired
-    public OrderServiceImpl(OrderDao orderDao, UserDao userDao, GiftCertificateDao giftCertificateDao) {
+    public OrderServiceImpl(OrderDao orderDao,
+                            UserDao userDao,
+                            GiftCertificateDao giftCertificateDao,
+                            ExceptionProvider exceptionProvider) {
         this.orderDao = orderDao;
         this.userDao = userDao;
         this.giftCertificateDao = giftCertificateDao;
+        this.exceptionProvider = exceptionProvider;
     }
 
     @Override
     @Transactional
     public OrderDTO add(long userId, long certificateId) {
         User user = userDao.findById(userId).orElseThrow(
-                () -> new GiftEntityNotFoundException("User was not found!", ErrorCode.USER_NOT_FOUND)
+                () -> exceptionProvider.giftEntityNotFoundException(ProjectError.USER_NOT_FOUND)
         );
-        GiftCertificate giftCertificate =
-                giftCertificateDao.findById(certificateId).orElseThrow(
-                        () -> new GiftEntityNotFoundException("Certificate not found", ErrorCode.GIFT_CERTIFICATE_NOT_FOUND)
-                );
+        GiftCertificate giftCertificate = giftCertificateDao.findById(certificateId).orElseThrow(
+                () -> exceptionProvider.giftEntityNotFoundException(ProjectError.GIFT_CERTIFICATE_NOT_FOUND)
+        );
         Order orderEntity = new Order();
         orderEntity.setUser(user);
         orderEntity.setGiftCertificate(giftCertificate);
         orderEntity.setCost(giftCertificate.getPrice());
         orderEntity.setOrderDate(DateTimeUtility.getCurrentDateIso());
-        return ObjectConverter.toDTO(orderDao.add(orderEntity));
+        return ObjectConverter.toOrderDTO(orderDao.add(orderEntity));
     }
 
     @Override
     @Transactional
     public Optional<OrderDTO> findUserOrderById(long userId, long orderId) {
         if (userDao.findById(userId).isPresent()) {
-            return orderDao.findById(orderId).filter(o -> o.getUser().getId() == userId).map(ObjectConverter::toDTO);
+            return orderDao.findById(orderId).filter(o -> o.getUser().getId() == userId).map(ObjectConverter::toOrderDTO);
         } else {
-            throw new GiftEntityNotFoundException("User not found", ErrorCode.USER_NOT_FOUND);
+            throw exceptionProvider.giftEntityNotFoundException(ProjectError.USER_NOT_FOUND);
         }
     }
 

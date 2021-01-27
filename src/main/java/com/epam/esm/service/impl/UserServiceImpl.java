@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<UserDTO> findById(long id) {
-        return userDao.findById(id).map(ObjectConverter::toDTO);
+        return userDao.findById(id).map(ObjectConverter::toUserDTO);
     }
 
     @Override
@@ -53,6 +53,6 @@ public class UserServiceImpl implements UserService {
     public Optional<TagDTO> mostWidelyUsedTagOfUserWithHighestOrdersSum() {
         Long userId = userDao.userIdWithHighestOrderSum();
         Long tagId = orderDao.selectMostPopularTagIdOfUser(userId);
-        return tagDao.findById(tagId).map(ObjectConverter::toDTO);
+        return tagDao.findById(tagId).map(ObjectConverter::toTagDTO);
     }
 }

@@ -230,4 +230,12 @@ public class GiftEntityValidator {
     public static boolean correctTags(List<TagDTO> tags) {
         return tags == null || tags.stream().filter(Objects::nonNull).allMatch(GiftEntityValidator::correctTag);
     }
+
+    public static boolean correctGiftCertificateOptional(GiftCertificateDTO certificate) {
+        return correctOptionalCertificateName(certificate.getName()) &&
+                correctOptionalDescription(certificate.getDescription()) &&
+                correctOptionalPrice(certificate.getPrice()) &&
+                correctOptionalDuration(certificate.getDuration()) &&
+                correctTags(certificate.getTags());
+    }
 }

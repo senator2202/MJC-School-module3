@@ -26,7 +26,7 @@ public class ObjectConverter {
      * @param tag the tag
      * @return the tag dto
      */
-    public static TagDTO toDTO(Tag tag) {
+    public static TagDTO toTagDTO(Tag tag) {
         return new TagDTO(tag.getId(), tag.getName());
     }
 
@@ -36,7 +36,7 @@ public class ObjectConverter {
      * @param tagDTO the tag dto
      * @return the tag
      */
-    public static Tag toEntity(TagDTO tagDTO) {
+    public static Tag toTagEntity(TagDTO tagDTO) {
         return new Tag(tagDTO.getId(), tagDTO.getName());
     }
 
@@ -46,7 +46,7 @@ public class ObjectConverter {
      * @param giftCertificate the gift certificate
      * @return the gift certificate dto
      */
-    public static GiftCertificateDTO toDTO(GiftCertificate giftCertificate) {
+    public static GiftCertificateDTO toGiftCertificateDTO(GiftCertificate giftCertificate) {
         return new GiftCertificateDTO(
                 giftCertificate.getId(),
                 giftCertificate.getName(),
@@ -57,7 +57,7 @@ public class ObjectConverter {
                 giftCertificate.getLastUpdateDate(),
                 giftCertificate.getTags()
                         .stream()
-                        .map(ObjectConverter::toDTO)
+                        .map(ObjectConverter::toTagDTO)
                         .collect(Collectors.toList())
         );
     }
@@ -68,7 +68,7 @@ public class ObjectConverter {
      * @param giftCertificate the gift certificate
      * @return the gift certificate
      */
-    public static GiftCertificate toEntity(GiftCertificateDTO giftCertificate) {
+    public static GiftCertificate toGiftCertificateEntity(GiftCertificateDTO giftCertificate) {
         return new GiftCertificate(
                 giftCertificate.getId(),
                 giftCertificate.getName(),
@@ -79,7 +79,7 @@ public class ObjectConverter {
                 giftCertificate.getLastUpdateDate(),
                 giftCertificate.getTags()
                         .stream()
-                        .map(ObjectConverter::toEntity).collect(Collectors.toList())
+                        .map(ObjectConverter::toTagEntity).collect(Collectors.toList())
         );
     }
 
@@ -90,7 +90,7 @@ public class ObjectConverter {
      * @return the list
      */
     public static List<GiftCertificateDTO> toGiftCertificateDTOs(List<GiftCertificate> giftCertificates) {
-        return giftCertificates.stream().map(ObjectConverter::toDTO).collect(Collectors.toList());
+        return giftCertificates.stream().map(ObjectConverter::toGiftCertificateDTO).collect(Collectors.toList());
     }
 
     /**
@@ -99,7 +99,7 @@ public class ObjectConverter {
      * @param user the user
      * @return the user dto
      */
-    public static UserDTO toDTO(User user) {
+    public static UserDTO toUserDTO(User user) {
         return new UserDTO(user.getId(), user.getName());
     }
 
@@ -110,7 +110,7 @@ public class ObjectConverter {
      * @return the list
      */
     public static List<UserDTO> toUserDTOs(List<User> users) {
-        return users.stream().map(ObjectConverter::toDTO).collect(Collectors.toList());
+        return users.stream().map(ObjectConverter::toUserDTO).collect(Collectors.toList());
     }
 
     /**
@@ -119,11 +119,11 @@ public class ObjectConverter {
      * @param order the order
      * @return the order dto
      */
-    public static OrderDTO toDTO(Order order) {
+    public static OrderDTO toOrderDTO(Order order) {
         return new OrderDTO(
                 order.getId(),
-                toDTO(order.getUser()),
-                toDTO(order.getGiftCertificate()),
+                toUserDTO(order.getUser()),
+                toGiftCertificateDTO(order.getGiftCertificate()),
                 order.getOrderDate(),
                 order.getCost());
     }
@@ -135,6 +135,6 @@ public class ObjectConverter {
      * @return the list
      */
     public static List<OrderDTO> toOrderDTOs(List<Order> orders) {
-        return orders.stream().map(ObjectConverter::toDTO).collect(Collectors.toList());
+        return orders.stream().map(ObjectConverter::toOrderDTO).collect(Collectors.toList());
     }
 }

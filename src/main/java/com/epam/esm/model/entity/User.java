@@ -1,16 +1,15 @@
 package com.epam.esm.model.entity;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.util.Objects;
 
 /**
  * Entity class, representing user.
  */
-@Entity
+@javax.persistence.Entity
 @Table(name = "user")
-public class User extends GiftEntity {
+public class User extends Entity {
 
     @Column(name = "name")
     private String name;

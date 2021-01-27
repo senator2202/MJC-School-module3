@@ -2,18 +2,22 @@ package com.epam.esm.model.entity;
 
 import com.epam.esm.util.DateTimeUtility;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import java.util.Objects;
 
 /**
  * Entity class, representing tag of a gift certificate .
  */
-@Entity
+@javax.persistence.Entity
 @Table(
         name = "tag",
         uniqueConstraints = {@UniqueConstraint(columnNames = "id"), @UniqueConstraint(columnNames = "name")}
 )
-public class Tag extends GiftEntity {
+public class Tag extends Entity {
 
     @Column(name = "name")
     private String name;

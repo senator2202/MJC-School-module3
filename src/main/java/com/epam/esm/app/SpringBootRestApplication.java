@@ -9,7 +9,8 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan(basePackages = {
         "com.epam.esm.controller",
         "com.epam.esm.model.dao.impl",
-        "com.epam.esm.service.impl"
+        "com.epam.esm.service.impl",
+        "com.epam.esm.config"
 })
 @EntityScan(basePackages = {"com.epam.esm.model.entity"})
 public class SpringBootRestApplication {

@@ -1,6 +1,6 @@
 package com.epam.esm.model.dao;
 
-import com.epam.esm.model.entity.GiftEntity;
+import com.epam.esm.model.entity.Entity;
 
 import java.util.Optional;
 
@@ -9,7 +9,7 @@ import java.util.Optional;
  *
  * @param <T> the type parameter
  */
-public interface BaseDao<T extends GiftEntity> {
+public interface BaseDao<T extends Entity> {
 
     /**
      * Find by id optional.

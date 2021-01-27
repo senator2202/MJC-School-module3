@@ -1,12 +1,16 @@
 package com.epam.esm.model.entity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 
 /**
  * Entity class, representing  abstract project entity.
  */
 @MappedSuperclass
-public abstract class GiftEntity {
+public abstract class Entity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

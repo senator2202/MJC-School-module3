@@ -33,14 +33,14 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public Optional<TagDTO> findById(long id) {
-        return tagDao.findById(id).map(ObjectConverter::toDTO);
+        return tagDao.findById(id).map(ObjectConverter::toTagDTO);
     }
 
     @Override
     public List<TagDTO> findAll(Integer limit, Integer offset) {
         return tagDao.findAll(limit, offset)
                 .stream()
-                .map(ObjectConverter::toDTO)
+                .map(ObjectConverter::toTagDTO)
                 .collect(Collectors.toList());
     }
 
@@ -49,16 +49,16 @@ public class TagServiceImpl implements TagService {
         Optional<Tag> optional = tagDao.findByName(entity.getName());
         return optional
                 //if optional is present, convert from Optional<Tag> to Optional<TagDTO>
-                .map(ObjectConverter::toDTO)
+                .map(ObjectConverter::toTagDTO)
                 //if optional is present, return optional.get, else add new tag and return its DTO
-                .orElseGet(() -> ObjectConverter.toDTO(tagDao.add(ObjectConverter.toEntity(entity))));
+                .orElseGet(() -> ObjectConverter.toTagDTO(tagDao.add(ObjectConverter.toTagEntity(entity))));
     }
 
     @Override
     @Transactional
     public Optional<TagDTO> update(TagDTO entity) {
         Optional<Tag> optional = tagDao.findById(entity.getId());
-        return optional.map(t -> ObjectConverter.toDTO(tagDao.update(ObjectConverter.toEntity(entity))));
+        return optional.map(t -> ObjectConverter.toTagDTO(tagDao.update(ObjectConverter.toTagEntity(entity))));
     }
 
     @Override

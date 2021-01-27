@@ -1,6 +1,11 @@
 package com.epam.esm.model.entity;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
@@ -8,9 +13,9 @@ import java.util.Objects;
 /**
  * Entity class, representing gift certificate .
  */
-@Entity
+@javax.persistence.Entity
 @Table(name = "gift_certificate")
-public class GiftCertificate extends GiftEntity {
+public class GiftCertificate extends Entity {
 
     @Column(name = "name")
     private String name;
