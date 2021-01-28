@@ -38,12 +38,4 @@ public interface OrderService {
      */
     List<OrderDTO> findOrdersByUserId(long userId, Integer limit, Integer offset);
 
-    /**
-     * Order belongs to user boolean.
-     *
-     * @param userId  the user id
-     * @param orderId the order id
-     * @return the boolean
-     */
-    boolean orderBelongsToUser(long userId, long orderId);
 }

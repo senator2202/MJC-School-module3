@@ -5,9 +5,7 @@ import com.epam.esm.model.entity.Tag;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
@@ -17,23 +15,11 @@ import java.util.Optional;
  */
 @Repository
 @Transactional
-public class JpaTagDao implements TagDao {
+public class JpaTagDao extends AbstractJpaDao<Tag> implements TagDao {
 
     private static final String JPQL_FIND_ALL = "select distinct t from Tag t";
     private static final String JPQL_FIND_BY_NAME = JPQL_FIND_ALL + " where t.name = ?1";
     private static final String SQL_DELETE_BY_TAG_ID = "DELETE FROM certificate_tag WHERE tag_id = ?";
-
-    private EntityManager entityManager;
-
-    /**
-     * Sets entity manager.
-     *
-     * @param entityManager the entity manager
-     */
-    @PersistenceContext
-    public void setEntityManager(EntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
 
     @Override
     public Optional<Tag> findByName(String name) {
@@ -50,11 +36,7 @@ public class JpaTagDao implements TagDao {
     }
 
     @Override
-    public Optional<Tag> findById(long id) {
-        return Optional.ofNullable(entityManager.find(Tag.class, id));
-    }
-
-    @Override
+    @Transactional(readOnly = true)
     public List<Tag> findAll(Integer limit, Integer offset) {
         TypedQuery<Tag> query = entityManager.createQuery(JPQL_FIND_ALL, Tag.class);
         if (limit != null) {
@@ -68,18 +50,6 @@ public class JpaTagDao implements TagDao {
     }
 
     @Override
-    public Tag add(Tag entity) {
-        entityManager.persist(entity);
-        return entity;
-    }
-
-    @Override
-    @Transactional
-    public Tag update(Tag entity) {
-        return entityManager.merge(entity);
-    }
-
-    @Override
     @Transactional
     public boolean delete(long id) {
         Tag tag = entityManager.find(Tag.class, id);
@@ -90,5 +60,10 @@ public class JpaTagDao implements TagDao {
         } else {
             return false;
         }
+    }
+
+    @Override
+    protected Class<Tag> getEntityClass() {
+        return Tag.class;
     }
 }

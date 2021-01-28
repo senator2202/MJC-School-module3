@@ -103,14 +103,13 @@ public class UserApiController {
     /**
      * Buy certificate, return order dto.
      *
-     * @param userId      the user id
-     * @param certificate the certificate
+     * @param userId        the user id
+     * @param certificateId the certificate id
      * @return the order dto
      */
     @PostMapping("/{userId:^[1-9]\\d{0,18}$}/orders")
-    public OrderDTO buyCertificate(@PathVariable long userId, @RequestBody GiftCertificateDTO certificate) {
-        long certificateId = certificate.getId();
-        if (!GiftEntityValidator.correctId(userId, certificateId)) {
+    public OrderDTO buyCertificate(@PathVariable long userId, @RequestBody long certificateId) {
+        if (!GiftEntityValidator.correctId(certificateId)) {
             throw exceptionProvider.wrongParameterFormatException(ProjectError.BUY_PARAMETERS_WRONG_FORMAT);
         }
         OrderDTO added = orderService.add(userId, certificateId);

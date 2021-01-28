@@ -14,14 +14,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.context.support.ResourceBundleMessageSource;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -99,11 +97,5 @@ class OrderServiceImplTest {
         List<OrderDTO> actual = service.findOrdersByUserId(1L, 2, 10);
         List<OrderDTO> expected = StaticDataProvider.ORDER_DTO_LIST_LIMIT;
         assertEquals(actual, expected);
-    }
-
-    @Test
-    void orderBelongsToUser() {
-        when(orderDao.findById(1L)).thenReturn(Optional.of(StaticDataProvider.ORDER));
-        assertTrue(service.orderBelongsToUser(1L, 1L));
     }
 }

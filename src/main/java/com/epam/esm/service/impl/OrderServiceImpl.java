@@ -61,11 +61,10 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public Optional<OrderDTO> findUserOrderById(long userId, long orderId) {
-        if (userDao.findById(userId).isPresent()) {
-            return orderDao.findById(orderId).filter(o -> o.getUser().getId() == userId).map(ObjectConverter::toOrderDTO);
-        } else {
-            throw exceptionProvider.giftEntityNotFoundException(ProjectError.USER_NOT_FOUND);
-        }
+        userDao.findById(userId).orElseThrow(
+                () -> exceptionProvider.giftEntityNotFoundException(ProjectError.USER_NOT_FOUND)
+        );
+        return orderDao.findById(orderId).filter(o -> o.getUser().getId() == userId).map(ObjectConverter::toOrderDTO);
     }
 
     @Override
@@ -73,9 +72,4 @@ public class OrderServiceImpl implements OrderService {
         return ObjectConverter.toOrderDTOs(orderDao.findOrdersByUserId(userId, limit, offset));
     }
 
-    @Override
-    public boolean orderBelongsToUser(long userId, long orderId) {
-        Optional<Order> optional = orderDao.findById(orderId);
-        return optional.filter(order -> order.getUser().getId() == userId).isPresent();
-    }
 }
