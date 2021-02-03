@@ -59,6 +59,13 @@ public class JpaGiftCertificateDao extends AbstractJpaDao<GiftCertificate> imple
         return query.getResultList();
     }
 
+    /**
+     * Method appends 'order by' and 'asc/desc' options to jpql query
+     *
+     * @param sortType  'order by' value
+     * @param direction direction of ordering
+     * @param jpql      building jpql query
+     */
     private void appendOrderBy(String sortType, String direction, StringBuilder jpql) {
         if (sortType != null) {
             jpql.append(ORDER_BY).append(SPACE).append(SqlJpqlMap.getInstance().get(sortType)).append(SPACE);
@@ -68,6 +75,13 @@ public class JpaGiftCertificateDao extends AbstractJpaDao<GiftCertificate> imple
         }
     }
 
+    /**
+     * Method appends 'where Tag.name = ?' conditions to jpql query, putting 'where' parameter values into parameters map
+     *
+     * @param tagNames     tag names
+     * @param jpql         building jpql query
+     * @param parameterMap map with parameters of jpql query
+     */
     private void appendTagNames(String[] tagNames, StringBuilder jpql, Map<String, String> parameterMap) {
         if (tagNames != null) {
             jpql.append(parameterMap.isEmpty() ? WHERE : AND);
@@ -85,6 +99,14 @@ public class JpaGiftCertificateDao extends AbstractJpaDao<GiftCertificate> imple
         jpql.append(GROUP_BY_HAVING);
     }
 
+    /**
+     * Method appends 'where GiftCertificate.description like ?' condition to jpql query,
+     * putting 'where' parameter value into parameters map
+     *
+     * @param description  gift certificate description
+     * @param jpql         building jpql query
+     * @param parameterMap map with parameters of jpql query
+     */
     private void appendDescription(String description, StringBuilder jpql, Map<String, String> parameterMap) {
         if (description != null) {
             jpql.append(parameterMap.isEmpty() ? WHERE + DESCRIPTION_LIKE : AND + DESCRIPTION_LIKE);
@@ -92,6 +114,14 @@ public class JpaGiftCertificateDao extends AbstractJpaDao<GiftCertificate> imple
         }
     }
 
+    /**
+     * Method appends 'where GiftCertificate.name like ?' condition to jpql query,
+     * putting 'where' parameter value into parameters map
+     *
+     * @param name         gift certificate name
+     * @param jpql         building jpql query
+     * @param parameterMap map with parameters of jpql query
+     */
     private void appendName(String name, StringBuilder jpql, Map<String, String> parameterMap) {
         if (name != null) {
             jpql.append(WHERE).append(NAME_LIKE);
