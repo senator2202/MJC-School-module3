@@ -39,9 +39,11 @@ public class GiftCertificateApiController {
      * @return the gift certificate dto
      */
     static GiftCertificateDTO addSelfLink(GiftCertificateDTO certificate) {
-        certificate.setTags(
-                certificate.getTags().stream().map(TagApiController::addSelfLink).collect(Collectors.toList())
-        );
+        if (certificate.getTags() != null) {
+            certificate.setTags(
+                    certificate.getTags().stream().map(TagApiController::addSelfLink).collect(Collectors.toList())
+            );
+        }
         return certificate
                 .add(linkTo(methodOn(GiftCertificateApiController.class).findById(certificate.getId())).withSelfRel());
     }

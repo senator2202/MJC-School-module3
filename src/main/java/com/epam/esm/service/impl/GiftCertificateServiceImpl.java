@@ -104,7 +104,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if (optional.isPresent()) {
             GiftCertificate found = optional.get();
             updateNotEmptyFields(certificate, found);
-            certificate.setLastUpdateDate(DateTimeUtility.getCurrentDateIso());
+            found.setLastUpdateDate(DateTimeUtility.getCurrentDateIso());
             GiftCertificate updated = giftCertificateDao.update(found);
             optional = Optional.of(updated);
         }

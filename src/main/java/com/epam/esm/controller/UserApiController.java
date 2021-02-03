@@ -2,7 +2,6 @@ package com.epam.esm.controller;
 
 import com.epam.esm.controller.error_handler.ProjectError;
 import com.epam.esm.controller.exception.ExceptionProvider;
-import com.epam.esm.model.dto.GiftCertificateDTO;
 import com.epam.esm.model.dto.OrderDTO;
 import com.epam.esm.model.dto.TagDTO;
 import com.epam.esm.model.dto.UserDTO;
@@ -66,6 +65,7 @@ public class UserApiController {
      *
      * @param exceptionProvider the exception provider
      */
+    @Autowired
     public void setExceptionProvider(ExceptionProvider exceptionProvider) {
         this.exceptionProvider = exceptionProvider;
     }
@@ -178,10 +178,6 @@ public class UserApiController {
         Long userId = order.getUser().getId();
         Long orderId = order.getId();
         GiftCertificateApiController.addSelfLink(order.getGiftCertificate());
-        GiftCertificateDTO certificate = order.getGiftCertificate();
-        if (certificate.getTags() != null) {
-            certificate.getTags().forEach(TagApiController::addSelfLink);
-        }
         addUserLinks(order.getUser());
         return order.add(linkTo(methodOn(UserApiController.class).findUserOrder(userId, orderId)).withSelfRel());
     }

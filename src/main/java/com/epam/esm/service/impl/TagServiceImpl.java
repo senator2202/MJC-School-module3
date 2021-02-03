@@ -45,6 +45,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    @Transactional
     public TagDTO add(TagDTO entity) {
         Optional<Tag> optional = tagDao.findByName(entity.getName());
         return optional
