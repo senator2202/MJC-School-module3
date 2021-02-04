@@ -49,7 +49,8 @@ public class StaticDataProvider {
     public static final List<Order> ORDER_LIST_LIMIT;
     public static final List<OrderDTO> ORDER_DTO_LIST;
     public static final List<OrderDTO> ORDER_DTO_LIST_LIMIT;
-
+    public static final GiftCertificate ADDING_GIFT_CERTIFICATE;
+    public static final GiftCertificate UPDATING_GIFT_CERTIFICATE ;
 
     static {
         TAG_DTO = new TagDTO(1L, "Вязание");
@@ -80,6 +81,25 @@ public class StaticDataProvider {
                 "2021-01-13T12:42Z",
                 List.of(TAG)
         );
+        ADDING_GIFT_CERTIFICATE = new GiftCertificate(
+                null,
+                "English courses",
+                "English courses in school of foreign languages SkyEng",
+                BigDecimal.valueOf(250.00),
+                180,
+                "2021-01-13T12:42Z",
+                "2021-01-13T12:42Z",
+                List.of(TAG)
+        );
+        UPDATING_GIFT_CERTIFICATE = new GiftCertificate(
+                1L,
+                "Spanish courses",
+                "Spanish courses in school of foreign languages SkySpain",
+                BigDecimal.valueOf(255.00),
+                180,
+                "2021-01-13T12:42Z",
+                "2021-01-13T12:42Z",
+                List.of(new Tag(8L, "Активность"), new Tag(1L, "Отдых")));
         GIFT_CERTIFICATE_DTO = new GiftCertificateDTO(
                 1L,
                 "English courses",

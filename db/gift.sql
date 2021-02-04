@@ -1,6 +1,6 @@
 -- --------------------------------------------------------
 -- Хост:                         127.0.0.1
--- Версия сервера:               8.0.21 - MySQL Community Server - GPL
+-- Версия сервера:               8.0.23 - MySQL Community Server - GPL
 -- Операционная система:         Win64
 -- HeidiSQL Версия:              11.0.0.5919
 -- --------------------------------------------------------
@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS `certificate_tag` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Дамп данных таблицы gift.certificate_tag: ~22 rows (приблизительно)
+DELETE FROM `certificate_tag`;
 /*!40000 ALTER TABLE `certificate_tag` DISABLE KEYS */;
 INSERT INTO `certificate_tag` (`gift_certificate_id`, `tag_id`) VALUES
 	(1, 8),
@@ -69,6 +70,7 @@ CREATE TABLE IF NOT EXISTS `gift_certificate` (
 ) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Дамп данных таблицы gift.gift_certificate: ~13 rows (приблизительно)
+DELETE FROM `gift_certificate`;
 /*!40000 ALTER TABLE `gift_certificate` DISABLE KEYS */;
 INSERT INTO `gift_certificate` (`id`, `name`, `description`, `price`, `duration`, `create_date`, `last_update_date`) VALUES
 	(1, 'Сауна Тритон', 'Сертификат на бесплатное посещение сауны Тритон на Маяковского, 16', 100.00, 60, '2020-12-16T14:48Z', '2020-12-16T14:49Z'),
@@ -101,7 +103,8 @@ CREATE TABLE IF NOT EXISTS `order` (
   CONSTRAINT `FK_order_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Дамп данных таблицы gift.order: ~13 rows (приблизительно)
+-- Дамп данных таблицы gift.order: ~16 rows (приблизительно)
+DELETE FROM `order`;
 /*!40000 ALTER TABLE `order` DISABLE KEYS */;
 INSERT INTO `order` (`id`, `user_id`, `certificate_id`, `order_date`, `cost`) VALUES
 	(1, 1, 6, '2020-12-24T12:21Z', 250.00),
@@ -135,24 +138,25 @@ CREATE TABLE IF NOT EXISTS `tag` (
 ) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Дамп данных таблицы gift.tag: ~16 rows (приблизительно)
+DELETE FROM `tag`;
 /*!40000 ALTER TABLE `tag` DISABLE KEYS */;
 INSERT INTO `tag` (`id`, `name`, `operation`, `operation_date`) VALUES
-	(1, 'Активность', '', ''),
-	(2, 'Красота', '', ''),
-	(3, 'Образование', '', ''),
-	(6, 'Театр', '', ''),
-	(7, 'Кино', '', ''),
-	(8, 'Отдых', '', ''),
-	(10, 'Искусство', '', ''),
-	(13, 'Programming', '', ''),
-	(14, 'IT', '', ''),
-	(15, 'Программирование', '', ''),
-	(18, 'Circus', '', ''),
-	(19, 'Развлечения', '', ''),
-	(20, 'Museum', '', ''),
-	(25, 'Sladkii Bubaleh', '', ''),
-	(41, 'trololo', '', ''),
-	(43, 'Drotiki', 'INSERT', '2021-01-13T11:03Z');
+	(1, 'Активность', 'INSERT', '2021-02-04T11:47:51.8445638'),
+	(2, 'Красота', 'INSERT', '2021-02-04T11:47:51.8445638'),
+	(3, 'Образование', 'INSERT', '2021-02-04T11:47:51.8445638'),
+	(6, 'Театр', 'INSERT', '2021-02-04T11:47:51.8445638'),
+	(7, 'Кино', 'INSERT', '2021-02-04T11:47:51.8445638'),
+	(8, 'Отдых', 'INSERT', '2021-02-04T11:47:51.8445638'),
+	(10, 'Искусство', 'INSERT', '2021-02-04T11:47:51.8445638'),
+	(13, 'Programming', 'INSERT', '2021-02-04T11:47:51.8445638'),
+	(14, 'IT', 'INSERT', '2021-02-04T11:47:51.8445638'),
+	(15, 'Программирование', 'INSERT', '2021-02-04T11:47:51.8445638'),
+	(18, 'Circus', 'INSERT', '2021-02-04T11:47:51.8445638'),
+	(19, 'Развлечения', 'INSERT', '2021-02-04T11:47:51.8445638'),
+	(20, 'Museum', 'INSERT', '2021-02-04T11:47:51.8445638'),
+	(25, 'Sladkii Bubaleh', 'INSERT', '2021-02-04T11:47:51.8445638'),
+	(41, 'trololo', 'INSERT', '2021-02-04T11:47:51.8445638'),
+	(43, 'Drotiki', 'INSERT', '2021-02-04T11:47:51.8445638');
 /*!40000 ALTER TABLE `tag` ENABLE KEYS */;
 
 -- Дамп структуры для таблица gift.user
@@ -164,6 +168,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Дамп данных таблицы gift.user: ~6 rows (приблизительно)
+DELETE FROM `user`;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 INSERT INTO `user` (`id`, `name`) VALUES
 	(1, 'Alex'),

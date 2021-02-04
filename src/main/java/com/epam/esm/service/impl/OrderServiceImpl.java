@@ -14,6 +14,7 @@ import com.epam.esm.util.DateTimeUtility;
 import com.epam.esm.util.ObjectConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -42,7 +43,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     public OrderDTO add(long userId, long certificateId) {
         User user = userDao.findById(userId).orElseThrow(
                 () -> exceptionProvider.giftEntityNotFoundException(ProjectError.USER_NOT_FOUND)

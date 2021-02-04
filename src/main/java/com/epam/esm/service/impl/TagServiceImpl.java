@@ -7,6 +7,7 @@ import com.epam.esm.service.TagService;
 import com.epam.esm.util.ObjectConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -45,7 +46,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     public TagDTO add(TagDTO entity) {
         Optional<Tag> optional = tagDao.findByName(entity.getName());
         return optional
@@ -56,7 +57,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     public Optional<TagDTO> update(TagDTO entity) {
         Optional<Tag> optional = tagDao.findById(entity.getId());
         return optional.map(t -> ObjectConverter.toTagDTO(tagDao.update(ObjectConverter.toTagEntity(entity))));

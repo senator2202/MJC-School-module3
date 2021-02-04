@@ -12,6 +12,7 @@ import com.epam.esm.util.ObjectConverter;
 import com.epam.esm.validator.GiftEntityValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -87,7 +88,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     public GiftCertificateDTO add(GiftCertificateDTO certificate) {
         String currentDate = DateTimeUtility.getCurrentDateIso();
         certificate.setCreateDate(currentDate);
@@ -98,7 +99,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     public Optional<GiftCertificateDTO> update(GiftCertificateDTO certificate) {
         Optional<GiftCertificate> optional = giftCertificateDao.findById(certificate.getId());
         if (optional.isPresent()) {
