@@ -20,7 +20,7 @@ public class JpaUserDao implements UserDao {
     private static final String JPQL_FIND_ALL = "select u from User u";
     private static final String SQL_SELECT_USER_ID_WITH_HIGHEST_ORDER_SUM =
             "SELECT user_id FROM \n" +
-                    "(SELECT user_id, SUM(cost) AS total_cost FROM gift.`order`\n" +
+                    "(SELECT user_id, SUM(cost) AS total_cost FROM `order`\n" +
                     "GROUP BY user_id order BY total_cost DESC LIMIT 1) AS tmp";
 
     @PersistenceContext

@@ -121,7 +121,7 @@ public class GiftCertificateDTO extends RepresentationModel<GiftCertificateDTO> 
         if (!Objects.equals(description, that.description)) {
             return false;
         }
-        if (!Objects.equals(price, that.price)) {
+        if (price != null ? price.compareTo(that.price) != 0 : that.price != null) {
             return false;
         }
         if (!Objects.equals(duration, that.duration)) {

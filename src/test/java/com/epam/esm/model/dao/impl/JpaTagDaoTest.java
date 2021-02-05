@@ -15,33 +15,20 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(classes = SpringBootRestApplication.class)
 class JpaTagDaoTest {
 
     @Autowired
-    private TagDao dao;
-
-    @ParameterizedTest
-    @MethodSource("argsFindById")
-    void findById(Long id, boolean result) {
-        Optional<Tag> optional = dao.findById(id);
-        assertEquals(result, optional.isPresent());
-    }
+    private TagDao tagDao;
 
     static Stream<Arguments> argsFindById() {
         return Stream.of(
                 Arguments.of(1L, true),
                 Arguments.of(999L, false)
         );
-    }
-
-    @ParameterizedTest
-    @MethodSource("argsFindAll")
-    void findAll(Integer limit, Integer offset, int actualSize) {
-        List<Tag> allTags = dao.findAll(limit, offset);
-        assertEquals(actualSize, allTags.size());
     }
 
     static Stream<Arguments> argsFindAll() {
@@ -53,19 +40,40 @@ class JpaTagDaoTest {
         );
     }
 
+    static Stream<Arguments> argsFindByName() {
+        return Stream.of(
+                Arguments.of("Активность", true),
+                Arguments.of("SomethingElse", false)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("argsFindById")
+    void findById(Long id, boolean result) {
+        Optional<Tag> optional = tagDao.findById(id);
+        assertEquals(result, optional.isPresent());
+    }
+
+    @ParameterizedTest
+    @MethodSource("argsFindAll")
+    void findAll(Integer limit, Integer offset, int actualSize) {
+        List<Tag> allTags = tagDao.findAll(limit, offset);
+        assertEquals(actualSize, allTags.size());
+    }
+
     @Test
     @DirtiesContext
     void add() {
-        dao.add(new Tag("NewTag"));
-        List<Tag> allTags = dao.findAll(null, null);
+        tagDao.add(new Tag("NewTag"));
+        List<Tag> allTags = tagDao.findAll(null, null);
         assertEquals(17, allTags.size());
     }
 
     @Test
     @DirtiesContext
     void update() {
-        Tag updated = dao.update(new Tag(1L, "Пассивность"));
-        Optional<Tag> optional = dao.findById(1L);
+        Tag updated = tagDao.update(new Tag(1L, "Пассивность"));
+        Optional<Tag> optional = tagDao.findById(1L);
         assertTrue(optional.isPresent() && optional.get().equals(updated));
     }
 
@@ -73,20 +81,13 @@ class JpaTagDaoTest {
     @MethodSource("argsFindById")
     @DirtiesContext
     void delete(Long id, boolean result) {
-        assertEquals(result, dao.delete(id));
+        assertEquals(result, tagDao.delete(id));
     }
 
     @ParameterizedTest
     @MethodSource("argsFindByName")
     void findByName(String name, boolean result) {
-        Optional<Tag> optional = dao.findByName(name);
+        Optional<Tag> optional = tagDao.findByName(name);
         assertEquals(result, optional.isPresent());
-    }
-
-    static Stream<Arguments> argsFindByName() {
-        return Stream.of(
-                Arguments.of("Активность", true),
-                Arguments.of("SomethingElse", false)
-        );
     }
 }

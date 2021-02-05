@@ -1,13 +1,8 @@
 package com.epam.esm.model.entity;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -39,7 +34,7 @@ public class GiftCertificate extends Entity {
     @Column(name = "last_update_date")
     private String lastUpdateDate;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinTable(
             name = "certificate_tag",
             joinColumns = @JoinColumn(name = "gift_certificate_id", referencedColumnName = "id"),
@@ -218,13 +213,13 @@ public class GiftCertificate extends Entity {
         if (!Objects.equals(description, that.description)) {
             return false;
         }
-        if (!Objects.equals(price, that.price)) {
+        if (price != null ? price.compareTo(that.price) != 0 : that.price != null) {
             return false;
         }
         if (!Objects.equals(duration, that.duration)) {
             return false;
         }
-        return Objects.equals(tags, that.tags);
+        return tags != null ? new ArrayList<>(tags).equals(new ArrayList<>(that.tags)) : that.tags != null;
     }
 
     @Override

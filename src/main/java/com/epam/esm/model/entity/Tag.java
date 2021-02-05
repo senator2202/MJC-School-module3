@@ -2,11 +2,7 @@ package com.epam.esm.model.entity;
 
 import com.epam.esm.util.DateTimeUtility;
 
-import javax.persistence.Column;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 import java.util.Objects;
 
 /**
