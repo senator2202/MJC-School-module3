@@ -1,6 +1,5 @@
 package com.epam.esm.data_provider;
 
-import com.epam.esm.controller.UpdatingField;
 import com.epam.esm.model.dto.GiftCertificateDTO;
 import com.epam.esm.model.dto.OrderDTO;
 import com.epam.esm.model.dto.TagDTO;
@@ -40,10 +39,6 @@ public class StaticDataProvider {
     public static final List<GiftCertificate> GIFT_CERTIFICATE_LIST_LIMIT;
     public static final List<GiftCertificateDTO> GIFT_CERTIFICATE_DTO_LIST;
     public static final List<GiftCertificateDTO> GIFT_CERTIFICATE_DTO_LIST_LIMIT;
-    public static final UpdatingField UPDATING_NAME;
-    public static final UpdatingField UPDATING_DESCRIPTION;
-    public static final UpdatingField UPDATING_PRICE;
-    public static final UpdatingField UPDATING_DURATION;
     public static final Order ORDER;
     public static final OrderDTO ORDER_DTO;
     public static final List<Order> ORDER_LIST;
@@ -116,12 +111,6 @@ public class StaticDataProvider {
         GIFT_CERTIFICATE_LIST_LIMIT = Collections.nCopies(LIMIT, GIFT_CERTIFICATE);
         GIFT_CERTIFICATE_DTO_LIST = Collections.nCopies(10, GIFT_CERTIFICATE_DTO);
         GIFT_CERTIFICATE_DTO_LIST_LIMIT = Collections.nCopies(LIMIT, GIFT_CERTIFICATE_DTO);
-        UPDATING_NAME = new UpdatingField(UpdatingField.FieldName.NAME, "English courses");
-        UPDATING_DESCRIPTION = new UpdatingField(
-                UpdatingField.FieldName.DESCRIPTION,
-                "English courses in school of foreign languages SkyEng");
-        UPDATING_PRICE = new UpdatingField(UpdatingField.FieldName.PRICE, "250");
-        UPDATING_DURATION = new UpdatingField(UpdatingField.FieldName.DURATION, "180");
         ORDER = new Order(1L, USER, GIFT_CERTIFICATE, "2021-01-13T12:42Z", BigDecimal.valueOf(250.00));
         ORDER_DTO = new OrderDTO(1L, USER_DTO, GIFT_CERTIFICATE_DTO,
                 "2021-01-13T12:42Z", BigDecimal.valueOf(250.00));

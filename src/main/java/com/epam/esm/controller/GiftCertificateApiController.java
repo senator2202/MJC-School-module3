@@ -33,11 +33,22 @@ public class GiftCertificateApiController {
     static GiftCertificateDTO addSelfLink(GiftCertificateDTO certificate) {
         if (certificate.getTags() != null) {
             certificate.setTags(
-                    certificate.getTags().stream().map(TagApiController::addSelfLink).collect(Collectors.toList())
+                    certificate.getTags().stream().map(TagApiController::addLinks).collect(Collectors.toList())
             );
         }
         return certificate
-                .add(linkTo(methodOn(GiftCertificateApiController.class).findById(certificate.getId())).withSelfRel());
+                .add(linkTo(methodOn(GiftCertificateApiController.class).findById(certificate.getId())).withSelfRel())
+                .add(linkTo(GiftCertificateApiController.class)
+                        .withRel(HateoasData.POST)
+                        .withName(HateoasData.ADD_CERTIFICATE))
+                .add(linkTo(methodOn(GiftCertificateApiController.class)
+                        .findById(certificate.getId()))
+                        .withRel(HateoasData.PATCH)
+                        .withName(HateoasData.UPDATE_CERTIFICATE_FIELDS))
+                .add(linkTo(methodOn(GiftCertificateApiController.class)
+                        .findById(certificate.getId()))
+                        .withRel(HateoasData.DELETE)
+                        .withName(HateoasData.DELETE_CERTIFICATE));
     }
 
     /**
@@ -128,7 +139,7 @@ public class GiftCertificateApiController {
      * @param id          the id
      * @return the gift certificate dto
      */
-    @PutMapping("/{id:^[1-9]\\d{0,18}$}")
+    @PatchMapping("/{id:^[1-9]\\d{0,18}$}")
     public GiftCertificateDTO update(@RequestBody GiftCertificateDTO certificate, @PathVariable long id) {
         if (!GiftEntityValidator.correctGiftCertificateOptional(certificate)) {
             throw exceptionProvider.wrongParameterFormatException(ProjectError.CERTIFICATE_WRONG_PARAMETERS);
@@ -149,26 +160,5 @@ public class GiftCertificateApiController {
     public DeleteResult delete(@PathVariable long id) {
         boolean result = service.delete(id);
         return new DeleteResult(result);
-    }
-
-    /**
-     * Update concrete field of gift certificate, return dto of updated certificate.
-     *
-     * @param id    the id
-     * @param field the updating field field
-     * @return the gift certificate dto
-     */
-    @PutMapping("/{id}/field")
-    public GiftCertificateDTO updateField(@PathVariable long id,
-                                          @RequestBody UpdatingField field) {
-        UpdatingField.FieldName fieldName = field.getFieldName();
-        String fieldValue = field.getFieldValue();
-        if (!GiftEntityValidator.correctUpdateFieldParameters(fieldName, fieldValue)) {
-            throw exceptionProvider.wrongParameterFormatException(ProjectError.UPDATE_PARAMETERS_WRONG_FORMAT);
-        }
-        GiftCertificateDTO updated = service.updateField(id, field).orElseThrow(
-                () -> exceptionProvider.giftEntityNotFoundException(ProjectError.GIFT_CERTIFICATE_NOT_FOUND)
-        );
-        return addSelfLink(updated);
     }
 }

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.epam.esm.controller.HateoasData.ORDERS;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -24,11 +25,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 @RequestMapping("api/users")
 public class UserApiController {
-
-    /**
-     * String constant for hateoas rel value.
-     */
-    private static final String ORDERS = "orders";
 
     private UserService userService;
     private OrderService orderService;
@@ -152,7 +148,7 @@ public class UserApiController {
         TagDTO tag = userService.mostWidelyUsedTagOfUserWithHighestOrdersSum().orElseThrow(
                 () -> exceptionProvider.giftEntityNotFoundException(ProjectError.TAG_NOT_FOUND)
         );
-        return TagApiController.addSelfLink(tag);
+        return TagApiController.addLinks(tag);
     }
 
     /**
@@ -161,8 +157,12 @@ public class UserApiController {
     private UserDTO addUserLinks(UserDTO user) {
         return user
                 .add(linkTo(UserApiController.class).slash(user.getId()).withSelfRel())
-                .add(linkTo(methodOn(UserApiController.class).findUserOrders(user.getId(), null, null))
-                        .withRel(ORDERS));
+                .add(linkTo(UserApiController.class).slash(user.getId()).slash(ORDERS)
+                        .withRel(HateoasData.GET)
+                        .withName(HateoasData.GET_USER_ORDERS))
+                .add(linkTo(UserApiController.class).slash(user.getId()).slash(ORDERS)
+                        .withRel(HateoasData.POST)
+                        .withName(HateoasData.ADD_ORDER));
     }
 
     /**
@@ -173,6 +173,7 @@ public class UserApiController {
         Long orderId = order.getId();
         GiftCertificateApiController.addSelfLink(order.getGiftCertificate());
         addUserLinks(order.getUser());
-        return order.add(linkTo(methodOn(UserApiController.class).findUserOrder(userId, orderId)).withSelfRel());
+        return order
+                .add(linkTo(methodOn(UserApiController.class).findUserOrder(userId, orderId)).withSelfRel());
     }
 }

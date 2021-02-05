@@ -1,6 +1,5 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.controller.UpdatingField;
 import com.epam.esm.model.dao.GiftCertificateDao;
 import com.epam.esm.model.dao.TagDao;
 import com.epam.esm.model.dto.GiftCertificateDTO;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Optional;
@@ -41,33 +39,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao, TagDao tagDao) {
         this.giftCertificateDao = giftCertificateDao;
         this.tagDao = tagDao;
-    }
-
-    @Override
-    @Transactional
-    public Optional<GiftCertificateDTO> updateField(long id, UpdatingField updatingField) {
-        Optional<GiftCertificate> optional = giftCertificateDao.findById(id);
-        if (optional.isEmpty()) {
-            return Optional.empty();
-        }
-        GiftCertificate giftCertificate = optional.get();
-        UpdatingField.FieldName fieldName = updatingField.getFieldName();
-        String fieldValue = updatingField.getFieldValue();
-        switch (fieldName) {
-            case NAME:
-                giftCertificate.setName(fieldValue);
-                break;
-            case DESCRIPTION:
-                giftCertificate.setDescription(fieldValue);
-                break;
-            case PRICE:
-                giftCertificate.setPrice(BigDecimal.valueOf(Double.parseDouble(fieldValue)));
-                break;
-            case DURATION:
-                giftCertificate.setDuration(Integer.parseInt(fieldValue));
-        }
-
-        return Optional.of(giftCertificateDao.update(giftCertificate)).map(ObjectConverter::toGiftCertificateDTO);
     }
 
     @Override

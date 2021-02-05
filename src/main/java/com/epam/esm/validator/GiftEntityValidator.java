@@ -1,6 +1,5 @@
 package com.epam.esm.validator;
 
-import com.epam.esm.controller.UpdatingField;
 import com.epam.esm.model.dto.GiftCertificateDTO;
 import com.epam.esm.model.dto.TagDTO;
 
@@ -120,26 +119,6 @@ public class GiftEntityValidator {
      */
     public static boolean correctCertificateDescription(String description) {
         return description.matches(CERTIFICATE_DESCRIPTION_REGEX);
-    }
-
-    /**
-     * Correct update field parameters boolean.
-     *
-     * @param fieldName  the field name
-     * @param fieldValue the field value
-     * @return the boolean
-     */
-    public static boolean correctUpdateFieldParameters(UpdatingField.FieldName fieldName, String fieldValue) {
-        if (fieldName == UpdatingField.FieldName.NAME) {
-            return fieldValue != null && fieldValue.matches(NAME_REGEX);
-        }
-        if (fieldName == UpdatingField.FieldName.DESCRIPTION) {
-            return fieldValue != null && fieldValue.matches(CERTIFICATE_DESCRIPTION_REGEX);
-        }
-        if (fieldName == UpdatingField.FieldName.PRICE || fieldName == UpdatingField.FieldName.DURATION) {
-            return fieldValue != null && fieldValue.matches(POSITIVE_INT_REGEX);
-        }
-        return false;
     }
 
     /**

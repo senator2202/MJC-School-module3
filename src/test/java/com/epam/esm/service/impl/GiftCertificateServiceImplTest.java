@@ -1,6 +1,5 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.controller.UpdatingField;
 import com.epam.esm.data_provider.StaticDataProvider;
 import com.epam.esm.model.dao.GiftCertificateDao;
 import com.epam.esm.model.dao.TagDao;
@@ -33,15 +32,6 @@ class GiftCertificateServiceImplTest {
     @InjectMocks
     private final GiftCertificateService service = new GiftCertificateServiceImpl(giftCertificateDao, tagDao);
 
-    static Stream<Arguments> argsUpdateField() {
-        return Stream.of(
-                Arguments.of(StaticDataProvider.UPDATING_NAME),
-                Arguments.of(StaticDataProvider.UPDATING_DESCRIPTION),
-                Arguments.of(StaticDataProvider.UPDATING_PRICE),
-                Arguments.of(StaticDataProvider.UPDATING_DURATION)
-        );
-    }
-
     static Stream<Arguments> argsFindAll() {
         return Stream.of(
                 Arguments.of("Certificate", "Good certificate", null, null, "price", "asc", 10, 0),
@@ -53,25 +43,6 @@ class GiftCertificateServiceImplTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-    }
-
-    @ParameterizedTest
-    @MethodSource("argsUpdateField")
-    void updateFieldExisting(UpdatingField field) {
-        when(giftCertificateDao.findById(1L)).thenReturn(Optional.of(StaticDataProvider.GIFT_CERTIFICATE));
-        when(giftCertificateDao.update(StaticDataProvider.GIFT_CERTIFICATE))
-                .thenReturn(StaticDataProvider.GIFT_CERTIFICATE);
-        Optional<GiftCertificateDTO> actual = service.updateField(1L, field);
-        Optional<GiftCertificateDTO> expected = Optional.of(StaticDataProvider.GIFT_CERTIFICATE_DTO);
-        assertEquals(actual, expected);
-    }
-
-    @Test
-    void updateFieldNotExisting() {
-        when(giftCertificateDao.findById(11111L)).thenReturn(Optional.empty());
-        Optional<GiftCertificateDTO> actual = service.updateField(11111L, StaticDataProvider.UPDATING_NAME);
-        Optional<GiftCertificateDTO> expected = Optional.empty();
-        assertEquals(actual, expected);
     }
 
     @Test

@@ -29,8 +29,18 @@ public class TagApiController {
      * @param tag the tag
      * @return the tag dto
      */
-    static TagDTO addSelfLink(TagDTO tag) {
-        return tag.add(linkTo(TagApiController.class).slash(tag.getId()).withSelfRel());
+    static TagDTO addLinks(TagDTO tag) {
+        return tag
+                .add(linkTo(TagApiController.class).slash(tag.getId()).withSelfRel())
+                .add(linkTo(TagApiController.class)
+                        .withRel(HateoasData.POST)
+                        .withName(HateoasData.ADD_TAG))
+                .add(linkTo(TagApiController.class).slash(tag.getId())
+                        .withRel(HateoasData.PUT)
+                        .withName(HateoasData.UPDATE_TAG))
+                .add(linkTo(TagApiController.class).slash(tag.getId())
+                        .withRel(HateoasData.DELETE)
+                        .withName(HateoasData.DELETE_TAG));
     }
 
     /**
@@ -65,7 +75,7 @@ public class TagApiController {
                                 @RequestParam(required = false) Integer offset) {
         List<TagDTO> tags = service.findAll(limit, offset);
         return tags.stream()
-                .map(TagApiController::addSelfLink)
+                .map(TagApiController::addLinks)
                 .collect(Collectors.toList());
     }
 
@@ -80,7 +90,7 @@ public class TagApiController {
         TagDTO tag = service.findById(id).orElseThrow(
                 () -> exceptionProvider.giftEntityNotFoundException(ProjectError.TAG_NOT_FOUND)
         );
-        return addSelfLink(tag);
+        return addLinks(tag);
     }
 
     /**
@@ -94,7 +104,7 @@ public class TagApiController {
         if (!GiftEntityValidator.correctTag(tag)) {
             throw exceptionProvider.wrongParameterFormatException(ProjectError.TAG_WRONG_PARAMETERS);
         }
-        return addSelfLink(service.add(tag));
+        return addLinks(service.add(tag));
     }
 
     /**
@@ -113,7 +123,7 @@ public class TagApiController {
         TagDTO updated = service.update(tag).orElseThrow(
                 () -> exceptionProvider.giftEntityNotFoundException(ProjectError.TAG_NOT_FOUND)
         );
-        return addSelfLink(updated);
+        return addLinks(updated);
     }
 
     /**

@@ -1,6 +1,5 @@
 package com.epam.esm.validator;
 
-import com.epam.esm.controller.UpdatingField;
 import com.epam.esm.data_provider.StaticDataProvider;
 import com.epam.esm.model.dto.GiftCertificateDTO;
 import com.epam.esm.model.dto.TagDTO;
@@ -42,32 +41,6 @@ class GiftEntityValidatorTest {
                         "11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111" +
                         "11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111" +
                         "11111111111111111111111111111111111111111", false)
-        );
-    }
-
-    static Stream<Arguments> correctUpdateFieldParametersArgs() {
-        return Stream.of(
-                Arguments.of(UpdatingField.FieldName.NAME, "Book", true),
-                Arguments.of(UpdatingField.FieldName.NAME, "", false),
-                Arguments.of(UpdatingField.FieldName.NAME, null, false),
-                Arguments.of(UpdatingField.FieldName.NAME, "11111111111111111111111111111111111111111111111111111" +
-                        "1111111111111111111", false),
-                Arguments.of(UpdatingField.FieldName.DESCRIPTION, "Description", true),
-                Arguments.of(UpdatingField.FieldName.DESCRIPTION, "", false),
-                Arguments.of(UpdatingField.FieldName.DESCRIPTION, null, false),
-                Arguments.of(UpdatingField.FieldName.DESCRIPTION, "1111111111111111111111111111111111111111111111111" +
-                        "1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111" +
-                        "111111111111111111111111111111111111111111111111111111111111111111111111111111111111111" +
-                        "1111111111111111111111111111111111111111111111111111111111111111111111111111111", false),
-                Arguments.of(UpdatingField.FieldName.PRICE, "123", true),
-                Arguments.of(UpdatingField.FieldName.PRICE, "-123", false),
-                Arguments.of(UpdatingField.FieldName.PRICE, "", false),
-                Arguments.of(UpdatingField.FieldName.PRICE, null, false),
-                Arguments.of(UpdatingField.FieldName.DURATION, "123", true),
-                Arguments.of(UpdatingField.FieldName.DURATION, "-123", false),
-                Arguments.of(UpdatingField.FieldName.DURATION, "", false),
-                Arguments.of(UpdatingField.FieldName.DURATION, null, false),
-                Arguments.of(null, null, false)
         );
     }
 
@@ -150,12 +123,6 @@ class GiftEntityValidatorTest {
     @MethodSource("correctCertificateDescriptionArgs")
     void correctCertificateDescription(String description, boolean result) {
         assertEquals(GiftEntityValidator.correctCertificateDescription(description), result);
-    }
-
-    @ParameterizedTest
-    @MethodSource("correctUpdateFieldParametersArgs")
-    void correctUpdateFieldParameters(UpdatingField.FieldName fieldName, String fieldValue, boolean result) {
-        assertEquals(GiftEntityValidator.correctUpdateFieldParameters(fieldName, fieldValue), result);
     }
 
     @ParameterizedTest
