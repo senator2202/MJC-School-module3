@@ -41,6 +41,11 @@ public abstract class AbstractJpaDao<T extends Entity> implements BaseDao<T> {
         return entityManager.merge(entity);
     }
 
+    @Override
+    public boolean delete(long id) {
+        throw new UnsupportedOperationException();
+    }
+
     /**
      * Gets class object of parameterized type. Used in findById method
      *

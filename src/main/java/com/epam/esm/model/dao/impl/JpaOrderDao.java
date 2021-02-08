@@ -3,20 +3,16 @@ package com.epam.esm.model.dao.impl;
 import com.epam.esm.model.dao.OrderDao;
 import com.epam.esm.model.entity.Order;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.math.BigInteger;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * The type Jpa order dao.
  */
 @Repository
-public class JpaOrderDao implements OrderDao {
+public class JpaOrderDao extends AbstractJpaDao<Order> implements OrderDao {
 
     private static final String JPQL_FIND_USER_ORDERS = "select o from Order o where o.user.id = ?1";
     private static final String SQL_SELECT_MOST_POPULAR_TAG_OF_USER =
@@ -26,22 +22,6 @@ public class JpaOrderDao implements OrderDao {
                     "GROUP BY tag_id\n" +
                     "order BY most_popular DESC\n" +
                     "LIMIT 1) AS temp";
-
-    @PersistenceContext
-    private EntityManager entityManager;
-
-    @Override
-    @Transactional
-    public Order add(Order order) {
-        entityManager.persist(order);
-        return order;
-    }
-
-    @Override
-    public Optional<Order> findById(long id) {
-        Order order = entityManager.find(Order.class, id);
-        return Optional.ofNullable(order);
-    }
 
     @Override
     public List<Order> findOrdersByUserId(long userId, Integer limit, Integer offset) {
@@ -64,5 +44,10 @@ public class JpaOrderDao implements OrderDao {
                 .setParameter(1, userId)
                 .getSingleResult();
         return bigInteger.longValue();
+    }
+
+    @Override
+    protected Class<Order> getEntityClass() {
+        return Order.class;
     }
 }

@@ -14,7 +14,6 @@ import java.util.Optional;
  * The type Jpa tag dao.
  */
 @Repository
-@Transactional
 public class JpaTagDao extends AbstractJpaDao<Tag> implements TagDao {
 
     private static final String JPQL_FIND_ALL = "select distinct t from Tag t";
